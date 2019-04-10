@@ -333,6 +333,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/225.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/225.html" class="post-title-link" itemprop="url">Go常用包学习| time 包</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-18 20:11:00" itemprop="dateCreated datePublished" datetime="2018-07-18T20:11:00+08:00">2018-07-18</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文主要已代码的方式来讲述如何使用 <code>Go</code> 的 <code>time</code> 包</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">datetimeDemo</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"当前年份：%d\n"</span>, time.Now().Year())</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"当前月份：%d\n"</span>, time.Now().Month())</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"当前日子：%d\n"</span>, time.Now().Day())</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"当前小时：%d\n"</span>, time.Now().Hour())</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"当前分钟：%d\n"</span>, time.Now().Minute())</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"当前秒：%d\n"</span>, time.Now().Second())</span><br><span class="line"></span><br><span class="line">    now := time.Now()</span><br><span class="line">    <span class="comment">//当前时间的时间戳</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间戳：%d\n"</span>, now.Unix())</span><br><span class="line"></span><br><span class="line">    <span class="comment">//日期格式化</span></span><br><span class="line">    <span class="comment">//YYYY (4位数表示完整年份)</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前的4位数年份为：%s\n"</span>, now.Format(<span class="string">"2006"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">//yy (2位数表示的年份)</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前的2位数年份为：%s\n"</span>, now.Format(<span class="string">"06"</span>))</span><br><span class="line"></span><br><span class="line">    year, _, _ := time.Now().Date()</span><br><span class="line">    fmt.Printf(<span class="string">"当前年份为：%d\n"</span>, year)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//mm 有前导零的月份</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前月份：%s月\n"</span>, now.Format(<span class="string">"01"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">//n 没有前导零的月份</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前月份：%s月\n"</span>, now.Format(<span class="string">"1"</span>))</span><br><span class="line"></span><br><span class="line">    _, month, _ := time.Now().Date()</span><br><span class="line">    fmt.Printf(<span class="string">"当前月份：%d月\n"</span>, month)</span><br><span class="line">    fmt.Printf(<span class="string">"当前月份：%s\n"</span>, month)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//dd 月份中的第几天，有前导零的 2 位数字</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前日期：%s日\n"</span>, now.Format(<span class="string">"02"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">//j 月份中的第几天，没有前导零</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前日期：%s日\n"</span>, now.Format(<span class="string">"2"</span>))</span><br><span class="line"></span><br><span class="line">    _, _, day := time.Now().Date()</span><br><span class="line">    fmt.Printf(<span class="string">"当前月份：%d日\n"</span>, day)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//D 星期中的第几天，文本表示，3个字母</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s\n"</span>, now.Format(<span class="string">"Mon"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">//l 星期几，完整的文本格式</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s\n"</span>, now.Format(<span class="string">"Monday"</span>))</span><br><span class="line">    <span class="comment">//功能同上</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s\n"</span>, now.Weekday().String())</span><br><span class="line"></span><br><span class="line">    <span class="comment">//HH (24小时制)</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s时\n"</span>, now.Format(<span class="string">"15"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">//hh (12小时制，有前导零)</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s时\n"</span>, now.Format(<span class="string">"03"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">//g (12小时制，没有前导零)</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s时\n"</span>, now.Format(<span class="string">"3"</span>))</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%d时\n"</span>, now.Hour())</span><br><span class="line"></span><br><span class="line">    hour, _, _ := now.Clock()</span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%d时\n"</span>, hour)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//ii (有前导零的分钟数)</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s分\n"</span>, now.Format(<span class="string">"04"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// (没有前导零的分钟数)</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s分\n"</span>, now.Format(<span class="string">"4"</span>))</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%d分\n"</span>, now.Minute())</span><br><span class="line"></span><br><span class="line">    _, minute, _ := now.Clock()</span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%d分\n"</span>, minute)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//ss (有前导零的秒数)</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s秒\n"</span>, now.Format(<span class="string">"05"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// (没有前导零的秒数)</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s秒\n"</span>, now.Format(<span class="string">"5"</span>))</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%d秒\n"</span>, now.Second())</span><br><span class="line"></span><br><span class="line">    _, _, sec := now.Clock()</span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%d秒\n"</span>, sec)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//YYYY-mm-dd HH:ii:ss</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s\n"</span>, now.Format(<span class="string">"2006-01-02 15:04:05"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">//YYYY/mm/dd HH:ii:ss</span></span><br><span class="line">    fmt.Printf(<span class="string">"当前时间：%s\n"</span>, now.Format(<span class="string">"2006/01/02 15:04:05"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取指定日期的时间戳</span></span><br><span class="line">    date := time.Date(<span class="number">2015</span>, <span class="number">04</span>, <span class="number">01</span>, <span class="number">13</span>, <span class="number">11</span>, <span class="number">11</span>, <span class="number">0</span>, time.Local)</span><br><span class="line">    fmt.Printf(<span class="string">"%s的日期的时间戳：%d\n"</span>, date.Format(<span class="string">"2006-01-02 15:04:05"</span>), date.Unix())</span><br><span class="line"></span><br><span class="line">    <span class="comment">//指定时区</span></span><br><span class="line">    prc := time.FixedZone(<span class="string">"PRC"</span>, <span class="number">8</span>*<span class="number">3600</span>) <span class="comment">//注意第二个参数（基于UTC的秒数，8*3600为东八区）</span></span><br><span class="line">    date1 := time.Date(<span class="number">2015</span>, <span class="number">04</span>, <span class="number">01</span>, <span class="number">13</span>, <span class="number">11</span>, <span class="number">11</span>, <span class="number">0</span>, prc)</span><br><span class="line">    fmt.Printf(<span class="string">"%s的日期的时间戳：%d\n"</span>, date1.Format(<span class="string">"2006-01-02 15:04:05"</span>), date1.Unix())</span><br><span class="line"></span><br><span class="line">    newDate := date.Add(<span class="number">2</span> * time.Second)</span><br><span class="line">    fmt.Printf(<span class="string">"%s两秒后的时间是：%s\n"</span>, date.Format(<span class="string">"2006-01-02 15:04:05"</span>), newDate.Format(<span class="string">"2006-01-02 15:04:05"</span>))</span><br><span class="line"></span><br><span class="line">    newDate = date.Add(<span class="number">-2</span> * time.Second)</span><br><span class="line">    fmt.Printf(<span class="string">"%s两秒前的时间是：%s\n"</span>, date.Format(<span class="string">"2006-01-02 15:04:05"</span>), newDate.Format(<span class="string">"2006-01-02 15:04:05"</span>))</span><br><span class="line"></span><br><span class="line">    newDate = date.Add(<span class="number">-2</span> * time.Minute * <span class="number">60</span> * <span class="number">24</span>)</span><br><span class="line">    fmt.Printf(<span class="string">"%s两天前的时间是：%s\n"</span>, date.Format(<span class="string">"2006-01-02 15:04:05"</span>), newDate.Format(<span class="string">"2006-01-02 00:00:00"</span>))</span><br><span class="line"></span><br><span class="line">    newDate = date.AddDate(<span class="number">0</span>, <span class="number">0</span>, <span class="number">-2</span>)</span><br><span class="line">    fmt.Printf(<span class="string">"%s两天前的时间是：%s\n"</span>, date.Format(<span class="string">"2006-01-02 15:04:05"</span>), newDate.Format(<span class="string">"2006-01-02 00:00:00"</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2015-04-01 13:11:11 到现在经过的秒数</span></span><br><span class="line">    fmt.Println(time.Now().Sub(date).Seconds())</span><br><span class="line">    fmt.Println(time.Since(date).Seconds())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> !time.Now().Before(date) &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"%s 小于当前时间\n"</span>, date.Format(<span class="string">"2006-01-02 15:04:05"</span>))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> time.Now().After(date) &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"%s 小于当前时间\n"</span>, date.Format(<span class="string">"2006-01-02 15:04:05"</span>))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> !time.Now().Equal(date) &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"%s 不等于当前时间\n"</span>, date.Format(<span class="string">"2006-01-02 15:04:05"</span>))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"今天是当年第%d天\n"</span>, now.YearDay())</span><br><span class="line">    fmt.Printf(<span class="string">"今天是当月第%d日\n"</span>, now.Day())</span><br><span class="line"></span><br><span class="line">    <span class="comment">//休眠3秒</span></span><br><span class="line">    time.Sleep(<span class="number">3</span> * time.Second)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/79.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2056,200 +2213,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/60.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/60.html" class="post-title-link" itemprop="url">Go语言学习（一）| 环境搭建</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-06-18 21:30:00" itemprop="dateCreated datePublished" datetime="2018-06-18T21:30:00+08:00">2018-06-18</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Go语言学习（一）-环境搭建"><a href="#Go语言学习（一）-环境搭建" class="headerlink" title="Go语言学习（一）| 环境搭建"></a>Go语言学习（一）| 环境搭建</h1><h2 id="Linux-下安装"><a href="#Linux-下安装" class="headerlink" title="Linux 下安装"></a>Linux 下安装</h2><ol>
-<li><p>已1.10.3 为例，下载源码包：<a href="https://golang.org/dl" target="_blank" rel="noopener">下载地址</a></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
-<p>​</p>
-</li>
-<li><p>将下载的源码包解压至 /usr/local目录。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -C /usr/local -xzvf go1.10.3.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>将 <code>/usr/local/go/bin</code> 加入 <code>PHTH</code> 环境变量。可以将下边的内容加入 <code>/etc/profile</code> 或 <code>$HOME/.profile</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/usr/local/go/bin</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>加入上述内容后可以手动执行命令 <code>source /etc/profile</code> （假设你将上述命令加入到了 <code>/etc/profile</code> 文件中） 使其实时生效</p>
-</li>
-<li><p>压缩包也可以解压到其他文件夹，但是如果解压到了其他文件夹必须要设置 <code>$GOROOT</code> , 如果将 go 安装到了自己的家目录，加入到 profile 文件的内容应该为如下内容：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export GOROOT=$HOME/go1.X</span><br><span class="line">export PATH=$PATH:$GOROOT/bin</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>NOTE:  GOROOT 只有在定义安装目录才必须要进行设置</p>
-<h2 id="相关环境变量及设置"><a href="#相关环境变量及设置" class="headerlink" title="相关环境变量及设置"></a>相关环境变量及设置</h2><h3 id="GOROOT"><a href="#GOROOT" class="headerlink" title="GOROOT"></a>GOROOT</h3><p>GO语言安装的路径</p>
-<h3 id="GOPATH"><a href="#GOPATH" class="headerlink" title="GOPATH"></a>GOPATH</h3><p>表示代码包所在的地址，可以设置多个。</p>
-<h4 id="Go源码加载顺序"><a href="#Go源码加载顺序" class="headerlink" title="Go源码加载顺序"></a>Go源码加载顺序</h4><p>GOPATH &gt; GOROOT</p>
-<p>假设：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GOPATH=~/gopath1:~/gopath2</span><br><span class="line"></span><br><span class="line">GOROOT=/usr/local/go</span><br></pre></td></tr></table></figure>
-<p>当我们在代码中引用了包：<code>github.com/xxx</code> 时</p>
-<p>那么：GO程序在编译时会按先后次序到以下目录中寻找源码：</p>
-<p>~/gopath1/src/github.com/xxx<br>~/gopath2/scr/github.com/xxx<br>/usr/local/go/src/github.com/xxx</p>
-<p>如果三个目录中都没有找到这个包，就会报错。</p>
-<p>要加载的包的源代码必须放在 <code>GOPATH</code> 路径下的 <code>src</code> 目录，否则还是提示加载不到包</p>
-<h4 id="Go项目目录结构"><a href="#Go项目目录结构" class="headerlink" title="Go项目目录结构"></a>Go项目目录结构</h4><p>当 GOPATH=~/workspace/go 时<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root@mervyn:~/workspace# tree</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">└── go</span><br><span class="line">    ├── bin</span><br><span class="line">    │   └── project1</span><br><span class="line">    ├── pkg</span><br><span class="line">    └── src</span><br><span class="line">        └── project1</span><br><span class="line">            ├── controllers</span><br><span class="line">            └── main.go</span><br></pre></td></tr></table></figure></p>
-<p>其中</p>
-<ul>
-<li>bin 目录为 go 编译可执行文件存放的的路径</li>
-<li>pkg 目录为 go 编译包时，生成的 <code>.a</code> 文件存放路径</li>
-<li>src 目录为源码路径。</li>
-</ul>
-<h3 id="GOBIN"><a href="#GOBIN" class="headerlink" title="GOBIN"></a>GOBIN</h3><p>存放执行 <code>go install</code> 命令后生成的二级制文件</p>
-<p>go install 会生成可执行文件直接放到 <code>GOBIN</code> 目录下，当然这是有前提的<br>你编译的是可执行文件，如果是一个普通的包，会被编译生成到pkg目录下该文件是.a结尾</p>
-<p>到此已完成Go 环境的的搭建工作，选择一个IDE即可可以开始进行项目开发了。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2298,7 +2261,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">54</span>
+                    <span class="site-state-item-count">55</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

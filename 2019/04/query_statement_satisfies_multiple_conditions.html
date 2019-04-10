@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="Go 调试利器 delve 使用Delve 是一个专门为调试 go 程序而生的调试工具，它比 GDB 更强大，尤其时调试多 goroutine 高并发的 go 程序。 安装 Delve1go get -u github.com/derekparker/delve/cmd/dlv 断点调试启动调试Devle 是一个非常棒的 go 调试工具，支持多种调试方式，直接运行调试，或者 attach 到一个正">
-<meta name="keywords" content="Go">
+  <meta name="description" content="当我们在使用mysql的时候经常会一对多的关系进行建表。而在实际使用的过程中经常会有一些需要查询子表的某个字段同时满足多个条件的数据。本文就是基于此类场景来介绍如何通过sql语句实现该业务需求。 以订单信息为例，会建立一个订单基础表 order 及订单对应的商品信息表 order_goods 。我们需要查找同时购买了某几个商品的订单信息。 创建表结构表结构如下： 123456789101112CR">
+<meta name="keywords" content="github">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Go 调试利器 delve 使用">
-<meta property="og:url" content="http://yoursite.com/75.html">
+<meta property="og:title" content="一个字段同时满足多个条件的查询语句">
+<meta property="og:url" content="http://yoursite.com/2019/04/query_statement_satisfies_multiple_conditions.html">
 <meta property="og:site_name" content="Mervyn&#39;s Blog">
-<meta property="og:description" content="Go 调试利器 delve 使用Delve 是一个专门为调试 go 程序而生的调试工具，它比 GDB 更强大，尤其时调试多 goroutine 高并发的 go 程序。 安装 Delve1go get -u github.com/derekparker/delve/cmd/dlv 断点调试启动调试Devle 是一个非常棒的 go 调试工具，支持多种调试方式，直接运行调试，或者 attach 到一个正">
+<meta property="og:description" content="当我们在使用mysql的时候经常会一对多的关系进行建表。而在实际使用的过程中经常会有一些需要查询子表的某个字段同时满足多个条件的数据。本文就是基于此类场景来介绍如何通过sql语句实现该业务需求。 以订单信息为例，会建立一个订单基础表 order 及订单对应的商品信息表 order_goods 。我们需要查找同时购买了某几个商品的订单信息。 创建表结构表结构如下： 123456789101112CR">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-14T12:11:00.000Z">
+<meta property="og:updated_time" content="2019-04-10T12:33:06.298Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Go 调试利器 delve 使用">
-<meta name="twitter:description" content="Go 调试利器 delve 使用Delve 是一个专门为调试 go 程序而生的调试工具，它比 GDB 更强大，尤其时调试多 goroutine 高并发的 go 程序。 安装 Delve1go get -u github.com/derekparker/delve/cmd/dlv 断点调试启动调试Devle 是一个非常棒的 go 调试工具，支持多种调试方式，直接运行调试，或者 attach 到一个正">
+<meta name="twitter:title" content="一个字段同时满足多个条件的查询语句">
+<meta name="twitter:description" content="当我们在使用mysql的时候经常会一对多的关系进行建表。而在实际使用的过程中经常会有一些需要查询子表的某个字段同时满足多个条件的数据。本文就是基于此类场景来介绍如何通过sql语句实现该业务需求。 以订单信息为例，会建立一个订单基础表 order 及订单对应的商品信息表 order_goods 。我们需要查找同时购买了某几个商品的订单信息。 创建表结构表结构如下： 123456789101112CR">
 
 
 
@@ -115,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/75">
+  <link rel="canonical" href="http://yoursite.com/2019/04/query_statement_satisfies_multiple_conditions">
 
 
 
@@ -125,7 +125,7 @@
   };
 </script>
 
-  <title>Go 调试利器 delve 使用 | Mervyn's Blog</title>
+  <title>一个字段同时满足多个条件的查询语句 | Mervyn's Blog</title>
   
 
 
@@ -334,7 +334,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/75.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/query_statement_satisfies_multiple_conditions.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mervyn">
@@ -351,7 +351,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Go 调试利器 delve 使用
+          <h2 class="post-title" itemprop="name headline">一个字段同时满足多个条件的查询语句
 
               
             
@@ -377,9 +377,13 @@
                 
               
 
-              <time title="Created: 2018-07-14 20:11:00" itemprop="dateCreated datePublished" datetime="2018-07-14T20:11:00+08:00">2018-07-14</time>
+              <time title="Created: 2019-04-10 20:31:58 / Modified: 20:33:06" itemprop="dateCreated datePublished" datetime="2019-04-10T20:31:58+08:00">2019-04-10</time>
             
 
+            
+              
+
+              
             
           </span>
 
@@ -395,7 +399,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
 
                 
                 
@@ -430,18 +434,18 @@
       
 
       
-        <h1 id="Go-调试利器-delve-使用"><a href="#Go-调试利器-delve-使用" class="headerlink" title="Go 调试利器 delve 使用"></a>Go 调试利器 delve 使用</h1><p><a href="https://github.com/derekparker/delve" target="_blank" rel="noopener">Delve</a> 是一个专门为调试 go 程序而生的调试工具，它比 GDB 更强大，尤其时调试多 goroutine 高并发的 go 程序。</p>
-<h2 id="安装-Delve"><a href="#安装-Delve" class="headerlink" title="安装 Delve"></a>安装 Delve</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get -u github.com/derekparker/delve/cmd/dlv</span><br></pre></td></tr></table></figure>
-<h2 id="断点调试"><a href="#断点调试" class="headerlink" title="断点调试"></a>断点调试</h2><h3 id="启动调试"><a href="#启动调试" class="headerlink" title="启动调试"></a>启动调试</h3><p>Devle 是一个非常棒的 go 调试工具，支持多种调试方式，直接运行调试，或者 attach 到一个正在运行中的 go 程序，进行调试。</p>
-<ul>
-<li>直接调试<br>通过 <code>dlv debug</code> 命令进入调试环境</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜  demo dlv debug demo.go</span><br><span class="line">Type 'help' for list of commands.</span><br><span class="line">(dlv)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>通过 <code>attach</code> 调试<br>例：</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">go build main.go</span><br><span class="line">./main</span><br><span class="line"><span class="meta">#</span><span class="bash"> 通过 ps 命令查看对应程序的 pid</span></span><br><span class="line">ps aux|grep main</span><br><span class="line"></span><br><span class="line">dlv attach 29260</span><br></pre></td></tr></table></figure>
-<h3 id="可用的调试命令"><a href="#可用的调试命令" class="headerlink" title="可用的调试命令"></a>可用的调试命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">➜  demo dlv debug demo.go</span><br><span class="line">Type &apos;help&apos; for list of commands.</span><br><span class="line">(dlv) help</span><br><span class="line">The following commands are available:</span><br><span class="line">    args ------------------------ Print function arguments.</span><br><span class="line">    break (alias: b) ------------ Sets a breakpoint.</span><br><span class="line">    breakpoints (alias: bp) ----- Print out info for active breakpoints.</span><br><span class="line">    call ------------------------ Resumes process, injecting a function call (EXPERIMENTAL!!!)</span><br><span class="line">    clear ----------------------- Deletes breakpoint.</span><br><span class="line">    clearall -------------------- Deletes multiple breakpoints.</span><br><span class="line">    condition (alias: cond) ----- Set breakpoint condition.</span><br><span class="line">    config ---------------------- Changes configuration parameters.</span><br><span class="line">    continue (alias: c) --------- Run until breakpoint or program termination.</span><br><span class="line">    disassemble (alias: disass) - Disassembler.</span><br><span class="line">    down ------------------------ Move the current frame down.</span><br><span class="line">    exit (alias: quit | q) ------ Exit the debugger.</span><br><span class="line">    frame ----------------------- Set the current frame, or execute command on a different frame.</span><br><span class="line">    funcs ----------------------- Print list of functions.</span><br><span class="line">    goroutine ------------------- Shows or changes current goroutine</span><br><span class="line">    goroutines ------------------ List program goroutines.</span><br><span class="line">    help (alias: h) ------------- Prints the help message.</span><br><span class="line">    list (alias: ls | l) -------- Show source code.</span><br><span class="line">    locals ---------------------- Print local variables.</span><br><span class="line">    next (alias: n) ------------- Step over to next source line.</span><br><span class="line">    on -------------------------- Executes a command when a breakpoint is hit.</span><br><span class="line">    print (alias: p) ------------ Evaluate an expression.</span><br><span class="line">    regs ------------------------ Print contents of CPU registers.</span><br><span class="line">    restart (alias: r) ---------- Restart process.</span><br><span class="line">    set ------------------------- Changes the value of a variable.</span><br><span class="line">    source ---------------------- Executes a file containing a list of delve commands</span><br><span class="line">    sources --------------------- Print list of source files.</span><br><span class="line">    stack (alias: bt) ----------- Print stack trace.</span><br><span class="line">    step (alias: s) ------------- Single step through program.</span><br><span class="line">    step-instruction (alias: si)  Single step a single cpu instruction.</span><br><span class="line">    stepout --------------------- Step out of the current function.</span><br><span class="line">    thread (alias: tr) ---------- Switch to the specified thread.</span><br><span class="line">    threads --------------------- Print out info for every traced thread.</span><br><span class="line">    trace (alias: t) ------------ Set tracepoint.</span><br><span class="line">    types ----------------------- Print list of types</span><br><span class="line">    up -------------------------- Move the current frame up.</span><br><span class="line">    vars ------------------------ Print package variables.</span><br><span class="line">    whatis ---------------------- Prints type of an expression.</span><br><span class="line">Type help followed by a command for full documentation.</span><br></pre></td></tr></table></figure>
+        <p>当我们在使用mysql的时候经常会一对多的关系进行建表。而在实际使用的过程中经常会有一些需要查询子表的某个字段同时满足多个条件的数据。本文就是基于此类场景来介绍如何通过sql语句实现该业务需求。</p>
+<p>以订单信息为例，会建立一个订单基础表 <code>order</code> 及订单对应的商品信息表 <code>order_goods</code> 。我们需要查找同时购买了某几个商品的订单信息。</p>
+<h2 id="创建表结构"><a href="#创建表结构" class="headerlink" title="创建表结构"></a>创建表结构</h2><p>表结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `t_order` (</span><br><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `order_no` char(16) NOT NULL COMMENT &apos;订单号&apos;,</span><br><span class="line">  `pay_success_time` int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;成功支付的时间&apos;,</span><br><span class="line">  `uid` int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;购买人&apos;,</span><br><span class="line">  `status` tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;订单状态 0 未支付 1 支付成功 2 支付失败 3 取消支付&apos;,</span><br><span class="line">  `price` decimal(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;订单金额&apos;,</span><br><span class="line">  `created_at` int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;订单创建时间&apos;,</span><br><span class="line">  `updated_at` int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;订单最后更新时间&apos;,</span><br><span class="line">  PRIMARY KEY (`id`),</span><br><span class="line">  UNIQUE KEY `idx_order_no` (`order_no`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `t_order_goods` (</span><br><span class="line">  `id` int(11) NOT NULL,</span><br><span class="line">  `order_no` char(32) NOT NULL COMMENT &apos;订单号&apos;,</span><br><span class="line">  `goods_id` int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;成功支付的时间&apos;,</span><br><span class="line">  `created_at` int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;订单创建时间&apos;,</span><br><span class="line">  `updated_at` int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;订单最后更新时间&apos;,</span><br><span class="line">  PRIMARY KEY (`id`),</span><br><span class="line">  KEY `idx_order_no` (`order_no`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>PS: 因为本文主要是为了讲解如何构造一个字段同时满足多个条件的查询语句，所以请忽略表结构的合理性问题。</p>
+</blockquote>
+<h2 id="插入模拟数据"><a href="#插入模拟数据" class="headerlink" title="插入模拟数据"></a>插入模拟数据</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO t_order VALUES(1, &apos;o201904101524111&apos;, unix_timestamp(now()), 100001, 1, 15, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line">INSERT INTO t_order VALUES(2, &apos;o201904101524112&apos;, unix_timestamp(now()), 100001, 1, 15, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line">INSERT INTO t_order VALUES(3, &apos;o201904101524113&apos;, unix_timestamp(now()), 100001, 1, 15, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line"></span><br><span class="line">INSERT INTO t_order_goods VALUES(1, &apos;o201904101524111&apos;, 1000, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line">INSERT INTO t_order_goods VALUES(2, &apos;o201904101524111&apos;, 1001, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line">INSERT INTO t_order_goods VALUES(3, &apos;o201904101524111&apos;, 1002, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line"></span><br><span class="line">INSERT INTO t_order_goods VALUES(4, &apos;o201904101524112&apos;, 1001, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line">INSERT INTO t_order_goods VALUES(5, &apos;o201904101524112&apos;, 1002, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line">INSERT INTO t_order_goods VALUES(6, &apos;o201904101524112&apos;, 1003, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line"></span><br><span class="line">INSERT INTO t_order_goods VALUES(7, &apos;o201904101524113&apos;, 1000, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line">INSERT INTO t_order_goods VALUES(8, &apos;o201904101524113&apos;, 1004, unix_timestamp(now()), unix_timestamp(now()));</span><br><span class="line">INSERT INTO t_order_goods VALUES(9, &apos;o201904101524113&apos;, 1003, unix_timestamp(now()), unix_timestamp(now()));</span><br></pre></td></tr></table></figure>
+<p>查找同时购买了商品1000及1002的订单总数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">select count(*) as num from (</span><br><span class="line">    select o.order_no from t_order as o</span><br><span class="line">        JOIN t_order_goods as g on o.order_no = g.order_no</span><br><span class="line">        where g.goods_id in(1000, 1002)</span><br><span class="line">        group by o.order_no</span><br><span class="line">        having count(*) &gt;= 2</span><br><span class="line">) as o</span><br></pre></td></tr></table></figure></p>
+<p><strong>注意：</strong> 这里如果 order_goods 表对应的 goods_id 会出现重复的话上述查询会导致查询出来的结果有误。</p>
+
       
     </div>
 
@@ -503,7 +507,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Go/" rel="tag"># Go</a>
+            <a href="/tags/github/" rel="tag"># github</a>
           
         </div>
       
@@ -516,8 +520,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/73.html" rel="next" title="Go语言学习（七）| 包">
-                <i class="fa fa-chevron-left"></i> Go语言学习（七）| 包
+              <a href="/2019/04/sync-github-fork.html" rel="next" title="更新Github中Fork的代码">
+                <i class="fa fa-chevron-left"></i> 更新Github中Fork的代码
               </a>
             
           </div>
@@ -525,10 +529,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/77.html" rel="prev" title="Go语言学习（八）| 类型、指针">
-                Go语言学习（八）| 类型、指针 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -819,7 +819,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Go-调试利器-delve-使用"><span class="nav-number">1.</span> <span class="nav-text">Go 调试利器 delve 使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Delve"><span class="nav-number">1.1.</span> <span class="nav-text">安装 Delve</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#断点调试"><span class="nav-number">1.2.</span> <span class="nav-text">断点调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启动调试"><span class="nav-number">1.2.1.</span> <span class="nav-text">启动调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可用的调试命令"><span class="nav-number">1.2.2.</span> <span class="nav-text">可用的调试命令</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表结构"><span class="nav-number">1.</span> <span class="nav-text">创建表结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入模拟数据"><span class="nav-number">2.</span> <span class="nav-text">插入模拟数据</span></a></li></ol></div>
             
 
           </div>

@@ -333,6 +333,200 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/60.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/60.html" class="post-title-link" itemprop="url">Go语言学习（一）| 环境搭建</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-06-18 21:30:00" itemprop="dateCreated datePublished" datetime="2018-06-18T21:30:00+08:00">2018-06-18</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Go语言学习（一）-环境搭建"><a href="#Go语言学习（一）-环境搭建" class="headerlink" title="Go语言学习（一）| 环境搭建"></a>Go语言学习（一）| 环境搭建</h1><h2 id="Linux-下安装"><a href="#Linux-下安装" class="headerlink" title="Linux 下安装"></a>Linux 下安装</h2><ol>
+<li><p>已1.10.3 为例，下载源码包：<a href="https://golang.org/dl" target="_blank" rel="noopener">下载地址</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+<li><p>将下载的源码包解压至 /usr/local目录。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -C /usr/local -xzvf go1.10.3.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将 <code>/usr/local/go/bin</code> 加入 <code>PHTH</code> 环境变量。可以将下边的内容加入 <code>/etc/profile</code> 或 <code>$HOME/.profile</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/usr/local/go/bin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>加入上述内容后可以手动执行命令 <code>source /etc/profile</code> （假设你将上述命令加入到了 <code>/etc/profile</code> 文件中） 使其实时生效</p>
+</li>
+<li><p>压缩包也可以解压到其他文件夹，但是如果解压到了其他文件夹必须要设置 <code>$GOROOT</code> , 如果将 go 安装到了自己的家目录，加入到 profile 文件的内容应该为如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export GOROOT=$HOME/go1.X</span><br><span class="line">export PATH=$PATH:$GOROOT/bin</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>NOTE:  GOROOT 只有在定义安装目录才必须要进行设置</p>
+<h2 id="相关环境变量及设置"><a href="#相关环境变量及设置" class="headerlink" title="相关环境变量及设置"></a>相关环境变量及设置</h2><h3 id="GOROOT"><a href="#GOROOT" class="headerlink" title="GOROOT"></a>GOROOT</h3><p>GO语言安装的路径</p>
+<h3 id="GOPATH"><a href="#GOPATH" class="headerlink" title="GOPATH"></a>GOPATH</h3><p>表示代码包所在的地址，可以设置多个。</p>
+<h4 id="Go源码加载顺序"><a href="#Go源码加载顺序" class="headerlink" title="Go源码加载顺序"></a>Go源码加载顺序</h4><p>GOPATH &gt; GOROOT</p>
+<p>假设：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GOPATH=~/gopath1:~/gopath2</span><br><span class="line"></span><br><span class="line">GOROOT=/usr/local/go</span><br></pre></td></tr></table></figure>
+<p>当我们在代码中引用了包：<code>github.com/xxx</code> 时</p>
+<p>那么：GO程序在编译时会按先后次序到以下目录中寻找源码：</p>
+<p>~/gopath1/src/github.com/xxx<br>~/gopath2/scr/github.com/xxx<br>/usr/local/go/src/github.com/xxx</p>
+<p>如果三个目录中都没有找到这个包，就会报错。</p>
+<p>要加载的包的源代码必须放在 <code>GOPATH</code> 路径下的 <code>src</code> 目录，否则还是提示加载不到包</p>
+<h4 id="Go项目目录结构"><a href="#Go项目目录结构" class="headerlink" title="Go项目目录结构"></a>Go项目目录结构</h4><p>当 GOPATH=~/workspace/go 时<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root@mervyn:~/workspace# tree</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">└── go</span><br><span class="line">    ├── bin</span><br><span class="line">    │   └── project1</span><br><span class="line">    ├── pkg</span><br><span class="line">    └── src</span><br><span class="line">        └── project1</span><br><span class="line">            ├── controllers</span><br><span class="line">            └── main.go</span><br></pre></td></tr></table></figure></p>
+<p>其中</p>
+<ul>
+<li>bin 目录为 go 编译可执行文件存放的的路径</li>
+<li>pkg 目录为 go 编译包时，生成的 <code>.a</code> 文件存放路径</li>
+<li>src 目录为源码路径。</li>
+</ul>
+<h3 id="GOBIN"><a href="#GOBIN" class="headerlink" title="GOBIN"></a>GOBIN</h3><p>存放执行 <code>go install</code> 命令后生成的二级制文件</p>
+<p>go install 会生成可执行文件直接放到 <code>GOBIN</code> 目录下，当然这是有前提的<br>你编译的是可执行文件，如果是一个普通的包，会被编译生成到pkg目录下该文件是.a结尾</p>
+<p>到此已完成Go 环境的的搭建工作，选择一个IDE即可可以开始进行项目开发了。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/58.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2296,179 +2490,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/56.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/56.html" class="post-title-link" itemprop="url">开发一个本地 composer 包</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-02-23 15:27:00" itemprop="dateCreated datePublished" datetime="2018-02-23T15:27:00+08:00">2018-02-23</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>当我们用版本控制系统（如 git 、github 等）去开发一个 <code>composer</code> 包时是比较好的一种方式，但是当我们项目启动刚开始的时候，需要频繁地进行提交、更新操作。如何在没有 github 、git 、svn 之类的环境下如何开发一个自己的 composer 包就是我们接下来要讲解的内容了。</p>
-<h2 id="创建目录、composer初始化"><a href="#创建目录、composer初始化" class="headerlink" title="创建目录、composer初始化"></a>创建目录、composer初始化</h2><p>首先为我们的要开发的composer包初始化一个目录,如下操作：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~/workspace/www</span><br><span class="line">mkdir DateHelper</span><br><span class="line">composer init</span><br></pre></td></tr></table></figure>
-<p>然后按照composer的提示填写对应composer包的内容即可，执行完后生成的 <code>composer.json</code> 内容类似如下：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"mervyn1205/date-helper"</span>,</span><br><span class="line">    <span class="attr">"description"</span>:<span class="string">"a light date helper for php"</span>,</span><br><span class="line">    <span class="attr">"type"</span>: <span class="string">"library"</span>,</span><br><span class="line">    <span class="attr">"license"</span>: <span class="string">"MIT"</span>,</span><br><span class="line">    <span class="attr">"minimum-stability"</span>: <span class="string">"dev"</span>,</span><br><span class="line">    <span class="attr">"authors"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"name"</span>: <span class="string">"Mervyn"</span>,</span><br><span class="line">            <span class="attr">"email"</span>: <span class="string">"404245127@qq.com"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"require"</span>: &#123;</span><br><span class="line">        <span class="attr">"php"</span>: <span class="string">"&gt;=5.4.0"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"autoload"</span>: &#123;</span><br><span class="line">        <span class="attr">"psr-4"</span>: &#123;</span><br><span class="line">            <span class="attr">"DateHelper\\"</span>: <span class="string">"src\\"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="开发该composer"><a href="#开发该composer" class="headerlink" title="开发该composer"></a>开发该composer</h2><p>DateHelper目录结构如下：</p>
-<blockquote>
-<p>  ├── composer.json<br>  ├── LICENSE<br>  ├── README.md<br>  ├── src<br>  │   └── DateHelper.php<br>  └── tests</p>
-</blockquote>
-<p>其中 <code>src</code> 目录就是 <code>composer</code> 包实际代码放置的目录了。</p>
-<p>这里需要注意的是 composer 包对应的命名空间。</p>
-<h2 id="本地使用composer包"><a href="#本地使用composer包" class="headerlink" title="本地使用composer包"></a>本地使用composer包</h2><p>进入需要应用该 composer 包的项目目录，引用该composer包即可。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /www/web/project</span><br><span class="line">touch composer.json</span><br></pre></td></tr></table></figure>
-<p>composer.json 内容如下：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"require-dev"</span>: &#123;</span><br><span class="line">        <span class="attr">"mervyn1205/date-helper"</span>: <span class="string">"@dev"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"repositories"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"type"</span>: <span class="string">"path"</span>,</span><br><span class="line">            <span class="attr">"url"</span>: <span class="string">"~/workspace/www/DateHelper"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>执行<code>composer install</code> 然后加载composer的autoload文件即可。</p>
-<p>如果你的composer包已经开发完毕，可以提交到 <a href="https://packagist.org" target="_blank" rel="noopener">https://packagist.org</a> ，这样别人就可以直接通过 composer require 的方式引用你开发的 composer 包了。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2517,7 +2538,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">54</span>
+                    <span class="site-state-item-count">55</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
