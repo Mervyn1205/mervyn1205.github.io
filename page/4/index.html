@@ -333,6 +333,175 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/63.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/63.html" class="post-title-link" itemprop="url">Go语言学习（二）| 变量</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-06-24 20:50:00" itemprop="dateCreated datePublished" datetime="2018-06-24T20:50:00+08:00">2018-06-24</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Go语言学习（二）-变量"><a href="#Go语言学习（二）-变量" class="headerlink" title="Go语言学习（二）| 变量"></a>Go语言学习（二）| 变量</h1><p>Go变量的类型在变量名的后面。</p>
+<h3 id="声明单个变量"><a href="#声明单个变量" class="headerlink" title="声明单个变量"></a>声明单个变量</h3><p>使用语法为： <code>var var_name type</code> , 例：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> age <span class="keyword">int</span></span><br><span class="line"><span class="keyword">var</span> age <span class="keyword">int</span> = <span class="number">10</span>    <span class="comment">//声明单个变量并初始化</span></span><br></pre></td></tr></table></figure>
+<h3 id="声明多个变量"><a href="#声明多个变量" class="headerlink" title="声明多个变量"></a>声明多个变量</h3><p>使用语法为： <code>var var_name1, var_name2 type</code> , 例：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> width, height <span class="keyword">int</span></span><br><span class="line"><span class="keyword">var</span> width, height <span class="keyword">int</span> = <span class="number">100</span>, <span class="number">50</span> <span class="comment">// 声明多个变量</span></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="类型推断"><a href="#类型推断" class="headerlink" title="类型推断"></a>类型推断</h3><p>如果变量有初始值，那么 Go 能够自动推断具有初始值的变量的类型。如果变量有初始值，就可以在变量声明中省略 <code>type</code> 。例：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> age = <span class="number">10</span>    <span class="comment">//自动推到为 int 类型</span></span><br></pre></td></tr></table></figure>
+<h3 id="简短声明"><a href="#简短声明" class="headerlink" title="简短声明"></a>简短声明</h3><p>语法： <code>var_name := value</code></p>
+<p><strong>NOTE</strong> 简短声明要求 <strong>:=</strong> 操作符左边的所有变量都有初始值且只能用于方法内部, 声明并初始化新的变量,不能用于已声明变量赋值。</p>
+<p><code>:=</code> 操作左边必须要有新变量,多个变量初始化只需要满足左边至少有一个新变量即可</p>
+<h3 id="特殊变量"><a href="#特殊变量" class="headerlink" title="特殊变量"></a>特殊变量</h3><p>特殊变量名 <code>_</code>(下划线)。任何赋值给它的值都会给舍弃。例：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_, b := <span class="number">34</span>, <span class="number">35</span>  <span class="comment">//将35赋值给b，同时丢弃34</span></span><br></pre></td></tr></table></figure>
+<p><strong>Note</strong> Go编译器对声明却未使用的变量会报错。但是全局变量时允许声明但不使用的。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/60.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2331,165 +2500,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/159.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/159.html" class="post-title-link" itemprop="url">PHP使用SPL内置迭代器递归遍历目录</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-02-26 01:21:00" itemprop="dateCreated datePublished" datetime="2018-02-26T01:21:00+08:00">2018-02-26</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>使用<code>PHP</code> 的 <code>SPL</code> 库的迭代器可以很方便的递归遍历某个目录及其子目录下的文件，代码如下</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$dir = <span class="string">'~/workspace'</span>;</span><br><span class="line">$files = <span class="keyword">new</span> RecursiveIteratorIterator(<span class="keyword">new</span> RecursiveDirectoryIterator($dir));</span><br><span class="line"><span class="keyword">foreach</span> ( $files <span class="keyword">as</span> $file ) &#123;</span><br><span class="line">    <span class="keyword">echo</span> $file-&gt;__toString().<span class="string">"\n"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>参考：<br><a href="http://php.net/manual/en/spl.iterators.php" target="_blank" rel="noopener">http://php.net/manual/en/spl.iterators.php</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2538,7 +2548,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-count">56</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2585,7 +2595,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">15</span>
+                      
+                    
+                    <span class="site-state-item-count">16</span>
                     <span class="site-state-item-name">categories</span>
                   </a>
                 </div>

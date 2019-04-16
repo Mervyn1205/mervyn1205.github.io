@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="二分查找遍历123456789101112131415function binSearch($arr,$search)&amp;#123;    $height=count($arr)-1;    $low=0;    while($low&amp;lt;=$height)&amp;#123;        $mid=floor(($low+$height)/2);//获取中间数        if($arr[$mid]">
-<meta name="keywords" content="PHP,数据结构,算法">
+  <meta name="description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243&amp;lt;?php/* * 经典的概率算法， * 数组中 probability 的总和（基数），基数越大越能体现概率的准确性。 * probability 的总和为100，那么 iPhone XR 对应的中奖概率就是1%， * 如果 probab">
+<meta name="keywords" content="数据结构,算法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="常用查找算法">
-<meta property="og:url" content="http://yoursite.com/227.html">
+<meta property="og:title" content="抽奖算法">
+<meta property="og:url" content="http://yoursite.com/2019/04/lottery_algorithm.html">
 <meta property="og:site_name" content="Mervyn&#39;s Blog">
-<meta property="og:description" content="二分查找遍历123456789101112131415function binSearch($arr,$search)&amp;#123;    $height=count($arr)-1;    $low=0;    while($low&amp;lt;=$height)&amp;#123;        $mid=floor(($low+$height)/2);//获取中间数        if($arr[$mid]">
+<meta property="og:description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243&amp;lt;?php/* * 经典的概率算法， * 数组中 probability 的总和（基数），基数越大越能体现概率的准确性。 * probability 的总和为100，那么 iPhone XR 对应的中奖概率就是1%， * 如果 probab">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2017-02-12T14:56:00.000Z">
+<meta property="og:updated_time" content="2019-04-16T17:05:25.086Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="常用查找算法">
-<meta name="twitter:description" content="二分查找遍历123456789101112131415function binSearch($arr,$search)&amp;#123;    $height=count($arr)-1;    $low=0;    while($low&amp;lt;=$height)&amp;#123;        $mid=floor(($low+$height)/2);//获取中间数        if($arr[$mid]">
+<meta name="twitter:title" content="抽奖算法">
+<meta name="twitter:description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243&amp;lt;?php/* * 经典的概率算法， * 数组中 probability 的总和（基数），基数越大越能体现概率的准确性。 * probability 的总和为100，那么 iPhone XR 对应的中奖概率就是1%， * 如果 probab">
 
 
 
@@ -115,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/227">
+  <link rel="canonical" href="http://yoursite.com/2019/04/lottery_algorithm">
 
 
 
@@ -125,7 +125,7 @@
   };
 </script>
 
-  <title>常用查找算法 | Mervyn's Blog</title>
+  <title>抽奖算法 | Mervyn's Blog</title>
   
 
 
@@ -334,7 +334,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/227.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/lottery_algorithm.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mervyn">
@@ -351,7 +351,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">常用查找算法
+          <h2 class="post-title" itemprop="name headline">抽奖算法
 
               
             
@@ -377,24 +377,12 @@
                 
               
 
-              <time title="Created: 2017-05-12 22:56:00" itemprop="dateCreated datePublished" datetime="2017-05-12T22:56:00+08:00">2017-05-12</time>
+              <time title="Created: 2019-04-17 01:01:43 / Modified: 01:05:25" itemprop="dateCreated datePublished" datetime="2019-04-17T01:01:43+08:00">2019-04-17</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2017-02-12 22:56:00" itemprop="dateModified" datetime="2017-02-12T22:56:00+08:00">2017-02-12</time>
               
             
           </span>
@@ -412,6 +400,13 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/数据结构与算法/" itemprop="url" rel="index"><span itemprop="name">数据结构与算法</span></a></span>
 
                 
                 
@@ -446,8 +441,8 @@
       
 
       
-        <h2 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h2><h3 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">binSearch</span><span class="params">($arr,$search)</span></span>&#123;</span><br><span class="line">    $height=count($arr)<span class="number">-1</span>;</span><br><span class="line">    $low=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>($low&lt;=$height)&#123;</span><br><span class="line">        $mid=floor(($low+$height)/<span class="number">2</span>);<span class="comment">//获取中间数</span></span><br><span class="line">        <span class="keyword">if</span>($arr[$mid]==$search)&#123;</span><br><span class="line">            <span class="keyword">return</span> $mid;<span class="comment">//返回</span></span><br><span class="line">        &#125;<span class="keyword">elseif</span>($arr[$mid]&lt;$search)&#123;<span class="comment">//当中间值小于所查值时，则$mid左边的值都小于$search，此时要将$mid赋值给$low</span></span><br><span class="line">            $low=$mid+<span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">elseif</span>($arr[$mid]&gt;$search)&#123;<span class="comment">//中间值大于所查值,则$mid右边的所有值都大于$search,此时要将$mid赋值给$height</span></span><br><span class="line">            $height=$mid<span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"查找失败"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="递归实现"><a href="#递归实现" class="headerlink" title="递归实现"></a>递归实现</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">binSearch2</span><span class="params">($arr,$low,$height,$k)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>($low&lt;=$height)&#123;</span><br><span class="line">        $mid=floor(($low+$height)/<span class="number">2</span>);<span class="comment">//获取中间数</span></span><br><span class="line">        <span class="keyword">if</span>($arr[$mid]==$k)&#123;</span><br><span class="line">            <span class="keyword">return</span> $mid;</span><br><span class="line">        &#125;<span class="keyword">elseif</span>($arr[$mid]&lt;$k)&#123;</span><br><span class="line">            <span class="keyword">return</span> binSearch2($arr,$mid+<span class="number">1</span>,$height,$k);</span><br><span class="line">        &#125;<span class="keyword">elseif</span>($arr[$mid]&gt;$k)&#123;</span><br><span class="line">            <span class="keyword">return</span> binSearch2($arr,$low,$mid<span class="number">-1</span>,$k);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 经典的概率算法，</span></span><br><span class="line"><span class="comment"> * 数组中 probability 的总和（基数），基数越大越能体现概率的准确性。</span></span><br><span class="line"><span class="comment"> * probability 的总和为100，那么 iPhone XR 对应的中奖概率就是1%，</span></span><br><span class="line"><span class="comment"> * 如果 probability 的总和是10000，那中奖概率就是万分之一了。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getPrize</span><span class="params">($prizes)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//概率数组的总概率精度</span></span><br><span class="line">    $sum = array_sum(array_column($prizes, <span class="string">'probability'</span>));</span><br><span class="line">    <span class="keyword">foreach</span> ($prizes <span class="keyword">as</span> $key =&gt; $item) &#123;</span><br><span class="line">        $rand = mt_rand(<span class="number">1</span>, $sum);</span><br><span class="line">        <span class="keyword">if</span>($rand &lt;= $item[<span class="string">'probability'</span>]) &#123;</span><br><span class="line">            $result = $item;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $sum -= $item[<span class="string">'probability'</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> $result;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* 奖项数组</span></span><br><span class="line"><span class="comment">* level 表示中奖等级，prize 表示奖品，probability 表示中奖概率。</span></span><br><span class="line"><span class="comment">* probability 为0即意味着该奖项抽中的几率是0，</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">$prizes = [</span><br><span class="line">    [<span class="string">'level'</span> =&gt; <span class="number">1</span>, <span class="string">'prize'</span> =&gt; <span class="string">'iPhone XR'</span>, <span class="string">'probability'</span> =&gt; <span class="number">5</span>],</span><br><span class="line">    [<span class="string">'level'</span> =&gt; <span class="number">2</span>, <span class="string">'prize'</span> =&gt; <span class="string">'iPhone X'</span>, <span class="string">'probability'</span> =&gt; <span class="number">10</span>],</span><br><span class="line">    [<span class="string">'level'</span> =&gt; <span class="number">3</span>, <span class="string">'prize'</span> =&gt; <span class="string">'华为 P20'</span>, <span class="string">'probability'</span> =&gt; <span class="number">15</span>],</span><br><span class="line">    [<span class="string">'level'</span> =&gt; <span class="number">4</span>, <span class="string">'prize'</span> =&gt; <span class="string">'小米 Note'</span>, <span class="string">'probability'</span> =&gt; <span class="number">25</span>],</span><br><span class="line">    [<span class="string">'level'</span> =&gt; <span class="number">5</span>, <span class="string">'prize'</span> =&gt; <span class="string">'谢谢参与'</span>, <span class="string">'probability'</span> =&gt; <span class="number">45</span>],</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">$result = getPrize($prizes);</span><br><span class="line">var_export($result);</span><br></pre></td></tr></table></figure>
+
       
     </div>
 
@@ -509,8 +504,6 @@
       
         <div class="post-tags">
           
-            <a href="/tags/PHP/" rel="tag"># PHP</a>
-          
             <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
           
             <a href="/tags/算法/" rel="tag"># 算法</a>
@@ -526,8 +519,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/293.html" rel="next" title="linux查看磁盘使用情况命令">
-                <i class="fa fa-chevron-left"></i> linux查看磁盘使用情况命令
+              <a href="/2019/04/query_statement_satisfies_multiple_conditions.html" rel="next" title="一个字段同时满足多个条件的查询语句">
+                <i class="fa fa-chevron-left"></i> 一个字段同时满足多个条件的查询语句
               </a>
             
           </div>
@@ -535,10 +528,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/98.html" rel="prev" title="PHPStorm 2017.1.2 + Xdebug 远程调试">
-                PHPStorm 2017.1.2 + Xdebug 远程调试 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -586,17 +575,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -820,23 +800,6 @@
         </div>
       </div>
 
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#二分查找"><span class="nav-number">1.</span> <span class="nav-text">二分查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#遍历"><span class="nav-number">1.1.</span> <span class="nav-text">遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#递归实现"><span class="nav-number">1.2.</span> <span class="nav-text">递归实现</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
       
 
       
