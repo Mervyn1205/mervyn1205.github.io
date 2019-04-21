@@ -333,6 +333,242 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/161.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/161.html" class="post-title-link" itemprop="url">web程序性能优化常用方法</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-26 20:11:00" itemprop="dateCreated datePublished" datetime="2018-07-26T20:11:00+08:00">2018-07-26</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/架构/" itemprop="url" rel="index"><span itemprop="name">架构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h1><h2 id="前端优化"><a href="#前端优化" class="headerlink" title="前端优化"></a>前端优化</h2><ul>
+<li>减少http请求数</li>
+<li>充分利用浏览器缓存<br>本地存储</li>
+<li>分布式存储前端资源</li>
+<li>多域名访问资源<ul>
+<li>浏览器对同一个域名的并行请求数有上限</li>
+<li>使用同一个域名时无用的cookie依然会进行传递</li>
+</ul>
+</li>
+<li>资源数据的压缩<ul>
+<li>代码压缩、混淆</li>
+<li>服务器gzip压缩</li>
+<li>图片压缩</li>
+</ul>
+</li>
+<li>优化首屏展示速度<ul>
+<li>js、图片延时加载</li>
+</ul>
+</li>
+</ul>
+<h2 id="Nginx优化"><a href="#Nginx优化" class="headerlink" title="Nginx优化"></a>Nginx优化</h2><h3 id="本身的配置的优化"><a href="#本身的配置的优化" class="headerlink" title="本身的配置的优化"></a>本身的配置的优化</h3><ul>
+<li>work_processes auto;</li>
+<li>worker_cpu_affinity 亲缘性绑定</li>
+<li>worker_rlimit_nofile 65535;</li>
+<li>use epoll;</li>
+<li>worker_connections 65535;</li>
+<li>sendfile on;</li>
+<li>fastcgi相关</li>
+<li>gzip相关</li>
+<li>静态资源http缓存协议</li>
+<li>keepalived_timeout 60; 开启长连接</li>
+</ul>
+<h3 id="tcp-ip协议优化"><a href="#tcp-ip协议优化" class="headerlink" title="tcp/ip协议优化"></a>tcp/ip协议优化</h3><h3 id="系统的配置的优化"><a href="#系统的配置的优化" class="headerlink" title="系统的配置的优化"></a>系统的配置的优化</h3><p>ulimit -a 65535</p>
+<h2 id="PHP优化"><a href="#PHP优化" class="headerlink" title="PHP优化"></a>PHP优化</h2><ul>
+<li>升级PHP版本</li>
+<li>开启opcache缓存</li>
+<li><p>配合使用hugepage</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Hugepage：间接提高虚拟地址和内存地址转换过程中查表的TLB缓存命中率</span><br><span class="line">opcache.huge_code_pages=1</span><br><span class="line">http://www.laruence.com/2015/10/02/3069.html</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>代码伪编译<br>类似tp的common~runtime.php</p>
+</li>
+<li>模板编译</li>
+<li>xhprof查找性能瓶颈</li>
+</ul>
+<h2 id="业务优化"><a href="#业务优化" class="headerlink" title="业务优化"></a>业务优化</h2><ul>
+<li>非侵入式开发</li>
+<li>静态化</li>
+<li>异步思想</li>
+<li>业务解耦</li>
+<li>分布式以及SOA</li>
+</ul>
+<h2 id="MySQL优化"><a href="#MySQL优化" class="headerlink" title="MySQL优化"></a>MySQL优化</h2><h3 id="表设计"><a href="#表设计" class="headerlink" title="表设计"></a>表设计</h3><p>innodb需要自增主键<br><a href="http://draveness.me/mysql-innodb.html" target="_blank" rel="noopener">http://draveness.me/mysql-innodb.html</a></p>
+<ul>
+<li>能短整型就不选长整型</li>
+<li>能char就避免varchar</li>
+<li>varchar长度够用就行</li>
+<li>大文本单独分离，比如文章内容详情</li>
+<li>冗余字段使用</li>
+</ul>
+<h3 id="索引优化"><a href="#索引优化" class="headerlink" title="索引优化"></a>索引优化</h3><ul>
+<li>explain 使用</li>
+</ul>
+<h3 id="收集慢查询"><a href="#收集慢查询" class="headerlink" title="收集慢查询"></a>收集慢查询</h3><h3 id="使用nosql"><a href="#使用nosql" class="headerlink" title="使用nosql"></a>使用nosql</h3><h2 id="缓存的优化"><a href="#缓存的优化" class="headerlink" title="缓存的优化"></a>缓存的优化</h2><h3 id="多级缓存"><a href="#多级缓存" class="headerlink" title="多级缓存"></a>多级缓存</h3><ul>
+<li>请求内缓存</li>
+<li>本地缓存</li>
+<li><p>分布式缓存<br>-</p>
+<h3 id="避免缓存的滥用"><a href="#避免缓存的滥用" class="headerlink" title="避免缓存的滥用"></a>避免缓存的滥用</h3></li>
+<li><p>缓存命中率低：用户积分更新导致整个用户基本信息缓存失效</p>
+</li>
+<li>缓存的原子性：礼物和主题绑定缓存，礼物更新，绑定的所有主题都要更新</li>
+</ul>
+<h3 id="redis优化"><a href="#redis优化" class="headerlink" title="redis优化"></a>redis优化</h3><ul>
+<li>string计数器</li>
+<li>set黑名单</li>
+<li>zset分页列表</li>
+<li>hash 对象存储</li>
+<li>多实例化</li>
+<li>官方优化方案： <a href="https://redis.io/topic/memory-optimization" target="_blank" rel="noopener">https://redis.io/topic/memory-optimization</a></li>
+<li>尽可能使用hashes 节约内存</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/81.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1997,225 +2233,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/65.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/65.html" class="post-title-link" itemprop="url">Go语言学习（三）| 基础数据类型</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-06-26 20:22:00" itemprop="dateCreated datePublished" datetime="2018-06-26T20:22:00+08:00">2018-06-26</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Go语言学习（三）-基础数据类型"><a href="#Go语言学习（三）-基础数据类型" class="headerlink" title="Go语言学习（三）| 基础数据类型"></a>Go语言学习（三）| 基础数据类型</h1><p>Go 基础数据类型:</p>
-<ul>
-<li>布尔型</li>
-<li>数字类型</li>
-<li>字符串类型</li>
-<li>错误类型</li>
-</ul>
-<h2 id="布尔型-bool"><a href="#布尔型-bool" class="headerlink" title="布尔型 bool"></a>布尔型 bool</h2><p>布尔型的值只能为 <code>true</code> 或 <code>false</code> , 例：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> v1 <span class="keyword">bool</span> = <span class="literal">true</span></span><br><span class="line">v1 := (<span class="number">2</span> &gt; <span class="number">1</span>)   <span class="comment">//这种方式会自动推导为 bool 类型</span></span><br></pre></td></tr></table></figure>
-<p>布尔可以做3种逻辑运算，<code>&amp;&amp;</code> <code>||</code> <code>!</code></p>
-<p>支持的比较操作符：<code>&lt;</code> <code>&gt;</code> <code>==</code> <code>!=</code> <code>&lt;=</code> <code>&gt;=</code></p>
-<p><strong>NOTE</strong> 布尔类型不能接受其他类型的赋值，不支持自动或强制的类型转换。</p>
-<h2 id="数字类型"><a href="#数字类型" class="headerlink" title="数字类型"></a>数字类型</h2><h3 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h3><p>整型类型主要为：</p>
-<ul>
-<li><code>int8</code>  有符号 8 位整型 ( -128 到 127 )</li>
-<li><code>uint8</code> 无符号 8 位整型 ( 0 到 255 )</li>
-<li><code>byte</code> 类似 <code>uint8</code> 但不属于同一个类型</li>
-<li><code>int16</code></li>
-<li><code>uint16</code></li>
-<li><code>uint32</code> 无符号 32 位整型</li>
-<li><code>uint64</code>无符号 64 位整型</li>
-<li><code>int32</code></li>
-<li><code>rune</code> 类似 <code>int32</code> 用UTF-8编码。例如循环字符串获取实际字符时就需要使用 <code>rune</code> 类型</li>
-<li><code>int64</code></li>
-<li><code>uint</code> 32 或 64 位,由硬件决定最大长度</li>
-<li><code>int</code> 32 或 64 位,由硬件决定最大长度</li>
-<li><code>uintptr</code> 无符号整型，用于存放一个指针</li>
-</ul>
-<p>Go语言支持以下的常规整数运算：<code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code> 。 其中 <code>%</code> 是求余运算。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">5</span> % <span class="number">3</span> <span class="comment">//结果为：2</span></span><br></pre></td></tr></table></figure>
-<h3 id="浮点型"><a href="#浮点型" class="headerlink" title="浮点型"></a>浮点型</h3><h4 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h4><ul>
-<li><code>float32</code> 32位浮点数，精确到小数点后7位</li>
-<li><code>float64</code> 64位浮点数，精确到小数点后15位</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> v1 <span class="keyword">float32</span> <span class="comment">//声明后默认为 0</span></span><br><span class="line">v2 := <span class="number">12.0</span> <span class="comment">//如果不加小数点，v2 会被推导为整型而不是浮点型</span></span><br></pre></td></tr></table></figure>
-<p>浮点数不能直接用 <code>==</code> 来判断两个浮点数是否相等。下面是一种推荐的替代方案：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"math"</span></span><br><span class="line"><span class="keyword">const</span> MIN = <span class="number">0.000001</span></span><br><span class="line"><span class="comment">// MIN 为用户自定义的比较精度</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">IsEqual</span><span class="params">(f1, f2 <span class="keyword">float64</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> math.Dim(f1, f2) &lt; MIN</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="复数"><a href="#复数" class="headerlink" title="复数"></a>复数</h4><ul>
-<li><code>complex64</code> 32 位实数和虚数</li>
-<li><code>complex128</code> 64 位实数和虚数</li>
-</ul>
-<p>下边为声明 <code>complex64</code> 变量的例子：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> v1 <span class="keyword">complex64</span> <span class="comment">//声明后默认为(0+0i)</span></span><br><span class="line">    v1 = <span class="number">3.2</span> + <span class="number">12i</span></span><br><span class="line">    v2 := <span class="number">3.2</span> + <span class="number">12i</span></span><br><span class="line">    v3 := <span class="built_in">complex</span>(<span class="number">3.2</span>, <span class="number">12</span>)</span><br><span class="line">    fmt.Println(v1, v2, v3)<span class="comment">//输出结果为：(3.2+12i) (3.2+12i) (3.2+12i)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h2><p>字符串在Go中是 <code>UTF-8</code> 的由双引号(<code>&quot;</code>)或反引号(``)包裹的字符序列(类型为string)。如果使用单引号则表示一个字符（UTF-8编码）<br>一旦给变量赋值，字符串就不能修改了。如果想要修改可使用如下方式:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s := <span class="string">"Hello, world!"</span></span><br><span class="line">    c := []<span class="keyword">byte</span>(s) <span class="comment">//将字符串转换为[]byte类型</span></span><br><span class="line">    c[<span class="number">0</span>] = <span class="string">'c'</span></span><br><span class="line">    s2 := <span class="keyword">string</span>(c) <span class="comment">//再转换为string</span></span><br><span class="line">    fmt.Printf(<span class="string">"%s\n"</span>, s2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>或者使用另外一种方式：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s := <span class="string">"hello, world!"</span></span><br><span class="line">    fmt.Printf(<span class="string">"%c\n"</span>, s[<span class="number">0</span>]) <span class="comment">//输出h，注意输出时的格式为c</span></span><br><span class="line">    s = <span class="string">"c"</span> + s[<span class="number">1</span>:]          <span class="comment">// 字符串虽不能更改，但可进行切片操作</span></span><br><span class="line">    fmt.Printf(<span class="string">"%s\n"</span>, s)    <span class="comment">//输出结果：cello, world!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>连接两个字符串</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    str := <span class="string">"Starting part "</span> +</span><br><span class="line">    <span class="string">"Ending part"</span></span><br><span class="line">    fmt.Println(str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>NOTE</strong> 在循环中使用加号 <code>+</code> 拼接字符串并不是最高效的做法，更好的办法是使用函数 <code>strings.Join()</code> ，使用字节缓冲（ <code>bytes.Buffer</code> ）拼接更加给力！</p>
-<h3 id="字符类型-rune"><a href="#字符类型-rune" class="headerlink" title="字符类型 rune"></a>字符类型 rune</h3><p>在Go语言中支持两个字符类型，要给是byte（实际上是uint8的别名），代表UTF-8字符串的单个字节的值；另一个是rune,代表单个Unicode字符。<br>关于rune相关操作，可查阅Go标准库的unicode包。另外unicode/utf8包也提供了UTF-8和Unicode之间的转换。</p>
-<h3 id="字符串遍历"><a href="#字符串遍历" class="headerlink" title="字符串遍历"></a>字符串遍历</h3><p>Go语言支持两种方式遍历字符串。</p>
-<ul>
-<li>以字节数组的方式遍历</li>
-<li>以Unicode字符遍历</li>
-</ul>
-<p>例:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    str := <span class="string">"Hello, 你好, 世界"</span></span><br><span class="line">    length := <span class="built_in">len</span>(str)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//以字节数组的方式遍历</span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; length; i++ &#123;</span><br><span class="line">        ch := str[i]</span><br><span class="line">        fmt.Println(i, ch)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//以Unicode字符遍历</span></span><br><span class="line">    <span class="keyword">for</span> i,ch := <span class="keyword">range</span> str &#123;</span><br><span class="line">        fmt.Println(i,ch)<span class="comment">//ch的类型为rune</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>NOTE</strong> 以Unicode字符方式遍历时，每个字符的类型是rune,而不是byte。</p>
-<h2 id="错误类型-error"><a href="#错误类型-error" class="headerlink" title="错误类型 error"></a>错误类型 error</h2><p>error类型本身就是一个预定义好的接口，里面定义了一个method。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type error interface &#123;</span><br><span class="line">    Error() string</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>生成一个新的error并返回，一般有以下几种处理方式：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"errors"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> CustomError <span class="keyword">struct</span> &#123;</span><br><span class="line">    infoa <span class="keyword">string</span></span><br><span class="line">    infob <span class="keyword">string</span></span><br><span class="line">    Err   error <span class="comment">//声明后默认为nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(cerr CustomError)</span> <span class="title">Error</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">    errorinfo := fmt.Sprintf(<span class="string">"infoa : %s , infob : %s , original err info : %s "</span>, cerr.infoa, cerr.infob, cerr.Err.Error())</span><br><span class="line">    <span class="keyword">return</span> errorinfo</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">//方法一：采用errors包的New方法 返回一个err的类型</span></span><br><span class="line">    <span class="keyword">var</span> err error</span><br><span class="line">    err = errors.New(<span class="string">"this is a new error"</span>)</span><br><span class="line">    <span class="comment">//由于已经实现了error接口的方法 因此可以直接调用对应的方法</span></span><br><span class="line">    fmt.Println(err.Error())    <span class="comment">//输出结果：error new</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//方法二： 采用fmt.Errorf 将string信息转化为error信息 并返回</span></span><br><span class="line">    err = fmt.Errorf(<span class="string">"%s"</span>, <span class="string">"the error test for fmt.Errorf"</span>)</span><br><span class="line">    fmt.Println(err.Error())    <span class="comment">//输出结果：fmt.Errorf</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//方法三： 采用自定义的方式实现一个error的 一个duck 类型</span></span><br><span class="line">    err = &amp;CustomError&#123;</span><br><span class="line">        infoa: <span class="string">"err info a"</span>,</span><br><span class="line">        infob: <span class="string">"err info b"</span>,</span><br><span class="line">        Err:   errors.New(<span class="string">"test custom err"</span>),</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//输出结果：infoa : err info a , infob : err info b , original err info : custom err</span></span><br><span class="line">    fmt.Println(err.Error())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2264,7 +2281,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">56</span>
+                    <span class="site-state-item-count">57</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2400,7 +2417,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">35</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>

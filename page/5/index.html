@@ -333,6 +333,234 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/48.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/48.html" class="post-title-link" itemprop="url">Elasticsearch 安装部署</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-02-27 15:00:00" itemprop="dateCreated datePublished" datetime="2018-02-27T15:00:00+08:00">2018-02-27</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NoSQL/" itemprop="url" rel="index"><span itemprop="name">NoSQL</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Elasticsearch-安装部署"><a href="#Elasticsearch-安装部署" class="headerlink" title="Elasticsearch 安装部署"></a>Elasticsearch 安装部署</h1><h3 id="安装依赖（已安装java8的机器可忽略此步）"><a href="#安装依赖（已安装java8的机器可忽略此步）" class="headerlink" title="安装依赖（已安装java8的机器可忽略此步）"></a>安装依赖（已安装java8的机器可忽略此步）</h3><p>依赖:  java &gt;= 8, Only Oracle’s Java and the OpenJDK are supported. 推荐安装 1.8.0_73 or later</p>
+<ol>
+<li><a href="https://www.java.com/zh_CN/download/manual.jsp" target="_blank" rel="noopener">https://www.java.com/zh_CN/download/manual.jsp</a>  下载对应系统的java</li>
+<li>tar zxvf jre-8u131-linux-x64.tar.gz</li>
+<li>将该目录放置到想要安装的目录，然后加入linux环境变量$PATH 中</li>
+</ol>
+<h3 id="安装、启动es"><a href="#安装、启动es" class="headerlink" title="安装、启动es"></a>安装、启动es</h3><h3 id="单机部署"><a href="#单机部署" class="headerlink" title="单机部署"></a>单机部署</h3><p><a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="noopener">https://www.elastic.co/downloads/elasticsearch</a> 下载编译好的二进制文件，解压后即可使用</p>
+<p>如果系统存在多个java环境，需要在启动先指定JAVA_HOME，然后在进行启动，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/local/java1.8.0 # 如已设置 JAVA_HOME 可以忽略此步</span><br><span class="line">export ES_HEAP_SIZE=10g  #修改 Elasticsearch 的堆内存</span><br><span class="line">bin/elasticsearch -d # 其中-d  表示 es 已守护进程的方式启动</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl &apos;http://localhost:9200/?pretty&apos; #测试es是否启动成功</span><br></pre></td></tr></table></figure>
+<h3 id="集群部署-以两台服务器为例"><a href="#集群部署-以两台服务器为例" class="headerlink" title="集群部署,以两台服务器为例"></a>集群部署,以两台服务器为例</h3><p>分别配置<code>elasticsearch.yml</code>文件</p>
+<ul>
+<li>服务器A  ip:192.168.140.129</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cluster.name：app-demo</span><br><span class="line">node.name: node-1</span><br><span class="line">network.host: 192.168.140.129</span><br><span class="line">discovery.zen.ping.unicast.hosts: [&quot;192.168.140.128&quot;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>服务器B  ip:192.168.140.128</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cluster.name：app-demo</span><br><span class="line">node.name: node-2</span><br><span class="line">network.host: 192.168.140.128</span><br><span class="line">discovery.zen.ping.unicast.hosts: [&quot;192.168.140.129&quot;]</span><br></pre></td></tr></table></figure>
+<p>分别启动即可</p>
+<p><code>curl  -u elastic &#39;192.168.140.129:9200/_cat/nodes?v&#39;  #测试集群状态</code></p>
+<p><strong>注意： ES启动时不能以 root 用户启动</strong></p>
+<h3 id="动态变更配置"><a href="#动态变更配置" class="headerlink" title="动态变更配置"></a>动态变更配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PUT /_cluster/settings</span><br><span class="line">&#123;</span><br><span class="line">    &quot;persistent&quot; : &#123;</span><br><span class="line">        &quot;discovery.zen.minimum_master_nodes&quot; : 2  # 永久设置会在全集群重启时存活下来</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;transient&quot; : &#123;</span><br><span class="line">        &quot;indices.store.throttle.max_bytes_per_sec&quot; : &quot;50mb&quot; #临时设置会在第一次全集群重启后被移除</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ES配置文件"><a href="#ES配置文件" class="headerlink" title="ES配置文件"></a>ES配置文件</h3><p>配置文件默认在 <code>$ES_HOME/config/</code> ，也可以在启动时指定加载对应的配置文件</p>
+<p>es包含配置文件 <code>elasticsearch.yml</code> (配置 <code>elasticsearch</code> ) 、<code>log4j2.properties</code>（ es 日志相关配置 ）和 <code>jvm.options</code></p>
+<p><strong>elasticsearch.yml</strong></p>
+<p>该文件yaml格式支持两种配置格式</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">path:</span></span><br><span class="line"><span class="attr">    data:</span> <span class="string">/var/lib/elasticsearch</span></span><br><span class="line"><span class="attr">    logs:</span> <span class="string">/var/log/elasticsearch</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">path.data: /var/lib/elasticsearch</span><br><span class="line">path.logs: /var/log/elasticsearch</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>path.data</code>   <strong>这个强烈建议进行修改</strong></p>
+<p>  设置索引数据的存储路径，默认是es根目录下的data文件夹，可以设置多个存储路径，用逗号隔开，例：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">path.data: /path/to/data1,/path/to/data2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>path.logs</code>  <strong>这个强烈建议进行修改</strong><br>  设置日志文件的存储路径，默认是es根目录下的logs文件夹</p>
+</li>
+<li><p><code>path.plugins</code><br>  插件路径</p>
+</li>
+<li><p><code>cluster.name: elasticsearch</code><br>  配置es的集群名称，默认是elasticsearch，es会自动发现在同一网段下的es，如果在同一网段下有多个集群，就可以用这个属性来区分不同的集群。（<strong>最好</strong> 改成一个适当的名字来描述该集群的作用，同时也能防止同一个网段的其他机器测试时影影响）</p>
+</li>
+<li><p><code>node.name: node-1</code><br>  节点名，默认为uuid前七位，也可以设置为主机的HOSTNAME  ， 如 <code>node.name: ${HOSTNAME}</code></p>
+</li>
+<li><p><code>bootstrap.memory_lock: true</code><br>  设置为true来锁住内存。因为当jvm开始swapping时es的效率 会降低，所以要保证它不swap，可以把ES_MIN_MEM和ES_MAX_MEM两个环境变量设置成同一个值，并且保证机器有足够的内存分配给es。</p>
+</li>
+<li><p><code>network.host: 0.0.0.0</code><br>  绑定本机网络地址，设置了此参数，es假设从开发模式变成成产模式，如果配置了0.0.0.0 最好开启防火墙防止外部ip直接连接</p>
+</li>
+<li><p><code>discovery.zen.ping.unicast.hostsedit</code></p>
+<p>   这个设置把组播的自动发现给关闭了，为了防止其他机器上的节点自动连入</p>
+</li>
+<li><p><code>discovery.zen.minimum_master_nodes</code><br>  设置这个参数来保证集群中的节点可以知道其它N个有master资格的节点。默认为1.</p>
+<p>  此设置应该始终被配置为 master 候选节点的法定个数（大多数个）。法定个数就是 <code>( master 候选节点个数 / 2) + 1</code> 。 这里有几个例子：</p>
+<ul>
+<li>如果你有 10 个节点（能保存数据，同时能成为 master），法定数就是 <code>6</code> 。</li>
+<li>如果你有 3 个候选 master 节点，和 100 个 data 节点，法定数就是 <code>2</code> ，你只要数数那些可以做 master 的节点数就可以了。</li>
+<li>如果你有两个节点，你遇到难题了。法定数当然是 <code>2</code> ，但是这意味着如果有一个节点挂掉，你整个集群就不可用了。 设置成 <code>1</code> 可以保证集群的功能，但是就无法保证集群脑裂了，像这样的情况，你最好至少保证有 3 个节点。</li>
+</ul>
+</li>
+<li><p><code>gateway.recover_after_nodes: 8</code></p>
+<p>  这将阻止 Elasticsearch 在存在至少 8 个节点（数据节点或者 master 节点）之前进行数据恢复。 这个值的设定取决于个人喜好：整个集群提供服务之前你希望有多少个节点在线？这种情况下，我们设置为 8，这意味着至少要有 8 个节点，该集群才可用。</p>
+</li>
+<li><p><code>gateway.recover_after_time: 5m</code></p>
+</li>
+<li><p><code>gateway.expected_nodes: 10</code></p>
+<p>  这意味着 Elasticsearch 会采取如下操作：</p>
+<ul>
+<li>等待集群至少存在 8 个节点</li>
+<li><p>等待 5 分钟，或者10 个节点上线后，才进行数据恢复，这取决于哪个条件先达到。</p>
+<p>以上三个设置可以在集群重启的时候避免过多的分片交换。这可能会让数据恢复从数个小时缩短为几秒钟。</p>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/159.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1123,8 +1351,8 @@
       
         
           
-            <h2 id="supervisor安装"><a href="#supervisor安装" class="headerlink" title="supervisor安装"></a>supervisor安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install supervisor</span><br><span class="line"><span class="meta">#</span><span class="bash"> easy_install supervisor</span></span><br></pre></td></tr></table></figure>
-<p>supervisor安装完毕后，运行echo_supervisord_conf命令将内容重定向到<code>/etc/supervisord.conf</code><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">echo_supervisord_conf&gt;</span><span class="bash">/etc/supervisord.conf</span></span><br></pre></td></tr></table></figure></p>
+            <h2 id="supervisor安装"><a href="#supervisor安装" class="headerlink" title="supervisor安装"></a>supervisor安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install supervisor</span><br><span class="line"><span class="meta">#</span> easy_install supervisor</span><br></pre></td></tr></table></figure>
+<p>supervisor安装完毕后，运行echo_supervisord_conf命令将内容重定向到<code>/etc/supervisord.conf</code><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">echo_supervisord_conf&gt;</span>/etc/supervisord.conf</span><br></pre></td></tr></table></figure></p>
 <p><code>mkdir /etc/supervisor</code><br>修改 <code>/etc/supervisord.conf</code> 部分区块<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[include]</span></span><br><span class="line"><span class="attr">files</span> = /etc/supervisor/*.ini</span><br></pre></td></tr></table></figure></p>
 <p>如果需要使用web访问控制supervisor，则修改 <code>/etc/supervisord.conf</code> 配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[inet_http_server]         ; inet (TCP) server disabled by default</span><br><span class="line">port=120.0.0.1:8001        ; ip_address:port specifier, *:port for all iface</span><br><span class="line">username=user              ; default is no username (open server)</span><br><span class="line">password=pass               ; default is no password (open server)</span><br></pre></td></tr></table></figure></p>
 <p>启动 supervisor<br><code>supervisord -c /etc/supervisord.conf</code></p>
@@ -1955,295 +2183,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/95.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/95.html" class="post-title-link" itemprop="url">Sass学习笔记</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2017-05-30 15:54:00" itemprop="dateCreated datePublished" datetime="2017-05-30T15:54:00+08:00">2017-05-30</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/前端/" itemprop="url" rel="index"><span itemprop="name">前端</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="创建工程环境"><a href="#创建工程环境" class="headerlink" title="创建工程环境"></a>创建工程环境</h2><ul>
-<li><p>sass创建</p>
-<p>  <code>直接创建目录即可</code></p>
-</li>
-<li><p>compass 创建</p>
-<ol>
-<li><p>cd xxx_dir</p>
-</li>
-<li><p>compass create</p>
-</li>
-</ol>
-</li>
-</ul>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">compass create --bare</span><br><span class="line">    --sass-dir "sass"</span><br><span class="line">    --css-dir "css"</span><br><span class="line">    --images-dir "images"</span><br><span class="line">    --javascript-dir "js"`</span><br></pre></td></tr></table></figure>
-<h2 id="编译文件"><a href="#编译文件" class="headerlink" title="编译文件"></a>编译文件</h2><ul>
-<li>sass编译</li>
-</ul>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sass xxx<span class="selector-class">.scss</span> xxx<span class="selector-class">.css</span></span><br></pre></td></tr></table></figure>
-<p>也可以指定输出css文件的格式</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sass xxx.scss xxx.css --style = nested | expanded | compact | compressed</span><br></pre></td></tr></table></figure>
-<p>监视sass/scss文件变化</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sass --watch xxx<span class="selector-class">.scss</span>:xxx.css --style=compact</span><br></pre></td></tr></table></figure>
-<p>监视目录变化</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sass --watch sass_dir:css_dir</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>compass编译</p>
-<p>需要理解config.rb文件的配置，因为compass编译基于compass的config.rb文件内容</p>
-</li>
-</ul>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compass compile <span class="comment">// 只会编译有变化的sass文件</span></span><br></pre></td></tr></table></figure>
-<p>  如果要强制编译所有的sass文件，可以用</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compass compile --force</span><br></pre></td></tr></table></figure>
-<p>监视文件变化</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compass watch</span><br></pre></td></tr></table></figure>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compass watch --force</span><br></pre></td></tr></table></figure>
-<h2 id="语法相关"><a href="#语法相关" class="headerlink" title="语法相关"></a>语法相关</h2><h3 id="sass文件注释"><a href="#sass文件注释" class="headerlink" title="sass文件注释"></a>sass文件注释</h3><ul>
-<li><p>单行注释</p>
-<p>  //  不会编译进css文件</p>
-</li>
-<li><p>标准注释<br>  <code>/*  */</code>  会编译进css文件，压缩模式不会编译进css文件</p>
-</li>
-<li><p>重要注释<br> <code>/*! xxx */</code> 重要注释，压缩模式也会编译进css文件</p>
-<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3></li>
-</ul>
-<h3 id="变量定义"><a href="#变量定义" class="headerlink" title="变量定义"></a>变量定义</h3><p>  <code>$开头</code>  ，如 类似 $color</p>
-<p>例：</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="variable">$color</span> : red; <span class="comment">//局部变量定义</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="variable">$color</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">font</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="variable">$color</span>;    <span class="comment">//这个时候会提示Error: Undefined variable: "$color".，因为上边定义的变量只在body 代码块内生效。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>全局变量</li>
-</ul>
-<p><code>变量定义后加 !global</code><br>如:</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$color</span>: red !global;    <span class="comment">//全局变量定义</span></span><br><span class="line">    <span class="attribute">background</span>: <span class="variable">$color</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">footer</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>:<span class="variable">$color</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>变量默认值</li>
-</ul>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$size</span>: <span class="number">10px</span>;     <span class="comment">//第一次为变量定义</span></span><br><span class="line"><span class="variable">$size</span>: <span class="number">12px</span>;    <span class="comment">//第二次为重新赋值</span></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="variable">$size</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译后对应的css<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>!default 用法</li>
-</ul>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$size</span>: <span class="number">10px</span>;    <span class="comment">//此时为重新赋值</span></span><br><span class="line"><span class="variable">$size</span>: <span class="number">12px</span> !default;    <span class="comment">//优先以它为变量定义</span></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="variable">$size</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译后对应的css<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">10px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><p>多值变量<br>变量有多个值,List类型和Map类型</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$margins</span>: <span class="number">1px</span> <span class="number">2px</span> <span class="number">3px</span> <span class="number">4px</span>;  <span class="comment">//List类型</span></span><br><span class="line"><span class="variable">$maps</span>: (color_1:red, font_1:blue); <span class="comment">//Map类型</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>变量特殊用法</p>
-<p>可以用在属性或者选择器上，使用<code>#{变量名}</code></p>
-</li>
-</ul>
-<p>例：</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$margins</span>: <span class="number">1px</span> <span class="number">2px</span> <span class="number">3px</span> <span class="number">4px</span>;  <span class="comment">//List类型</span></span><br><span class="line"><span class="variable">$maps</span>: (color_1:red, font_1:blue); <span class="comment">//Map类型</span></span><br><span class="line"><span class="variable">$className</span>: main;</span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">margin</span>: <span class="variable">$margins</span>;</span><br><span class="line">    <span class="attribute">margin-left</span>: nth(<span class="variable">$margins</span>, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">footer</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: map-get(<span class="variable">$maps</span>, color_1);</span><br><span class="line">    <span class="attribute">font</span>:map-get(<span class="variable">$maps</span>, font_1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//可以用在属性或者选择器上，使用#&#123;变量名&#125;</span></span><br><span class="line">.#&#123;<span class="variable">$className</span>&#125;&#123;</span><br><span class="line">    <span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">##&#123;<span class="variable">$className</span>&#125; &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//变量用中横线和下划线是同样的变量</span></span><br><span class="line"><span class="variable">$size_1</span> : <span class="number">12px</span>;</span><br><span class="line"><span class="variable">$size-1</span>: <span class="number">13px</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">header</span> &#123;</span><br><span class="line">    <span class="attribute">font</span>: <span class="variable">$size_1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译后对应的css<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">1px</span> <span class="number">2px</span> <span class="number">3px</span> <span class="number">4px</span>;</span><br><span class="line">  <span class="attribute">margin-left</span>: <span class="number">1px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">footer</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: red;</span><br><span class="line">  <span class="attribute">font</span>: blue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#main</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">header</span> &#123;</span><br><span class="line">  <span class="attribute">font</span>: <span class="number">13px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>Number/String/List/Map/Color/Boolean/Null<br><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 数字类型</span></span><br><span class="line"><span class="variable">$n1</span>: <span class="number">1.2</span>;</span><br><span class="line"><span class="variable">$n2</span>: <span class="number">2</span>;</span><br><span class="line"><span class="variable">$n3</span>: <span class="number">12px</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">p</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="variable">$n3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//字符串类型</span></span><br><span class="line"><span class="variable">$s1</span>: container;</span><br><span class="line"><span class="variable">$s2</span>: <span class="string">'container'</span>;</span><br><span class="line"><span class="variable">$s3</span>: <span class="string">"container"</span>;</span><br><span class="line"></span><br><span class="line">.#&#123;<span class="variable">$s3</span>&#125; &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="variable">$n3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Boolean类型</span></span><br><span class="line"><span class="variable">$bt</span>: true;</span><br><span class="line"><span class="variable">$bf</span>: false;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Null类型</span></span><br><span class="line"><span class="variable">$null</span>: null;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//Color类型</span></span><br><span class="line"><span class="variable">$c1</span>: blue;</span><br><span class="line"><span class="variable">$c2</span>: <span class="number">#ffeedd</span>;</span><br><span class="line"><span class="variable">$c3</span>: rgba(<span class="number">255</span>,<span class="number">255</span>,<span class="number">0</span>, <span class="number">0.5</span>);</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="variable">$c3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="部分文件"><a href="#部分文件" class="headerlink" title="部分文件"></a>部分文件</h3><pre><code>以下划线开头的文件，不会被编译成css文件
-</code></pre><p>如 <code>_font.scss</code> 文件</p>
-<p><strong>样式导入</strong></p>
-<ol>
-<li>被导入的文件的名字 以 .css结尾</li>
-<li>被导入的文件的名字是个url地址（比如：<a href="http://xxxx/xxx.css）" target="_blank" rel="noopener">http://xxxx/xxx.css）</a><br>3.被导入的文件的名字是css的url()的值</li>
-</ol>
-<p>以上3种情况会被识别成原生的css导入</p>
-<p>例：<br><code>_part.scss</code></p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">header</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: 微软雅黑</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>demo.scss<br><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">import</span> url(xx.css);</span><br><span class="line">@<span class="keyword">import</span> <span class="string">'http://wwwx.xxx'</span>;</span><br><span class="line">@<span class="keyword">import</span> <span class="string">'xx.css'</span>;</span><br><span class="line"></span><br><span class="line">@<span class="keyword">import</span> <span class="string">"part"</span>; <span class="comment">//或者用以下两种方式</span></span><br><span class="line"><span class="comment">// @import "_part";</span></span><br><span class="line"><span class="comment">// @import "_part.scss";</span></span><br></pre></td></tr></table></figure></p>
-<p>编译成的 demo.css</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">charset</span> <span class="string">"UTF-8"</span>;</span><br><span class="line">@<span class="keyword">import</span> url(xx.css);</span><br><span class="line">@<span class="keyword">import</span> <span class="string">"http://wwwx.xxx"</span>;</span><br><span class="line">@<span class="keyword">import</span> url(xx.css);</span><br><span class="line"><span class="selector-tag">header</span> &#123;</span><br><span class="line"><span class="attribute">font-family</span>: 微软雅黑;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="嵌套"><a href="#嵌套" class="headerlink" title="嵌套"></a>嵌套</h3><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: red;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 选择器嵌套</span></span><br><span class="line">    <span class="selector-tag">header</span> &#123;</span><br><span class="line">        <span class="attribute">background</span>: green;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//属性嵌套, 注意冒号</span></span><br><span class="line">    <span class="selector-tag">footer</span> &#123;</span><br><span class="line">        <span class="attribute">background</span> :&#123;</span><br><span class="line">            color : blue;</span><br><span class="line">            size : <span class="number">12px</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="selector-tag">a</span> &#123;</span><br><span class="line">        <span class="attribute">color</span> :green;</span><br><span class="line">        <span class="comment">//引用父选择器</span></span><br><span class="line">        &amp;:hover &#123;</span><br><span class="line">            <span class="attribute">color</span>: yellow;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//注意以下区别</span></span><br><span class="line">        <span class="selector-class">.content</span> &#123;</span><br><span class="line">            <span class="attribute">background</span>: red;</span><br><span class="line">        &#125;</span><br><span class="line">        &amp;<span class="selector-class">.content</span> &#123;</span><br><span class="line">            <span class="attribute">background</span>: green;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//@at-root 跳出嵌套</span></span><br><span class="line">    @at-root .container &#123;</span><br><span class="line">        <span class="attribute">width</span>: <span class="number">1104px</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @<span class="keyword">media</span> screen and (max-width:<span class="number">600px</span>) &#123;</span><br><span class="line">        @at-root(without: media) &#123;</span><br><span class="line">            <span class="selector-class">.container</span> &#123;</span><br><span class="line">                <span class="attribute">background</span>: red;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        @at-root(without: media rule) &#123;</span><br><span class="line">            <span class="selector-class">.container</span> &#123;</span><br><span class="line">                <span class="attribute">background</span>: red;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// @at-root 和 &amp; 结合使用</span></span><br><span class="line">    <span class="selector-class">.row</span> &#123;</span><br><span class="line">        <span class="attribute">color</span> : red;</span><br><span class="line">        @at-root nav &amp; &#123;</span><br><span class="line">            <span class="attribute">color</span> : blue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译后的css<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  <span class="attribute">background</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span> <span class="selector-tag">header</span> &#123;</span><br><span class="line">  <span class="attribute">background</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span> <span class="selector-tag">footer</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: blue;</span><br><span class="line">  <span class="attribute">background-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span> <span class="selector-tag">a</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span> <span class="selector-tag">a</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: yellow;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span> <span class="selector-tag">a</span> <span class="selector-class">.content</span> &#123;</span><br><span class="line">  <span class="attribute">background</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span> <span class="selector-tag">a</span><span class="selector-class">.content</span> &#123;</span><br><span class="line">  <span class="attribute">background</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">1104px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span> <span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">background</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">background</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> <span class="selector-class">.row</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">nav</span> <span class="selector-tag">body</span> <span class="selector-class">.row</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: blue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>默认<code>@at-root</code>只会跳出选择器嵌套，不能跳出<code>@media</code>或<code>@support</code>，如果要跳出这两种，则需使用<code>@at-root(without: media)</code>, <code>@at-root(without:support)</code>.这个语法的关键词有四个 ：</p>
-<pre><code>all 表示所有
-rule 表示常规css
-media 表示media
-</code></pre><p>默认的@at-root 其实就是@at-root(without: rule)</p>
-<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.alert</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#ffeedd</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.small</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//继承与多继承</span></span><br><span class="line"><span class="selector-class">.alert-info</span> &#123;</span><br><span class="line">    <span class="comment">// @extend .alert;</span></span><br><span class="line">    <span class="comment">// @extend .small;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//或者使用</span></span><br><span class="line">    @<span class="keyword">extend</span> .alert, .small;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//链式继承</span></span><br><span class="line"><span class="selector-class">.one</span> &#123;</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">1px</span> solid red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.two</span> &#123;</span><br><span class="line">    @<span class="keyword">extend</span> .one;</span><br><span class="line">    <span class="attribute">color</span> : red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.three</span> &#123;</span><br><span class="line">    @<span class="keyword">extend</span> .two;</span><br><span class="line">    <span class="attribute">color</span>: green;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译后的css<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.alert</span>, <span class="selector-class">.alert-info</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="number">#ffeedd</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.small</span>, <span class="selector-class">.alert-info</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.alert-info</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.one</span>, <span class="selector-class">.two</span>, <span class="selector-class">.three</span> &#123;</span><br><span class="line">  <span class="attribute">border</span>: <span class="number">1px</span> solid red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.two</span>, <span class="selector-class">.three</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.three</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: green;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>虽然能继承的选择器数量很多，但也有很多是不能被支持的。如包含选择器（.one .two） 或者是相邻兄弟选择器（.one+.two）</p>
-<p>如果继承的元素是a, 同时 a有hover状态的形式，那么hover 也将被继承</p>
-<ul>
-<li>交叉继承 (<strong>尽量避免</strong>)<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">a</span> <span class="selector-tag">span</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">div</span> <span class="selector-class">.content</span> &#123;</span><br><span class="line">    @<span class="keyword">extend</span> span;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>css<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">a</span> <span class="selector-tag">span</span>, <span class="selector-tag">a</span> <span class="selector-tag">div</span> <span class="selector-class">.content</span>, <span class="selector-tag">div</span> <span class="selector-tag">a</span> <span class="selector-class">.content</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="占位选择器"><a href="#占位选择器" class="headerlink" title="占位选择器"></a>占位选择器</h3><p><code>%开头</code>来定义选择器，此选择器的样式不会被编译进css文件<br><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">%alert &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#ffeedd</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.small</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//继承与多继承</span></span><br><span class="line"><span class="selector-class">.alert-info</span> &#123;</span><br><span class="line">    <span class="comment">// @extend .alert;</span></span><br><span class="line">    <span class="comment">// @extend .small;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//或者使用</span></span><br><span class="line">    @<span class="keyword">extend</span> %alert, .small;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>css<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.alert-info</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="number">#ffeedd</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.small</span>, <span class="selector-class">.alert-info</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.alert-info</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="条件控制"><a href="#条件控制" class="headerlink" title="条件控制"></a>条件控制</h3><h4 id="if"><a href="#if" class="headerlink" title="@if"></a>@if</h4><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@if 的用法</span></span><br><span class="line"><span class="variable">$screenWidth</span>: <span class="number">800</span>;</span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: if(<span class="variable">$screenWidth</span> &gt; <span class="number">768</span>, blue, red)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@if <span class="variable">$screenWidth</span> &gt; <span class="number">768</span> &#123;</span><br><span class="line">    body &#123;</span><br><span class="line">        color: red;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; @elseif <span class="variable">$screenWidth</span> &gt; 400 &#123;</span><br><span class="line">    <span class="selector-tag">span</span> &#123;</span><br><span class="line">        <span class="attribute">color</span>: yellow;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; @<span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="selector-tag">p</span> &#123;</span><br><span class="line">        <span class="attribute">color</span>: blue;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><h4 id="for-的用法"><a href="#for-的用法" class="headerlink" title="for 的用法"></a>for 的用法</h4><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">for</span> <span class="variable">$i</span> from 1 through 5 &#123;</span><br><span class="line">    <span class="selector-class">.span</span>#&#123;<span class="variable">$i</span>&#125; &#123;</span><br><span class="line">        <span class="attribute">width</span>: <span class="number">20%</span> * <span class="variable">$i</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="keyword">for</span> <span class="variable">$i</span> from 1 to 5 &#123;</span><br><span class="line">    <span class="selector-class">.span</span>#&#123;<span class="variable">$i</span>&#125; &#123;</span><br><span class="line">        <span class="attribute">width</span>: <span class="number">20%</span> * <span class="variable">$i</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="while-用法"><a href="#while-用法" class="headerlink" title="while 用法"></a>while 用法</h4><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$j</span>: <span class="number">6</span>;</span><br><span class="line">@<span class="keyword">while</span> <span class="variable">$j</span> &gt; 0 &#123;</span><br><span class="line">    <span class="selector-class">.p</span>#&#123;<span class="variable">$j</span>&#125; &#123;</span><br><span class="line">        <span class="attribute">width</span>: <span class="number">20%</span> * <span class="variable">$j</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$j</span>: <span class="variable">$j</span> - <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="eash-常规遍历"><a href="#eash-常规遍历" class="headerlink" title="eash 常规遍历"></a>eash 常规遍历</h4><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$k</span>: <span class="number">1</span>;</span><br><span class="line">@<span class="keyword">each</span> <span class="variable">$c</span> in blue, red, yellow &#123;</span><br><span class="line">    <span class="selector-class">.div</span>#&#123;<span class="variable">$k</span>&#125; &#123;</span><br><span class="line">        <span class="attribute">color</span>: <span class="variable">$c</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$k</span>: <span class="variable">$k</span> + <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//eash List遍历</span><br><span class="line">@each <span class="variable">$key</span>, <span class="variable">$color</span> in (defalut, blue), (info, green), (danger, red) &#123;</span><br><span class="line">    .text-#&#123;<span class="variable">$key</span>&#125; &#123;</span><br><span class="line">        color: <span class="variable">$color</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//eash Map遍历</span></span><br><span class="line">@<span class="keyword">each</span> <span class="variable">$key</span>, <span class="variable">$value</span> in (defalut: blue, info: green, danger: red) &#123;</span><br><span class="line">    <span class="selector-class">.label-</span>#&#123;<span class="variable">$key</span>&#125; &#123;</span><br><span class="line">        <span class="attribute">color</span>: <span class="variable">$value</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="mixin"><a href="#mixin" class="headerlink" title="@mixin"></a>@mixin</h3><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//代码片段</span></span><br><span class="line">@<span class="keyword">mixin</span> func_1 &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    @<span class="keyword">include</span> func_1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//带参数的片段</span></span><br><span class="line">@<span class="keyword">mixin</span> func_2(<span class="variable">$color</span>: red) &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="variable">$color</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    @<span class="keyword">include</span> func_2(<span class="number">#fff</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//带多个参数的片段</span></span><br><span class="line">@<span class="keyword">mixin</span> func_3(<span class="variable">$color</span>: red, <span class="variable">$font-size</span>: 14px) &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="variable">$color</span>;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="variable">$font-size</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    @<span class="keyword">include</span> func_3(<span class="variable">$font-size</span>: 18px);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//未知参数个数的片段</span></span><br><span class="line">@<span class="keyword">mixin</span> func_4(<span class="variable">$shadow</span>...) &#123;</span><br><span class="line">    -moz-<span class="attribute">box-shadow</span>: <span class="variable">$shadow</span>;</span><br><span class="line">    -webkit-<span class="attribute">box-shadow</span>: <span class="variable">$shadow</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>:<span class="variable">$shadow</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.shadows</span> &#123;</span><br><span class="line">    @<span class="keyword">include</span> func_4(<span class="number">0px</span> 4px 4px <span class="number">#555</span>, 2px 2px 2px <span class="number">#666</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="函数与调试-待完善"><a href="#函数与调试-待完善" class="headerlink" title="函数与调试 (待完善)"></a>函数与调试 (待完善)</h3><h2 id="创建一个项目"><a href="#创建一个项目" class="headerlink" title="创建一个项目"></a>创建一个项目</h2><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><ol>
-<li>npm init</li>
-<li>compass create –bare</li>
-</ol>
-<h3 id="创建基本框架"><a href="#创建基本框架" class="headerlink" title="创建基本框架"></a>创建基本框架</h3><pre><code>src
-    sass
-        - base
-        - components
-        - helpers
-        - layout
-        - pages
-        - themes
-        main.scss
-config.rb
-package.json
-</code></pre><h3 id="自动化构建"><a href="#自动化构建" class="headerlink" title="自动化构建"></a>自动化构建</h3><ol>
-<li><p>gulp构建工具</p>
-</li>
-<li><p>gulp-compass<br> <a href="http://www.npmjs.com/package/gulp-compasss" target="_blank" rel="noopener">www.npmjs.com/package/gulp-compasss</a></p>
-</li>
-<li><p>browser-sync</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2292,7 +2231,7 @@ package.json
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">56</span>
+                    <span class="site-state-item-count">57</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2428,7 +2367,11 @@ package.json
                     
                       
                     
-                    <span class="site-state-item-count">35</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>

@@ -97,7 +97,7 @@
 
 
   <meta name="description" content="supervisor安装12pip install supervisor# easy_install supervisor supervisor安装完毕后，运行echo_supervisord_conf命令将内容重定向到/etc/supervisord.conf1echo_supervisord_conf&amp;gt;/etc/supervisord.conf mkdir /etc/supervisor">
-<meta name="keywords" content="Linux,supervisor,DevOps">
+<meta name="keywords" content="supervisor,Linux,DevOps">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux搭建 Supervisor 及 cesi 管理进程">
 <meta property="og:url" content="http://yoursite.com/85.html">
@@ -430,8 +430,8 @@
       
 
       
-        <h2 id="supervisor安装"><a href="#supervisor安装" class="headerlink" title="supervisor安装"></a>supervisor安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install supervisor</span><br><span class="line"><span class="meta">#</span><span class="bash"> easy_install supervisor</span></span><br></pre></td></tr></table></figure>
-<p>supervisor安装完毕后，运行echo_supervisord_conf命令将内容重定向到<code>/etc/supervisord.conf</code><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">echo_supervisord_conf&gt;</span><span class="bash">/etc/supervisord.conf</span></span><br></pre></td></tr></table></figure></p>
+        <h2 id="supervisor安装"><a href="#supervisor安装" class="headerlink" title="supervisor安装"></a>supervisor安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install supervisor</span><br><span class="line"><span class="meta">#</span> easy_install supervisor</span><br></pre></td></tr></table></figure>
+<p>supervisor安装完毕后，运行echo_supervisord_conf命令将内容重定向到<code>/etc/supervisord.conf</code><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">echo_supervisord_conf&gt;</span>/etc/supervisord.conf</span><br></pre></td></tr></table></figure></p>
 <p><code>mkdir /etc/supervisor</code><br>修改 <code>/etc/supervisord.conf</code> 部分区块<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[include]</span></span><br><span class="line"><span class="attr">files</span> = /etc/supervisor/*.ini</span><br></pre></td></tr></table></figure></p>
 <p>如果需要使用web访问控制supervisor，则修改 <code>/etc/supervisord.conf</code> 配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[inet_http_server]         ; inet (TCP) server disabled by default</span><br><span class="line">port=120.0.0.1:8001        ; ip_address:port specifier, *:port for all iface</span><br><span class="line">username=user              ; default is no username (open server)</span><br><span class="line">password=pass               ; default is no password (open server)</span><br></pre></td></tr></table></figure></p>
 <p>启动 supervisor<br><code>supervisord -c /etc/supervisord.conf</code></p>
@@ -502,9 +502,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux/" rel="tag"># Linux</a>
-          
             <a href="/tags/supervisor/" rel="tag"># supervisor</a>
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
           
             <a href="/tags/DevOps/" rel="tag"># DevOps</a>
           
@@ -606,7 +606,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">56</span>
+                    <span class="site-state-item-count">57</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -742,7 +742,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">35</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>

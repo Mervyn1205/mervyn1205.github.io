@@ -333,6 +333,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/311.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/311.html" class="post-title-link" itemprop="url">设计模式| 观察者模式</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-12-19 20:46:25" itemprop="dateCreated datePublished" datetime="2018-12-19T20:46:25+08:00">2018-12-19</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="什么是观察者模式"><a href="#什么是观察者模式" class="headerlink" title="什么是观察者模式"></a>什么是观察者模式</h2><blockquote>
+<p>软件设计中是一个对象，维护一个依赖列表，当任何状态发生改变自动通知它们。当对象间存在一对多关系时，则使用观察者模式（Observer Pattern）。观察者模式属于行为型模式。</p>
+</blockquote>
+<p>跟发布订阅模式很像，具体区别可以参考：<a href="https://juejin.im/post/5a14e9edf265da4312808d86" target="_blank" rel="noopener">观察者模式 vs 发布-订阅模式</a></p>
+<p>在观察者模式中有如下角色：</p>
+<ul>
+<li>Subject：抽象主题（抽象被观察者），抽象主题角色把所有观察者对象保存在一个集合里，每个主题都可以有任意数量的观察者，抽象主题提供一个接口，可以增加和删除观察者对象。</li>
+<li>ConcreteSubject：具体主题（具体被观察者），该角色将有关状态存入具体观察者对象，在具体主题的内部状态发生改变时，给所有注册过的观察者发送通知。</li>
+<li><p>Observer：抽象观察者，是观察者者的抽象类，它定义了一个更新接口，使得在得到主题更改通知时更新自己。</p>
+</li>
+<li><p>ConcrereObserver：具体观察者，实现抽象观察者定义的更新接口，以便在得到主题更改通知时更新自身的状态。</p>
+</li>
+</ul>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>由于 PHP 通过内置的 SPL 扩展提供了对观察者模式的原生支持，其中的观察者由 3 个元素组成 ： <code>SplObserver</code> 接口、 <code>SplSubject</code>  接口和 <code>SplObjectStorage</code> 工具类。接下来只通过SPL 的方式来实现该设计模式。</p>
+<p>已微信公众号为例，当微信公众号发布一篇文章的时候需要给关注着推送消息。这种一对多的关系就可以采用观察者模式</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WechatUser</span> <span class="keyword">implements</span> <span class="title">SplObserver</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;name = $name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">(SplSubject $subject)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">$this</span>-&gt;name . <span class="string">"! There is an new article: "</span> . $subject-&gt;getContent() . <span class="string">"\n"</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WechatSubscription</span> <span class="keyword">implements</span> <span class="title">SplSubject</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $observers;</span><br><span class="line">    <span class="keyword">private</span> $content;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;observers = <span class="keyword">new</span> SplObjectStorage();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">attach</span><span class="params">(\SplObserver $observer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;observers-&gt;attach($observer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">detach</span><span class="params">(\SplObserver $observer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;observers-&gt;detach($observer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">notify</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;observers <span class="keyword">as</span> $observer) &#123;</span><br><span class="line">            $observer-&gt;update(<span class="keyword">$this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sentArticle</span><span class="params">($content)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;content = $content;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;notify();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getContent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;content;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$wechat = <span class="keyword">new</span> WechatSubscription();</span><br><span class="line"></span><br><span class="line">$user1 = <span class="keyword">new</span> WechatUser(<span class="string">"Mervyn"</span>);</span><br><span class="line">$user2 = <span class="keyword">new</span> WechatUser(<span class="string">"Tangtz"</span>);</span><br><span class="line">$wechat-&gt;attach($user1);</span><br><span class="line">$wechat-&gt;attach($user2);</span><br><span class="line"></span><br><span class="line">$wechat-&gt;sentArticle(<span class="string">"article content"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">以上输出:</span></span><br><span class="line"><span class="comment">Mervyn! There is an new article: article content</span></span><br><span class="line"><span class="comment">Tangtz! There is an new article: article content</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line">$wechat-&gt;detach($user2);</span><br><span class="line">$wechat-&gt;notify();</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">输出:</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">Mervyn! There is an new article: article content</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line">$wechat-&gt;sentArticle(<span class="string">"article content"</span>);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">输出:</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">Mervyn! There is an new article: article content</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<p>参考链接：</p>
+<p><a href="https://design-patterns.readthedocs.io/zh_CN/latest/behavioral_patterns/observer.html" target="_blank" rel="noopener">观察者模式</a></p>
+<p><a href="https://blog.csdn.net/itachi85/article/details/50773358" target="_blank" rel="noopener">https://blog.csdn.net/itachi85/article/details/50773358</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/232.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2387,242 +2562,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/161.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/161.html" class="post-title-link" itemprop="url">web程序性能优化常用方法</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-07-26 20:11:00" itemprop="dateCreated datePublished" datetime="2018-07-26T20:11:00+08:00">2018-07-26</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/架构/" itemprop="url" rel="index"><span itemprop="name">架构</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h1><h2 id="前端优化"><a href="#前端优化" class="headerlink" title="前端优化"></a>前端优化</h2><ul>
-<li>减少http请求数</li>
-<li>充分利用浏览器缓存<br>本地存储</li>
-<li>分布式存储前端资源</li>
-<li>多域名访问资源<ul>
-<li>浏览器对同一个域名的并行请求数有上限</li>
-<li>使用同一个域名时无用的cookie依然会进行传递</li>
-</ul>
-</li>
-<li>资源数据的压缩<ul>
-<li>代码压缩、混淆</li>
-<li>服务器gzip压缩</li>
-<li>图片压缩</li>
-</ul>
-</li>
-<li>优化首屏展示速度<ul>
-<li>js、图片延时加载</li>
-</ul>
-</li>
-</ul>
-<h2 id="Nginx优化"><a href="#Nginx优化" class="headerlink" title="Nginx优化"></a>Nginx优化</h2><h3 id="本身的配置的优化"><a href="#本身的配置的优化" class="headerlink" title="本身的配置的优化"></a>本身的配置的优化</h3><ul>
-<li>work_processes auto;</li>
-<li>worker_cpu_affinity 亲缘性绑定</li>
-<li>worker_rlimit_nofile 65535;</li>
-<li>use epoll;</li>
-<li>worker_connections 65535;</li>
-<li>sendfile on;</li>
-<li>fastcgi相关</li>
-<li>gzip相关</li>
-<li>静态资源http缓存协议</li>
-<li>keepalived_timeout 60; 开启长连接</li>
-</ul>
-<h3 id="tcp-ip协议优化"><a href="#tcp-ip协议优化" class="headerlink" title="tcp/ip协议优化"></a>tcp/ip协议优化</h3><h3 id="系统的配置的优化"><a href="#系统的配置的优化" class="headerlink" title="系统的配置的优化"></a>系统的配置的优化</h3><p>ulimit -a 65535</p>
-<h2 id="PHP优化"><a href="#PHP优化" class="headerlink" title="PHP优化"></a>PHP优化</h2><ul>
-<li>升级PHP版本</li>
-<li>开启opcache缓存</li>
-<li><p>配合使用hugepage</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Hugepage：间接提高虚拟地址和内存地址转换过程中查表的TLB缓存命中率</span><br><span class="line">opcache.huge_code_pages=1</span><br><span class="line">http://www.laruence.com/2015/10/02/3069.html</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>代码伪编译<br>类似tp的common~runtime.php</p>
-</li>
-<li>模板编译</li>
-<li>xhprof查找性能瓶颈</li>
-</ul>
-<h2 id="业务优化"><a href="#业务优化" class="headerlink" title="业务优化"></a>业务优化</h2><ul>
-<li>非侵入式开发</li>
-<li>静态化</li>
-<li>异步思想</li>
-<li>业务解耦</li>
-<li>分布式以及SOA</li>
-</ul>
-<h2 id="MySQL优化"><a href="#MySQL优化" class="headerlink" title="MySQL优化"></a>MySQL优化</h2><h3 id="表设计"><a href="#表设计" class="headerlink" title="表设计"></a>表设计</h3><p>innodb需要自增主键<br><a href="http://draveness.me/mysql-innodb.html" target="_blank" rel="noopener">http://draveness.me/mysql-innodb.html</a></p>
-<ul>
-<li>能短整型就不选长整型</li>
-<li>能char就避免varchar</li>
-<li>varchar长度够用就行</li>
-<li>大文本单独分离，比如文章内容详情</li>
-<li>冗余字段使用</li>
-</ul>
-<h3 id="索引优化"><a href="#索引优化" class="headerlink" title="索引优化"></a>索引优化</h3><ul>
-<li>explain 使用</li>
-</ul>
-<h3 id="收集慢查询"><a href="#收集慢查询" class="headerlink" title="收集慢查询"></a>收集慢查询</h3><h3 id="使用nosql"><a href="#使用nosql" class="headerlink" title="使用nosql"></a>使用nosql</h3><h2 id="缓存的优化"><a href="#缓存的优化" class="headerlink" title="缓存的优化"></a>缓存的优化</h2><h3 id="多级缓存"><a href="#多级缓存" class="headerlink" title="多级缓存"></a>多级缓存</h3><ul>
-<li>请求内缓存</li>
-<li>本地缓存</li>
-<li><p>分布式缓存<br>-</p>
-<h3 id="避免缓存的滥用"><a href="#避免缓存的滥用" class="headerlink" title="避免缓存的滥用"></a>避免缓存的滥用</h3></li>
-<li><p>缓存命中率低：用户积分更新导致整个用户基本信息缓存失效</p>
-</li>
-<li>缓存的原子性：礼物和主题绑定缓存，礼物更新，绑定的所有主题都要更新</li>
-</ul>
-<h3 id="redis优化"><a href="#redis优化" class="headerlink" title="redis优化"></a>redis优化</h3><ul>
-<li>string计数器</li>
-<li>set黑名单</li>
-<li>zset分页列表</li>
-<li>hash 对象存储</li>
-<li>多实例化</li>
-<li>官方优化方案： <a href="https://redis.io/topic/memory-optimization" target="_blank" rel="noopener">https://redis.io/topic/memory-optimization</a></li>
-<li>尽可能使用hashes 节约内存</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2671,7 +2610,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">56</span>
+                    <span class="site-state-item-count">57</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2807,7 +2746,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">35</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
