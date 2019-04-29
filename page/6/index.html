@@ -333,6 +333,174 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/8.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/8.html" class="post-title-link" itemprop="url">Mysql数据库备份和还原常用的命令</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-06-25 12:16:00" itemprop="dateCreated datePublished" datetime="2017-06-25T12:16:00+08:00">2017-06-25</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="数据库备份"><a href="#数据库备份" class="headerlink" title="数据库备份"></a>数据库备份</h2><p><strong>备份MySQL数据库的命令</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -hhostname -uusername -ppassword databasename &gt; backupfile.sql</span><br></pre></td></tr></table></figure></p>
+<p><strong>备份mysql数据库为带删除表的格式</strong></p>
+<p><code>备份MySQL数据库为带删除表的格式，能够让该备份覆盖已有数据库而不需要手动删除原有数据库。</code><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -–add-drop-table -uusername -ppassword databasename &gt; backupfile.sql</span><br></pre></td></tr></table></figure></p>
+<p><strong>直接将MySQL数据库压缩备份</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -hhostname -uusername -ppassword databasename | gzip &gt; backupfile.sql.gz</span><br></pre></td></tr></table></figure></p>
+<p><strong>备份MySQL数据库某个(些)表</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -hhostname -uusername -ppassword databasename specific_table1 specific_table2 &gt; backupfile.sql</span><br></pre></td></tr></table></figure></p>
+<p><strong>同时备份多个MySQL数据库</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -hhostname -uusername -ppassword –databases databasename1 databasename2 databasename3 &gt; multibackupfile.sql</span><br></pre></td></tr></table></figure></p>
+<p><strong>备份服务器上所有数据库</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump –all-databases &gt; allbackupfile.sql</span><br></pre></td></tr></table></figure></p>
+<h2 id="数据库还原"><a href="#数据库还原" class="headerlink" title="数据库还原"></a>数据库还原</h2><p><strong>还原MySQL数据库的命令</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -hhostname -uusername -ppassword databasename &lt; backupfile.sql</span><br></pre></td></tr></table></figure></p>
+<p><strong>还原压缩的MySQL数据库</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gunzip &lt; backupfile.sql.gz | mysql -uusername -ppassword databasename</span><br></pre></td></tr></table></figure></p>
+<p><strong>将数据库转移到新服务器</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -uusername -ppassword databasename | mysql –host=*.*.*.* -C databasename</span><br></pre></td></tr></table></figure></p>
+<p><strong>导出</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from tablename INTO OUTFILE '/tmp/xxx.txt' fields terminated by "," optionally enclosed by '"';</span><br></pre></td></tr></table></figure></p>
+<p><strong>导入</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span> load data infile  '/tmp/xxx.txt' into table tablename fields terminated by ',' enclosed by '"';</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/95.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1658,7 +1826,7 @@ package.json
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">57</span>
+                    <span class="site-state-item-count">58</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

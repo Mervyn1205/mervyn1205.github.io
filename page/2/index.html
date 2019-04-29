@@ -333,6 +333,204 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/297.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/297.html" class="post-title-link" itemprop="url">使用 pyenv 和 pyenv-virtualenv 管理python环境</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-01 20:46:25" itemprop="dateCreated datePublished" datetime="2019-01-01T20:46:25+08:00">2019-01-01</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文主要讲述通过 <code>pyenv</code> 和 <code>pyenv-virtualenv</code> 来管理不同版本的 python 及 python 的 package</p>
+<h2 id="pyenv"><a href="#pyenv" class="headerlink" title="pyenv"></a>pyenv</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> brew install pyenv</span></span><br></pre></td></tr></table></figure>
+<p>验证是否安装成功</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pyenv -v</span><br><span class="line">pyenv 1.2.8</span><br></pre></td></tr></table></figure>
+<h3 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h3><p>在 <code>~/.zshrc</code> 中加入如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export PYENV_ROOT="$HOME/.pyenv"</span><br><span class="line">export PATH="$PYENV_ROOT/bin:$PATH"</span><br><span class="line">eval "$(pyenv init -)"</span><br></pre></td></tr></table></figure>
+<h3 id="查看可以安装的python版本"><a href="#查看可以安装的python版本" class="headerlink" title="查看可以安装的python版本"></a>查看可以安装的python版本</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv install --list</span><br></pre></td></tr></table></figure>
+<h3 id="安装某个版本的python"><a href="#安装某个版本的python" class="headerlink" title="安装某个版本的python"></a>安装某个版本的python</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv install 3.7.1</span><br></pre></td></tr></table></figure>
+<h3 id="查看当前使用的python版本"><a href="#查看当前使用的python版本" class="headerlink" title="查看当前使用的python版本"></a>查看当前使用的python版本</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv versions</span><br></pre></td></tr></table></figure>
+<h3 id="切换Python版本"><a href="#切换Python版本" class="headerlink" title="切换Python版本"></a>切换Python版本</h3><ul>
+<li>全局切换</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv global 3.7.1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>针对当前目录切换</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv local 3.7.1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>取消局部设置</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv local --unset</span><br></pre></td></tr></table></figure>
+<h2 id="pyenv-virtualenv"><a href="#pyenv-virtualenv" class="headerlink" title="pyenv-virtualenv"></a>pyenv-virtualenv</h2><h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv</span><br></pre></td></tr></table></figure>
+<h3 id="创建virtualenv"><a href="#创建virtualenv" class="headerlink" title="创建virtualenv"></a>创建virtualenv</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv virtualenv 3.7.1 env3.7.1</span><br></pre></td></tr></table></figure>
+<h3 id="列出存在的virtualenv"><a href="#列出存在的virtualenv" class="headerlink" title="列出存在的virtualenv"></a>列出存在的virtualenv</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv virtualenvs</span><br></pre></td></tr></table></figure>
+<p>每个virtualenv都有两项，短的那个是只是个软链。</p>
+<h3 id="卸载已存在的virtualenv"><a href="#卸载已存在的virtualenv" class="headerlink" title="卸载已存在的virtualenv"></a>卸载已存在的virtualenv</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv uninstall env3.7.1</span><br></pre></td></tr></table></figure>
+<h3 id="激活-virtualenv"><a href="#激活-virtualenv" class="headerlink" title="激活 virtualenv"></a>激活 virtualenv</h3><ul>
+<li>自动激活</li>
+</ul>
+<p>如果在某个目录创建文件 <code>.python-version</code> ,内容为 virtualenv 的名称，如上边创建的 <code>env3.7.1</code> 。</p>
+<p>在 <code>~/.zshrc</code> 文件中加入如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eval "$(pyenv virtualenv-init -)"</span><br></pre></td></tr></table></figure>
+<p><code>virtualenv</code> 就会自动激活。</p>
+<ul>
+<li>手动激活</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv activate env3.7.1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>手动取消激活</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyenv deactivate env3.7.1</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong> 如果当前目录使用了自动激活的方式，手动方式就无效了</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/311.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2358,210 +2556,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/113.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/113.html" class="post-title-link" itemprop="url">Apache 和 Nginx 的不同</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-08-07 20:11:00" itemprop="dateCreated datePublished" datetime="2018-08-07T20:11:00+08:00">2018-08-07</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Web-Server/" itemprop="url" rel="index"><span itemprop="name">Web Server</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Apache-和-Nginx-的不同"><a href="#Apache-和-Nginx-的不同" class="headerlink" title="Apache 和 Nginx 的不同"></a>Apache 和 Nginx 的不同</h1><p>Apache 和 Nginx 是Web服务器业务的主要参与者。它们两个加在一起占据了几乎50%的web 流量。</p>
-<h3 id="Difference-between-Apache-and-Nginx"><a href="#Difference-between-Apache-and-Nginx" class="headerlink" title="Difference between Apache and Nginx"></a>Difference between Apache and Nginx</h3><ul>
-<li><p>Apache 是开源软件的 HTTP 服务器而 Nginx 是高性能的异步web服务器和反向代理服务器</p>
-</li>
-<li><p>在应用开发及bug维护方面：apache是由世界各地的开发者组成的社区进行管理和维护，同时由apache软件基金会负责协调。Nginx则由与之同名的公司进行管理和维护。</p>
-</li>
-<li><p>处理客户端请求的方式方面：Apache提供了各种多处理的模块来处理客户端请求和Web流量。Nginx旨在用最少的硬件资源同时处理多个客户端请求。</p>
-</li>
-<li><p>Apache 单个线程只能处理一个连接。Nginx 单个线程可以处理多个连接。</p>
-</li>
-<li><p>Apache 由于采用的是多线程的架构导致缺少可扩展性。Nginx采用事件驱动的方式处理客户端请求，它的事件驱动架构旨在促进在流量比较大的情况下提供更好的性能。</p>
-</li>
-</ul>
-<h2 id="Apache-vs-Nginx-对照表"><a href="#Apache-vs-Nginx-对照表" class="headerlink" title="Apache vs. Nginx : 对照表"></a>Apache vs. Nginx : 对照表</h2><table>
-<thead>
-<tr>
-<th>Apache</th>
-<th>Nginx</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>采用多线程的方法处理客户端的请求</td>
-<td>采用事件驱动的方式处理客户端请求</td>
-</tr>
-<tr>
-<td>处理web服务器本身的动态内容</td>
-<td>本身无法处理动态内容</td>
-</tr>
-<tr>
-<td>他无法在繁重的web流量下同时处理多个请求。</td>
-<td>可以在资源有限的硬件资源下高效的处理多个客户端的请求</td>
-</tr>
-<tr>
-<td>模块可以更灵活的被动态加载或卸载</td>
-<td>无法动态加载模块。它们必须编译到核心软件中</td>
-</tr>
-<tr>
-<td>Apache被设计称为web服务器</td>
-<td>Nginx即是Web服务器又是代理服务器</td>
-</tr>
-<tr>
-<td>单个线程只能处理一个连接</td>
-<td>单个线程可以处理多个连接</td>
-</tr>
-</tbody>
-</table>
-<p>本文参考自：<a href="http://www.differencebetween.net/technology/difference-between-apache-and-nginx/" target="_blank" rel="noopener">http://www.differencebetween.net/technology/difference-between-apache-and-nginx/</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2610,7 +2604,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">57</span>
+                    <span class="site-state-item-count">58</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

@@ -333,6 +333,226 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/67.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/67.html" class="post-title-link" itemprop="url">Go语言学习（四）| 数组、切片、集合</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-06-30 19:22:00" itemprop="dateCreated datePublished" datetime="2018-06-30T19:22:00+08:00">2018-06-30</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Go语言学习（四）-数组、切片、集合"><a href="#Go语言学习（四）-数组、切片、集合" class="headerlink" title="Go语言学习（四）| 数组、切片、集合"></a>Go语言学习（四）| 数组、切片、集合</h1><h2 id="array"><a href="#array" class="headerlink" title="array"></a>array</h2><h3 id="声明数组"><a href="#声明数组" class="headerlink" title="声明数组"></a>声明数组</h3><p>array由 <code>[n]&lt;type&gt;</code> 定义，n为array的长度，<type>标示希望存储的内容的类型。例：</type></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr [<span class="number">10</span>]<span class="keyword">int</span>     <span class="comment">//声明一个int类型的数组</span></span><br><span class="line">arr[<span class="number">0</span>] = <span class="number">42</span>         <span class="comment">//数组下标是从0开始的</span></span><br><span class="line">arr[<span class="number">1</span>] = <span class="number">13</span>         <span class="comment">//赋值操作</span></span><br></pre></td></tr></table></figure>
+<p>数组的索引从 0 开始到 length - 1 结束。数组中的所有元素都被自动赋值为数组类型的零值。</p>
+<p><strong>NOTE</strong> 数组的大小是类型的一部分.</p>
+<p>由于长度也是数组类型的一部分，因此 [3]int 与 [4]int 是不同的类型，数组也就不能改变长度。</p>
+<p>Go 中的数组是值类型而不是引用类型。</p>
+<p>数组之间的赋值是值的赋值，即当把一个数组作为参数传入函数的时候，传入的其实是该数组的副本，而不是它的指针。<br>如果要使用指针，那么就需要用到后面介绍的 <code>slice</code> 类型了。</p>
+<h3 id="初始化数组"><a href="#初始化数组" class="headerlink" title="初始化数组"></a>初始化数组</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a := [<span class="number">3</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化数组中 {} 中的元素个数不能大于 [] 中的数字。<br>如果忽略 [] 中的数字不设置数组大小，Go 语言会根据元素的个数来设置数组的大小：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a := [...]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>初始化数组时，可以只初始化部分数组的值，例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b := [<span class="number">10</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125; <span class="comment">//声明了一个长度为10的int数组，其中前3个元素初始化为1、2、3，其他默认为0。</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="二维数组"><a href="#二维数组" class="headerlink" title="二维数组"></a>二维数组</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    a := [<span class="number">2</span>][<span class="number">2</span>]<span class="keyword">int</span>&#123; [<span class="number">2</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>&#125;, [<span class="number">2</span>]<span class="keyword">int</span>&#123;<span class="number">3</span>, <span class="number">4</span>&#125; &#125;</span><br><span class="line">    fmt.Println(a)</span><br><span class="line"></span><br><span class="line">    b := [<span class="number">2</span>][<span class="number">3</span>] <span class="keyword">int</span> &#123; &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;, &#123;<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>&#125;&#125;</span><br><span class="line">    fmt.Println(b)  <span class="comment">//[[1 2 3] [2 2 3]]</span></span><br><span class="line"></span><br><span class="line">    c := [<span class="number">2</span>][<span class="number">2</span>]<span class="keyword">int</span>&#123;[...]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>&#125;, [...]<span class="keyword">int</span>&#123;<span class="number">3</span>, <span class="number">4</span>&#125; &#125;</span><br><span class="line">    fmt.Println(c)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="slice"><a href="#slice" class="headerlink" title="slice"></a>slice</h2><p>slice 与 array 接近，但是在新的元素加入的时候可以增加长度.slice 是一个指向 array 的指针，这是其与 array 不同的地方；<br>slice 是引用类型，这意味着当赋值某个 slice 到另外一个变量，两个引用会指向同一个 array.</p>
+<h3 id="创建切片"><a href="#创建切片" class="headerlink" title="创建切片"></a>创建切片</h3><h4 id="基于数组创建"><a href="#基于数组创建" class="headerlink" title="基于数组创建"></a>基于数组创建</h4><p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">//定义一个 5 个元素的 array，序号从 0 到 4</span></span><br><span class="line">    a := [...]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;</span><br><span class="line">    fmt.Println(<span class="string">"array a is:"</span>, a)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//从序号 2 至 3 创建 slice，它包含元素 3, 4 , s1 := a[0:6]; 编译时会报错。因为超出了数组范围</span></span><br><span class="line">    s1 := a[<span class="number">2</span>:<span class="number">4</span>]</span><br><span class="line">    fmt.Println(<span class="string">"slice s1 is:"</span>, s1)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//从序号 1 至 4 创建，它包含元素 2, 3, 4, 5</span></span><br><span class="line">    s2 := a[<span class="number">1</span>:<span class="number">5</span>]</span><br><span class="line">    fmt.Println(<span class="string">"slice s2 is:"</span>, s2)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//用 array 中的所有元素创建 slice，这是 a[0:len(a)] 的简化写法</span></span><br><span class="line">    s3 := a[:]</span><br><span class="line">    fmt.Println(<span class="string">"slice s3 is:"</span>, s3)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//从序号 0 至 3 创建，这是 a[0:4] 的简化写法，得到 1, 2, 3, 4</span></span><br><span class="line">    s4 := a[:<span class="number">4</span>]</span><br><span class="line">    fmt.Println(<span class="string">"slice s4 is:"</span>, s4)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//从 slice s2 创建 slice，注意 s5 仍然指向 array a。a的值变了，slice的值也随之改变</span></span><br><span class="line">    s5 := s2[:]</span><br><span class="line">    fmt.Println(<span class="string">"slice s5 is:"</span>, s5)</span><br><span class="line"></span><br><span class="line">    fmt.Println(<span class="string">"-----------------"</span>)</span><br><span class="line">    s2[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">    fmt.Println(<span class="string">"array a is:"</span>, a)</span><br><span class="line">    fmt.Println(<span class="string">"slice s1 is:"</span>, s1)</span><br><span class="line">    fmt.Println(<span class="string">"slice s2 is:"</span>, s2)</span><br><span class="line">    fmt.Println(<span class="string">"slice s3 is:"</span>, s3)</span><br><span class="line">    fmt.Println(<span class="string">"slice s4 is:"</span>, s4)</span><br><span class="line">    fmt.Println(<span class="string">"slice s5 is:"</span>, s5)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上述执行输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">array a is: [1 2 3 4 5]</span><br><span class="line">slice s1 is: [3 4]</span><br><span class="line">slice s2 is: [2 3 4 5]</span><br><span class="line">slice s3 is: [1 2 3 4 5]</span><br><span class="line">slice s4 is: [1 2 3 4]</span><br><span class="line">slice s5 is: [2 3 4 5]</span><br><span class="line">-----------------</span><br><span class="line">array a is: [1 1 3 4 5]</span><br><span class="line">slice s1 is: [3 4]</span><br><span class="line">slice s2 is: [1 3 4 5]</span><br><span class="line">slice s3 is: [1 1 3 4 5]</span><br><span class="line">slice s4 is: [1 1 3 4]</span><br><span class="line">slice s5 is: [1 3 4 5]</span><br></pre></td></tr></table></figure></p>
+<h4 id="直接创建"><a href="#直接创建" class="headerlink" title="直接创建"></a>直接创建</h4><ul>
+<li>创建一个初始元素个数为5的数组切片，元素初始值为0：</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mySlice1 := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建一个初始元素个数为5的数组切片，元素初始值为0，并预留10个元素的存储空间：</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mySlice2 := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">5</span>, <span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>直接创建并初始化包含5个元素的数组切片：</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mySlice3 := []<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="slice-和-array-在声明时的区别"><a href="#slice-和-array-在声明时的区别" class="headerlink" title="slice 和 array 在声明时的区别"></a>slice 和 array 在声明时的区别</h3><ul>
+<li>声明数组时，方括号内写明了数组的长度或使用 <code>...</code> 自动计算长度</li>
+<li>声明 slice 时，方括号内没有任何字符。</li>
+<li>slice 可以从一个数组或一个已经存在的 slice 中再次声明。slice 通过array[i:j]来获取，其中 i 是数组的开始位置，j 是结束位置，但不包含 array[j] ,它的长度是 j - i .</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明一个含有10个元素元素类型为byte的数组</span></span><br><span class="line"><span class="keyword">var</span> ar = [<span class="number">10</span>]<span class="keyword">byte</span> &#123;<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>, <span class="string">'e'</span>, <span class="string">'f'</span>, <span class="string">'g'</span>, <span class="string">'h'</span>, <span class="string">'i'</span>, <span class="string">'j'</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明两个含有byte的slice</span></span><br><span class="line"><span class="keyword">var</span> a, b []<span class="keyword">byte</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// a指向数组的第3个元素开始，并到第五个元素结束，</span></span><br><span class="line">a = ar[<span class="number">2</span>:<span class="number">5</span>]</span><br><span class="line"><span class="comment">//现在a含有的元素: ar[2]、ar[3]和ar[4]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// b是数组ar的另一个slice</span></span><br><span class="line">b = ar[<span class="number">3</span>:<span class="number">5</span>]</span><br><span class="line"><span class="comment">// b的元素是：ar[3]和ar[4]</span></span><br></pre></td></tr></table></figure>
+<h3 id="slice的一些简便操作"><a href="#slice的一些简便操作" class="headerlink" title="slice的一些简便操作"></a>slice的一些简便操作</h3><ul>
+<li>slice 的默认开始位置是 0，ar[:n] 等价于 ar[0:n]</li>
+<li>slice 的第二个序列默认是数组的长度，ar[n:] 等价于 ar[n:len(ar)]</li>
+<li>如果从一个数组里面直接获取 slice，可以这样 ar[:]，因为默认第一个序列是 0，第二个是数组的长度，即等价于 ar[0:len(ar)]</li>
+</ul>
+<h3 id="操作-slice-几个有用的内置函数"><a href="#操作-slice-几个有用的内置函数" class="headerlink" title="操作 slice 几个有用的内置函数"></a>操作 slice 几个有用的内置函数</h3><ul>
+<li><code>len</code> 获取 slice 的长度。</li>
+<li><code>cap</code> 获取slice的最大容量。</li>
+<li><code>append</code> 向 slice 里面追加一个或者多个元素，然后返回一个和 slice 一样类型的 slice。</li>
+<li><code>copy</code> 函数 copy 从源 slice 的 src 中复制元素到目标 dst，并且返回复制的元素的个数。</li>
+</ul>
+<p>函数 <code>copy</code> 从源 slice src 复制元素到目标 dst，并且返回复制的元素的个数。源和目标可能重叠。复制的数量是 len(src) 和 len(dst) 中的最小值。</p>
+<p><strong>注</strong><br>append 函数会改变 slice 所引用的数组的内容，从而影响到引用同一数组的其它 slice。 但当 slice 中没有剩余空间（即(cap - len) == 0）时，此时将动态分配新的数组空间。返回的 slice 数组指针将指向这个空间，而原数组的内容将保持不变；其它引用此数组的 slice 则不受影响。</p>
+<p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    arr := [<span class="number">10</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;</span><br><span class="line">    s1 := arr[<span class="number">0</span>:<span class="number">2</span>]</span><br><span class="line">    fmt.Println(<span class="built_in">len</span>(s1))    <span class="comment">//输出2</span></span><br><span class="line">    fmt.Println(<span class="built_in">cap</span>(s1))    <span class="comment">//输出10</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="map"><a href="#map" class="headerlink" title="map"></a>map</h2><h3 id="声明-map"><a href="#声明-map" class="headerlink" title="声明 map"></a>声明 map</h3><p>一般定义 map 的方法是：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">map</span>[&lt;from <span class="keyword">type</span>&gt;] &lt;to <span class="keyword">type</span>&gt;</span><br></pre></td></tr></table></figure></p>
+<p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> numbers <span class="keyword">map</span>[<span class="keyword">string</span>] <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line">numbers := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>] <span class="keyword">int</span>)</span><br></pre></td></tr></table></figure></p>
+<p>当只需要声明一个 map 的时候，使用 make 的形式：monthdays := make(map[string]int)<br>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    monthdays := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int</span>&#123;</span><br><span class="line">        <span class="string">"Jan"</span>: <span class="number">31</span>, <span class="string">"Feb"</span>: <span class="number">28</span>, <span class="string">"Mar"</span>: <span class="number">31</span>,</span><br><span class="line">        <span class="string">"Apr"</span>: <span class="number">30</span>, <span class="string">"May"</span>: <span class="number">31</span>, <span class="string">"Jun"</span>: <span class="number">30</span>,</span><br><span class="line">        <span class="string">"Jul"</span>: <span class="number">31</span>, <span class="string">"Aug"</span>: <span class="number">31</span>, <span class="string">"Sep"</span>: <span class="number">30</span>,</span><br><span class="line">        <span class="string">"Oct"</span>: <span class="number">31</span>, <span class="string">"Nov"</span>: <span class="number">30</span>, <span class="string">"Dec"</span>: <span class="number">31</span>,<span class="comment">//此处的逗号是必须的</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> key, val := <span class="keyword">range</span> monthdays &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"key = %s, val = %d\n"</span>, key, val)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当在 map 中索引（搜索）时，使用方括号。<br>例如打印出 12 月的天数：fmt.Printf(“%d\n”, monthdays[“Dec”])<br>这个map就像我们平常看到的表格一样，左边列是 key ，右边列是值</p>
+<p>使用map过程中需要注意的几点：</p>
+<ul>
+<li>map 是无序的，所以上述例子每次打印出来的结果顺序都不一样都会不一样，它不能通过 index 获取，而必须通过 key 获取</li>
+<li>map 的长度是不固定的，也就是和 slice 一样，也是一种引用类型</li>
+<li>内置的 len 函数同样适用于 map，返回 map 拥有的 key 的数量</li>
+<li>map 的值可以很方便的修改，通过 monthdays[“Feb”] = 20 可以很容易的把 key 为 Feb 的字典值改为 20</li>
+<li>map 和其他基本类别不同，它不是 <code>Thread-safe</code> ，在多个 goroutine 存取时，必须使用 mutex lock 机制。 Go1.9 以后可用 <code>sync.Map</code> 解决这个问题</li>
+<li>map 的初始化可以通过 <code>key:val</code> 的方式初始化值，同时 map 内置有判断是否存在 key 的方式</li>
+</ul>
+<h3 id="通过-delete-删除-map-的元素"><a href="#通过-delete-删除-map-的元素" class="headerlink" title="通过 delete 删除 map 的元素"></a>通过 delete 删除 map 的元素</h3><p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    monthdays := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int</span>&#123;</span><br><span class="line">        <span class="string">"Jan"</span>: <span class="number">31</span>, <span class="string">"Feb"</span>: <span class="number">28</span>, <span class="string">"Mar"</span>: <span class="number">31</span>,</span><br><span class="line">        <span class="string">"Apr"</span>: <span class="number">30</span>, <span class="string">"May"</span>: <span class="number">31</span>, <span class="string">"Jun"</span>: <span class="number">30</span>,</span><br><span class="line">        <span class="string">"Jul"</span>: <span class="number">31</span>, <span class="string">"Aug"</span>: <span class="number">31</span>, <span class="string">"Sep"</span>: <span class="number">30</span>,</span><br><span class="line">        <span class="string">"Oct"</span>: <span class="number">31</span>, <span class="string">"Nov"</span>: <span class="number">30</span>, <span class="string">"Dec"</span>: <span class="number">31</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//删除map中Feb元素</span></span><br><span class="line">    <span class="built_in">delete</span>(monthdays, <span class="string">"Feb"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//map 有两个返回值，第一个返回值为该 key 的值;</span></span><br><span class="line">    <span class="comment">// 第二个返回值，如果不存在 key，那么 ok 为 false，如果存在 ok 为 true</span></span><br><span class="line">    val, ok := monthdays[<span class="string">"Feb"</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment">//判断monthdays["Feb"]是否存在</span></span><br><span class="line">    <span class="keyword">if</span> ok &#123;</span><br><span class="line">        <span class="built_in">println</span>(<span class="string">"Feb is in the map and its value is"</span>, val)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">println</span>(<span class="string">"Feb isn't in the map"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：<br>Feb isn’t in the map</p>
+<p>例2：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Vertex <span class="keyword">struct</span> &#123;</span><br><span class="line">    Lat, Long <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> ms = <span class="keyword">map</span>[<span class="keyword">string</span>]Vertex&#123;</span><br><span class="line">    <span class="string">"Bell Labs"</span>: &#123;<span class="number">40.68433</span>, <span class="number">-74.39967</span>&#125;,</span><br><span class="line">    <span class="string">"Google"</span>:    &#123;<span class="number">37.42202</span>, <span class="number">-122.08408</span>&#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(ms)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>map 也是一种引用类型，如果两个 map 同时指向一个底层，那么一个改变，另一个也相应的改变：</p>
+<p>例<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    m := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br><span class="line">    fmt.Println(<span class="string">"map m is: "</span>, m)</span><br><span class="line"></span><br><span class="line">    m[<span class="string">"Hello"</span>] = <span class="string">"Bonjour"</span></span><br><span class="line">    m[<span class="string">"World"</span>] = <span class="string">"XXXXX"</span></span><br><span class="line">    fmt.Println(<span class="string">"map m is: "</span>, m)</span><br><span class="line"></span><br><span class="line">    m1 := m</span><br><span class="line">    fmt.Println(<span class="string">"map m1 is: "</span>, m1)</span><br><span class="line"></span><br><span class="line">    m1[<span class="string">"Hello"</span>] = <span class="string">"Salut"</span>  <span class="comment">// 现在m["hello"]的值已经是Salut了</span></span><br><span class="line">    fmt.Println(<span class="string">"map m is: "</span>, m)</span><br><span class="line">    fmt.Println(<span class="string">"map m1 is: "</span>, m1)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/65.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2222,275 +2442,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/50.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/50.html" class="post-title-link" itemprop="url">Elasticsearch 基本用法</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-02-27 15:21:00" itemprop="dateCreated datePublished" datetime="2018-02-27T15:21:00+08:00">2018-02-27</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NoSQL/" itemprop="url" rel="index"><span itemprop="name">NoSQL</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Elasticsearch-基本用法"><a href="#Elasticsearch-基本用法" class="headerlink" title="Elasticsearch 基本用法"></a>Elasticsearch 基本用法</h1><p>一个 Elasticsearch 请求和任何 HTTP 请求一样由若干相同的部件组成：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X&lt;VERB&gt; &apos;&lt;PROTOCOL&gt;://&lt;HOST&gt;:&lt;PORT&gt;/&lt;PATH&gt;?&lt;QUERY_STRING&gt;&apos; -d &apos;&lt;BODY&gt;&apos;</span><br></pre></td></tr></table></figure>
-<p>被 <code>&lt; &gt;</code> 标记的部件：</p>
-<table>
-<thead>
-<tr>
-<th><code>VERB</code></th>
-<th>适当的 HTTP <em>方法</em> 或 <em>谓词</em> : <code>GET</code>、 <code>POST</code>、 <code>PUT</code>、 <code>HEAD</code> 或者 <code>DELETE</code>。</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>PROTOCOL</code></td>
-<td><code>http</code> 或者 <code>https</code>（如果你在 Elasticsearch 前面有一个 <code>https</code> 代理）</td>
-</tr>
-<tr>
-<td><code>HOST</code></td>
-<td>Elasticsearch 集群中任意节点的主机名，或者用 <code>localhost</code> 代表本地机器上的节点。</td>
-</tr>
-<tr>
-<td><code>PORT</code></td>
-<td>运行 Elasticsearch HTTP 服务的端口号，默认是 <code>9200</code> 。</td>
-</tr>
-<tr>
-<td><code>PATH</code></td>
-<td>API 的终端路径（例如 <code>_count</code> 将返回集群中文档数量）。Path 可能包含多个组件，例如：<code>_cluster/stats</code> 和 <code>_nodes/stats/jvm</code> 。</td>
-</tr>
-<tr>
-<td><code>QUERY_STRING</code></td>
-<td>任意可选的查询字符串参数 (例如 <code>?pretty</code> 将格式化地输出 JSON 返回值，使其更容易阅读)</td>
-</tr>
-<tr>
-<td><code>BODY</code></td>
-<td>一个 JSON 格式的请求体 (如果请求需要的话)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="集群重启"><a href="#集群重启" class="headerlink" title="集群重启"></a>集群重启</h2><p>1、关闭分片分配 <code>PUT /_cluster/settings</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &apos;http://127.0.0.1:9200/_cluster/settings&apos; -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;transient&quot;:&#123;&quot;cluster.routing.allocation.enable&quot;: &quot;none&quot;&#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-<p>2、 执行一个同步刷新 <code>POST /_flush/synced</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST &apos;http://127.0.0.1:9200/_flush/synced&apos;​</span><br></pre></td></tr></table></figure>
-<p>3、 关闭所有节点</p>
-<p>4、 优先启动主节点（ <code>node.master: true</code> ）</p>
-<h2 id="node状态"><a href="#node状态" class="headerlink" title="node状态"></a>node状态</h2><ul>
-<li><p>当前集群master</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@flumelog-10-10-18-177 ~]# curl -XGET 'http://127.0.0.1:9200/_cat/master?pretty=true&amp;v'</span><br><span class="line">id                     host         ip           node</span><br><span class="line">0-sR1-c4TBSPB9WbNVWzNA 10.10.18.179 10.10.18.179 node-179</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查询整个集群的文档数量</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@flumelog-10-10-18-177 ~]# curl -XGET 'http://127.0.0.1:9200/_cat/count?v'</span><br><span class="line">epoch      timestamp count</span><br><span class="line">1502244880 10:14:40  2635961</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看集群的健康状态</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@flumelog-10-10-18-177 ~]# curl -XGET 'http://127.0.0.1:9200/_cat/health?v'</span><br><span class="line">epoch      timestamp cluster          status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent</span><br><span class="line">1502244979 10:16:19  spotmau_oss_test green           3         3     20  10    0    0        0             0                  -                100.0%</span><br><span class="line"></span><br><span class="line">[root@flumelog-10-10-18-177 ~]# curl -XGET 'http://127.0.0.1:9200/_cluster/health?pretty'</span><br><span class="line">&#123;</span><br><span class="line">  "cluster_name" : "spotmau_oss_test",</span><br><span class="line">  "status" : "green",</span><br><span class="line">  "timed_out" : false,</span><br><span class="line">  "number_of_nodes" : 3,</span><br><span class="line">  "number_of_data_nodes" : 3,</span><br><span class="line">  "active_primary_shards" : 10,</span><br><span class="line">  "active_shards" : 20,</span><br><span class="line">  "relocating_shards" : 0,</span><br><span class="line">  "initializing_shards" : 0,</span><br><span class="line">  "unassigned_shards" : 0,</span><br><span class="line">  "delayed_unassigned_shards" : 0,</span><br><span class="line">  "number_of_pending_tasks" : 0,</span><br><span class="line">  "number_of_in_flight_fetch" : 0,</span><br><span class="line">  "task_max_waiting_in_queue_millis" : 0,</span><br><span class="line">  "active_shards_percent_as_number" : 100.0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看索引信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@flumelog-10-10-18-177 ~]# curl -XGET 'http://127.0.0.1:9200/_cat/indices/*?v&amp;s=docs.count:desc&amp;pretty'</span><br><span class="line">health status index           uuid                   pri rep docs.count docs.deleted store.size pri.store.size</span><br><span class="line">green  open   megacorp        5Htj3xNkQV-aLSvB3GNhpw   5   1    2635951            0    174.1mb           87mb</span><br><span class="line">green  open   aggreation_test du8SNooNQZOPFRW597cj0Q   5   1         10            0     44.4kb         22.2kb</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>集群的当前master节点信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@flumelog-10-10-18-177 ~]# curl -XGET 'http://127.0.0.1:9200/_cat/master?v'</span><br><span class="line">id                     host         ip           node</span><br><span class="line">0-sR1-c4TBSPB9WbNVWzNA 10.10.18.179 10.10.18.179 node-179</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>集群中的节点信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@flumelog-10-10-18-177 ~]# curl -XGET 'http://127.0.0.1:9200/_cat/nodes?v'</span><br><span class="line">ip           heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name</span><br><span class="line">10.10.18.179            9          52   0    0.00    0.00     0.00 mdi       *      node-179</span><br><span class="line">127.0.0.1           16          25   0    0.00    0.00     0.00 mdi       -      node-178</span><br><span class="line">127.0.0.1           15          24   0    0.00    0.00     0.00 mdi       -      node-177</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>集群中的shard信息</p>
-<p>The <code>shards</code> command is the detailed view of what nodes contain which shards.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@flumelog-10-10-18-177 ~]# curl -XGET 'http://127.0.0.1:9200/_cat/shards?v'</span><br><span class="line">index           shard prirep state     docs  store ip           node</span><br><span class="line">megacorp        3     r      STARTED 526499 17.3mb 10.10.18.179 node-179</span><br><span class="line">megacorp        3     p      STARTED 526499 17.3mb 127.0.0.1 node-178</span><br><span class="line">megacorp        2     p      STARTED 525965 17.3mb 127.0.0.1 node-177</span><br><span class="line">megacorp        2     r      STARTED 525965 17.3mb 10.10.18.179 node-179</span><br><span class="line">megacorp        1     r      STARTED 527456 17.5mb 127.0.0.1 node-177</span><br><span class="line">megacorp        1     p      STARTED 527456 17.5mb 127.0.0.1 node-178</span><br><span class="line">megacorp        4     r      STARTED 528088 17.3mb 10.10.18.179 node-179</span><br><span class="line">megacorp        4     p      STARTED 528088 17.4mb 127.0.0.1 node-178</span><br><span class="line">megacorp        0     p      STARTED 527943 17.4mb 127.0.0.1 node-177</span><br><span class="line">megacorp        0     r      STARTED 527943 17.4mb 10.10.18.179 node-179</span><br><span class="line">aggreation_test 3     r      STARTED      2  5.3kb 10.10.18.179 node-179</span><br><span class="line">aggreation_test 3     p      STARTED      2  5.3kb 127.0.0.1 node-178</span><br><span class="line">aggreation_test 2     r      STARTED      3  5.6kb 127.0.0.1 node-177</span><br><span class="line">aggreation_test 2     p      STARTED      3  5.6kb 127.0.0.1 node-178</span><br><span class="line">aggreation_test 1     r      STARTED      4  5.9kb 127.0.0.1 node-177</span><br><span class="line">aggreation_test 1     p      STARTED      4  5.9kb 127.0.0.1 node-178</span><br><span class="line">aggreation_test 4     r      STARTED      1    5kb 10.10.18.179 node-179</span><br><span class="line">aggreation_test 4     p      STARTED      1    5kb 127.0.0.1 node-178</span><br><span class="line">aggreation_test 0     p      STARTED      0   130b 127.0.0.1 node-177</span><br><span class="line">aggreation_test 0     r      STARTED      0   130b 10.10.18.179 node-179</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="字段数据类型"><a href="#字段数据类型" class="headerlink" title="字段数据类型"></a>字段数据类型</h2><p>核心数据类型：</p>
-<ul>
-<li>字符串类型： <code>string</code> (6.0将会移除) 、 <code>text</code> 、 <code>keyword</code></li>
-<li>数字型数据类型： <code>long</code> <code>integer</code> <code>short</code> <code>byte</code> <code>double</code> <code>float</code></li>
-<li>日期型数据类型： <code>date</code></li>
-<li>布尔型数据类型： <code>boolean</code></li>
-<li>二进制数据类型： <code>binary</code></li>
-</ul>
-<p>复杂数据类型：</p>
-<ul>
-<li>对象数据类型： <code>object</code> ,单独的JSON对象</li>
-<li>嵌套数据类型： <code>nested</code>  JSON对象的数组</li>
-</ul>
-<p>地理数据类型：</p>
-<ul>
-<li>地理点数据类型： <code>geo_point</code>  经纬点</li>
-<li>地理形状数据类型： <code>geo_shape</code> 多边形的复杂地理形状</li>
-</ul>
-<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><h3 id="索引管理"><a href="#索引管理" class="headerlink" title="索引管理"></a>索引管理</h3><h4 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &apos;http://127.0.0.1:9200/school?pretty&apos;</span><br></pre></td></tr></table></figure>
-<p><strong>创建索引时修改分片和副本的数量</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &apos;http://127.0.0.1:9200/school?pretty&apos; -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;:&#123;</span><br><span class="line">        &quot;number_of_shards&quot;:3,</span><br><span class="line">        &quot;number_of_replicas&quot;:0</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-<p><strong>可以通过api 修改副本的数量</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &apos;http://127.0.0.1:9200/school/_settings?pretty&apos; -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;number_of_replicas&quot;: 1</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-<h4 id="打开-关闭索引"><a href="#打开-关闭索引" class="headerlink" title="打开/关闭索引"></a>打开/关闭索引</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST &apos;http://127.0.0.1:9200/school/_open?pretty&apos;</span><br><span class="line">curl -XPOST &apos;http://127.0.0.1:9200/school/_close?pretty&apos;</span><br></pre></td></tr></table></figure>
-<p>关闭的索引只能显示索引元数据信息，不能进行读写操作</p>
-<h4 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XDELETE &apos;http://127.0.0.1:9200/school&apos;</span><br></pre></td></tr></table></figure>
-<h3 id="索引映射管理"><a href="#索引映射管理" class="headerlink" title="索引映射管理"></a>索引映射管理</h3><h4 id="增加映射"><a href="#增加映射" class="headerlink" title="增加映射"></a>增加映射</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &apos;http://127.0.0.1:9200/school?pretty&apos; -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;mappings&quot;:&#123;</span><br><span class="line">        &quot;student&quot;: &#123;</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;first_name&quot;: &#123;&quot;type&quot;: &quot;text&quot;&#125;,</span><br><span class="line">                &quot;last_name&quot;: &#123;&quot;type&quot;: &quot;text&quot;&#125;,</span><br><span class="line">                &quot;age&quot;: &#123;&quot;type&quot;: &quot;integer&quot;&#125;,</span><br><span class="line">                &quot;about&quot;: &#123;&quot;type&quot;: &quot;text&quot;&#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &apos;http://127.0.0.1:9200/school/_mapping/teacher?pretty&apos; -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;name&quot;: &#123;&quot;type&quot;: &quot;text&quot;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &apos;http://127.0.0.1:9200/aggreation_test/_mapping/order?pretty&apos; -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;from&quot;: &#123;&quot;type&quot;: &quot;integer&quot;, &quot;index&quot;:&quot;not_analyzed&quot;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-<h4 id="获取映射"><a href="#获取映射" class="headerlink" title="获取映射"></a>获取映射</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET &apos;http://127.0.0.1:9200/school/_mappings/student?pretty&apos;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET &apos;http://127.0.0.1:9200/school/_mapping/student/field/first_name?pretty&apos;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XHEAD &apos;127.0.0.1:9200/school/_mapping/student?pretty&apos;</span><br></pre></td></tr></table></figure>
-<h2 id="文档管理"><a href="#文档管理" class="headerlink" title="文档管理"></a>文档管理</h2><h3 id="插入-更新-数据"><a href="#插入-更新-数据" class="headerlink" title="插入(更新)数据"></a>插入(更新)数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &apos;http://127.0.0.1:9200/school/student/3?pretty&apos; -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;first_name&quot; : &quot;John&quot;,</span><br><span class="line">    &quot;last_name&quot; :  &quot;Smith&quot;,</span><br><span class="line">    &quot;age&quot; :        25,</span><br><span class="line">    &quot;about&quot; :      &quot;I love to go rock climbing&quot;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-<p>返回结果：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"_index"</span> : <span class="string">"school"</span>,</span><br><span class="line">  <span class="attr">"_type"</span> : <span class="string">"student"</span>,</span><br><span class="line">  <span class="attr">"_id"</span> : <span class="string">"1"</span>,</span><br><span class="line">  <span class="attr">"_version"</span> : <span class="number">2</span>,</span><br><span class="line">  <span class="attr">"result"</span> : <span class="string">"updated"</span>,</span><br><span class="line">  <span class="attr">"_shards"</span> : &#123;</span><br><span class="line">    <span class="attr">"total"</span> : <span class="number">2</span>,</span><br><span class="line">    <span class="attr">"successful"</span> : <span class="number">2</span>,</span><br><span class="line">    <span class="attr">"failed"</span> : <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"created"</span> : <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>第二次调用返回：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"_index"</span> : <span class="string">"school"</span>,</span><br><span class="line">  <span class="attr">"_type"</span> : <span class="string">"student"</span>,</span><br><span class="line">  <span class="attr">"_id"</span> : <span class="string">"1"</span>,</span><br><span class="line">  <span class="attr">"_version"</span> : <span class="number">1</span>,</span><br><span class="line">  "result" : "created",     //NOTE</span><br><span class="line">  "_shards" : &#123;</span><br><span class="line">    "total" : 2,</span><br><span class="line">    "successful" : 2,</span><br><span class="line">    "failed" : 0</span><br><span class="line">  &#125;,</span><br><span class="line">  "created" : false         //NOTE</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>注意更新、插入返回的结果表现形式的区别</strong></p>
-<h3 id="Update"><a href="#Update" class="headerlink" title="Update"></a>Update</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST test/type1/1/_update</span><br><span class="line">&#123;</span><br><span class="line">    &quot;doc&quot; : &#123;</span><br><span class="line">        &quot;name&quot; : &quot;new_name&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="bulk"><a href="#bulk" class="headerlink" title="bulk"></a>bulk</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &apos;http://127.0.0.1:9200/_bulk&apos; -d &apos;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;1&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu1&quot;, &quot;age&quot;:21, &quot;socre&quot;: 81 &#125;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;2&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu2&quot;, &quot;age&quot;:22, &quot;socre&quot;: 66 &#125;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;3&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu3&quot;, &quot;age&quot;:23, &quot;socre&quot;: 111 &#125;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;4&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu4&quot;, &quot;age&quot;:22, &quot;socre&quot;: 88 &#125;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;5&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu5&quot;, &quot;age&quot;:21, &quot;socre&quot;: 73 &#125;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;6&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu6&quot;, &quot;age&quot;:24, &quot;socre&quot;: 99 &#125;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;7&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu7&quot;, &quot;age&quot;:27, &quot;socre&quot;: 81 &#125;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;8&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu8&quot;, &quot;age&quot;:26, &quot;socre&quot;: 81 &#125;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;9&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu9&quot;, &quot;age&quot;:25, &quot;socre&quot;: 111 &#125;</span><br><span class="line">&#123; &quot;index&quot; : &#123; &quot;_index&quot; : &quot;aggreation_test&quot;, &quot;_type&quot; : &quot;student&quot;, &quot;_id&quot; : &quot;10&quot; &#125; &#125;</span><br><span class="line">&#123; &quot;name&quot; : &quot;stu10&quot;, &quot;age&quot;:29, &quot;socre&quot;: 99 &#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-<h3 id="查询文档"><a href="#查询文档" class="headerlink" title="查询文档"></a>查询文档</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET &apos;http://127.0.0.1:9200/school/student/1&apos;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET  -u elastic:changeme &apos;192.168.140.129:9200/corp/employee/1/_source&apos;  # 只返回_source</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET  -u elastic:changeme &apos;192.168.140.129:9200/corp/employee/1?_source=age&apos;  #只返回age字段的内容</span><br></pre></td></tr></table></figure>
-<h3 id="删除文档"><a href="#删除文档" class="headerlink" title="删除文档"></a>删除文档</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XDELETE &apos;http://127.0.0.1:9200/school/student/1&apos;</span><br></pre></td></tr></table></figure>
-<h3 id="清空文档"><a href="#清空文档" class="headerlink" title="清空文档"></a>清空文档</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST &apos;http://127.0.0.1:9200/das_customer_service/work_order/_delete_by_query?pretty&apos; -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot; :&#123;</span><br><span class="line">    &quot;match_all&quot;:&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-<h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3><p><strong>计算集群中文档的数量</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET   &apos;127.0.0.1:9200/_count?pretty&apos; -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;: &#123;</span><br><span class="line">        &quot;match_all&quot;: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2539,7 +2490,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">57</span>
+                    <span class="site-state-item-count">58</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
