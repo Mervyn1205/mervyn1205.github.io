@@ -333,6 +333,185 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/69.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/69.html" class="post-title-link" itemprop="url">Go语言学习（五）| 控制结构</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-01 21:12:00" itemprop="dateCreated datePublished" datetime="2018-07-01T21:12:00+08:00">2018-07-01</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Go语言学习（五）-控制结构"><a href="#Go语言学习（五）-控制结构" class="headerlink" title="Go语言学习（五）| 控制结构"></a>Go语言学习（五）| 控制结构</h1><p>Go 对于值之间的比较有非常严格的限制，只有两个类型相同的值才可以进行比较，如果值的类型是接口，它们也必须都实现了相同的接口</p>
+<p>for循环(没有do或者while)<br>switch和if<br>select 类型选择和多路通讯转接器</p>
+<h2 id="条件控制"><a href="#条件控制" class="headerlink" title="条件控制"></a>条件控制</h2><h3 id="if-else-if"><a href="#if-else-if" class="headerlink" title="if / else if"></a>if / else if</h3><p>Go 的 if 还有个强大的地方就是条件判断语句里面允许声明一个变量，这个变量的作用域只能在该条件逻辑块内，其他地方就不起作用了，如下所示：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 计算获取值x,然后根据x返回的大小，判断是否大于10。</span></span><br><span class="line"><span class="keyword">if</span> x := computedValue(); x &gt; <span class="number">10</span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">"x is greater than 10"</span>)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">"x is less than 10"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//这个地方如果这样调用就编译出错了，因为 x 是条件里面的变量</span></span><br><span class="line">fmt.Println(x)</span><br></pre></td></tr></table></figure></p>
+<p>使用 <code>else if</code> 时必须要注意中间的空格</p>
+<h3 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    i := <span class="number">1</span></span><br><span class="line">    <span class="keyword">switch</span> i &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        <span class="built_in">println</span>(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">fallthrough</span></span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        <span class="built_in">println</span>(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="built_in">println</span>(<span class="number">0</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong></p>
+<p>默认每个 <code>case</code> 后都带有 <code>break</code>，匹配成功后不会自动向下执行其他 case 。<br><code>fallthrough</code> 关键字用来强制执行下一个 case 的值，如果 <code>fallthrough</code> 关键字后面显式的写 <code>break</code> 关键字会报错</p>
+<p>例2：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    i := <span class="number">1</span></span><br><span class="line">    <span class="keyword">switch</span> i &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>, <span class="number">2</span>:</span><br><span class="line">        <span class="built_in">println</span>(i)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="built_in">println</span>(<span class="number">0</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="goto"><a href="#goto" class="headerlink" title="goto"></a>goto</h3><p>用 goto 跳转到一定是当前函数内定义的标签。标签名大小写敏感。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    demo()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">demo</span><span class="params">()</span></span> &#123;</span><br><span class="line">    i := <span class="number">0</span></span><br><span class="line">Here:</span><br><span class="line">    fmt.Println(i)</span><br><span class="line">    i++</span><br><span class="line">    <span class="keyword">if</span> i &lt; <span class="number">5</span> &#123;</span><br><span class="line">        <span class="keyword">goto</span> Here</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h2><p>循环语句是用来重复执行某一段代码。</p>
+<h3 id="for-循环"><a href="#for-循环" class="headerlink" title="for 循环"></a>for 循环</h3><p>for的三种形式</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//与 PHP 的 for 一样</span></span><br><span class="line"><span class="keyword">for</span> init; condition; post &#123;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//和 while 一样</span></span><br><span class="line"><span class="keyword">for</span> condition &#123;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//和 PHP 的 while(true) 一样(死循环)</span></span><br><span class="line"><span class="keyword">for</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p><code>continue</code> 语句用来跳出 for 循环中当前循环。<br>在 continue 语句后的所有的 for 循环语句都不会在本次循环中执行。循环体会在一下次循环中继续执行。<br>嵌套循环时，可以再 <code>break</code> 后面指定标签。用标签决定那个循环被终止。但是如果标签定义了就一定要使用</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">J:</span><br><span class="line">    <span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="number">5</span>; j++ &#123;</span><br><span class="line">        <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">            <span class="keyword">if</span> i &gt; <span class="number">5</span> &#123;</span><br><span class="line">                <span class="keyword">break</span> J <span class="comment">//直接退出最外层循环J</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">println</span>(i)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="range-循环"><a href="#range-循环" class="headerlink" title="range 循环"></a>range 循环</h3><p>range 可用于 <code>slice</code> 、 <code>array</code> 、 <code>string</code>、 <code>map</code> 和 <code>channel</code> 。<br>当对 <code>slice</code> 或者 <code>array</code> 做循环时， <code>range</code> 返回序号作为键，这个序号对应的内容作为值。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    str := <span class="string">"I love 中国"</span></span><br><span class="line">    <span class="keyword">for</span> k, v := <span class="keyword">range</span> str &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"%d %s\n"</span>, k, v)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>例2：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    arr := [...]<span class="keyword">string</span>&#123;<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>&#125;</span><br><span class="line">    <span class="keyword">for</span> _, val := <span class="keyword">range</span> arr &#123; <span class="comment">//这个如果下面不想用到数组的序号，则要用 '_'</span></span><br><span class="line">        fmt.Printf(<span class="string">"%s"</span>, val)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Printf(<span class="string">"\n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也可以在字符串上直接使用 range 。</p>
+<p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    list := []<span class="keyword">string</span>&#123;<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>&#125;</span><br><span class="line">    <span class="keyword">for</span> k, v := <span class="keyword">range</span> list &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"%d %s\n"</span>, k, v)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Println(<span class="string">"-----------------"</span>)</span><br><span class="line"></span><br><span class="line">    list1 := <span class="string">"e例f"</span></span><br><span class="line">    <span class="keyword">for</span> pos, char := <span class="keyword">range</span> list1 &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"%d %c\n"</span>, pos, char)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">0 a</span><br><span class="line">1 b</span><br><span class="line">2 c</span><br><span class="line">3 d</span><br><span class="line">-----------------</span><br><span class="line">0 e</span><br><span class="line">1 例      //注意：“例” 这个字占了3个字节，所以下面的序号变为了4</span><br><span class="line">4 f</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/67.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2239,209 +2418,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/53.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/53.html" class="post-title-link" itemprop="url">Elasticsearch高级应用-聚合</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-02-27 15:40:00" itemprop="dateCreated datePublished" datetime="2018-02-27T15:40:00+08:00">2018-02-27</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NoSQL/" itemprop="url" rel="index"><span itemprop="name">NoSQL</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Elasticsearch高级应用-聚合"><a href="#Elasticsearch高级应用-聚合" class="headerlink" title="Elasticsearch高级应用-聚合"></a>Elasticsearch高级应用-聚合</h1><h2 id="聚合的分类"><a href="#聚合的分类" class="headerlink" title="聚合的分类"></a>聚合的分类</h2><ul>
-<li><p>度量聚合</p>
-<p>在一组文档中队某个数字型字段进行计算得出指标值</p>
-</li>
-<li><p>分组聚合</p>
-<p>创建多个分组，每个分组关联一个关键字和相关文档标准</p>
-</li>
-<li><p>管道聚合</p>
-<p>这一类的聚合的数据源是其他聚合的输出，然后进行相关指标的计算</p>
-</li>
-</ul>
-<h3 id="度量聚合"><a href="#度量聚合" class="headerlink" title="度量聚合"></a>度量聚合</h3><h4 id="平均值聚合"><a href="#平均值聚合" class="headerlink" title="平均值聚合"></a>平均值聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/student/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "avg_score":&#123;   //聚合的名称</span><br><span class="line">            "avg":&#123;</span><br><span class="line">                "field":"socre"</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h4 id="最大值聚合"><a href="#最大值聚合" class="headerlink" title="最大值聚合"></a>最大值聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/student/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "max_age":&#123;</span><br><span class="line">            "max":&#123;</span><br><span class="line">                "field":"age"</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h4 id="最小值聚合"><a href="#最小值聚合" class="headerlink" title="最小值聚合"></a>最小值聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/student/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "min_socre":&#123;</span><br><span class="line">            "min":&#123;</span><br><span class="line">                "field":"socre"</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h4 id="百分比聚合"><a href="#百分比聚合" class="headerlink" title="百分比聚合"></a>百分比聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/student/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "score":&#123;</span><br><span class="line">            "percentiles":&#123;</span><br><span class="line">                "field":"socre",</span><br><span class="line">                "percents":[50] //默认的百分比指标为[1, 5, 25, 50, 75, 95, 99]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<p>返回结果：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"took"</span> : <span class="number">12</span>,</span><br><span class="line">  <span class="attr">"timed_out"</span> : <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">"_shards"</span> : &#123;</span><br><span class="line">    <span class="attr">"total"</span> : <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"successful"</span> : <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"failed"</span> : <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"hits"</span> : &#123;</span><br><span class="line">    <span class="attr">"total"</span> : <span class="number">10</span>,</span><br><span class="line">    <span class="attr">"max_score"</span> : <span class="number">0.0</span>,</span><br><span class="line">    <span class="attr">"hits"</span> : [ ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"aggregations"</span> : &#123;</span><br><span class="line">    <span class="attr">"score"</span> : &#123;</span><br><span class="line">      <span class="attr">"values"</span> : &#123;</span><br><span class="line">        <span class="attr">"1.0"</span> : <span class="number">66.63</span>,</span><br><span class="line">        <span class="attr">"5.0"</span> : <span class="number">69.15</span>,</span><br><span class="line">        <span class="attr">"25.0"</span> : <span class="number">81.0</span>,</span><br><span class="line">        <span class="attr">"50.0"</span> : <span class="number">84.5</span>,</span><br><span class="line">        <span class="attr">"75.0"</span> : <span class="number">99.0</span>,</span><br><span class="line">        <span class="attr">"95.0"</span> : <span class="number">111.0</span>,</span><br><span class="line">        <span class="attr">"99.0"</span> : <span class="number">111.0</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>75%的分数在66.63~99.0</p>
-<h3 id="分组聚合"><a href="#分组聚合" class="headerlink" title="分组聚合"></a>分组聚合</h3><h4 id="直方图聚合"><a href="#直方图聚合" class="headerlink" title="直方图聚合"></a>直方图聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/student/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "score":&#123;</span><br><span class="line">            "histogram":&#123;</span><br><span class="line">                "field":"socre",</span><br><span class="line">                "interval":10,</span><br><span class="line">                "min_doc_count":0,</span><br><span class="line">                "extended_bounds":&#123;</span><br><span class="line">                  "min":0,</span><br><span class="line">                  "max":150</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h4 id="日期直方图聚合"><a href="#日期直方图聚合" class="headerlink" title="日期直方图聚合"></a>日期直方图聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "by_month":&#123;</span><br><span class="line">            "date_histogram":&#123;</span><br><span class="line">                "field":"ctime",</span><br><span class="line">                "interval":"month",</span><br><span class="line">                "format":"yyyy-MM-dd HH:mm:ss",</span><br><span class="line">                "min_doc_count":0,</span><br><span class="line">                "extended_bounds":&#123; //会强制返回一整年的数据</span><br><span class="line">                    "min":"2017-01-01 00:00:00",</span><br><span class="line">                    "max":"2017-12-31 00:00:00"</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h4 id="时间范围聚合"><a href="#时间范围聚合" class="headerlink" title="时间范围聚合"></a>时间范围聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":10,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "by_month":&#123;</span><br><span class="line">            "date_range":&#123;</span><br><span class="line">                "field":"ctime",</span><br><span class="line">                "format":"yyyy-MM-dd HH:mm:ss",</span><br><span class="line">                "ranges":[</span><br><span class="line">                    &#123;"to":"now-10M/M"&#125;,     //10月内的数据</span><br><span class="line">                    &#123;"from":"now-10M/M"&#125;    //近10个月前的数据</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h4 id="范围聚合"><a href="#范围聚合" class="headerlink" title="范围聚合"></a>范围聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/order/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":10,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "by_month":&#123;</span><br><span class="line">            "range":&#123;</span><br><span class="line">                "field":"money",</span><br><span class="line">                "ranges":[</span><br><span class="line">                    &#123;"to":3036&#125;,</span><br><span class="line">                    &#123;"from":3036, "to": 3500&#125;,</span><br><span class="line">                    &#123;"from":3000&#125;</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h4 id="嵌套聚合"><a href="#嵌套聚合" class="headerlink" title="嵌套聚合"></a>嵌套聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/order/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "order_lines":&#123;</span><br><span class="line">            "nested":&#123;"path":"lines"&#125;,</span><br><span class="line">            "aggs":&#123;</span><br><span class="line">                "min_price":&#123;"min":&#123;"field":"lines.price"&#125;&#125;,</span><br><span class="line">                "max_price":&#123;"max":&#123;"field":"lines.price"&#125;&#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/order/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":10,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "order_by_month":&#123;</span><br><span class="line">            "date_histogram":&#123;</span><br><span class="line">                "min_doc_count":1,</span><br><span class="line">                "field":"ctime",</span><br><span class="line">                "interval":"month",</span><br><span class="line">                "extended_bounds":&#123;</span><br><span class="line">                    "min":"2017-01-01 00:00:00",</span><br><span class="line">                    "max":"2017-12-31 00:00:00"</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            "aggs":&#123;</span><br><span class="line">                "lines":&#123;</span><br><span class="line">                    "nested":&#123;</span><br><span class="line">                        "path":"lines"</span><br><span class="line">                    &#125;,</span><br><span class="line">                    "aggs":&#123;</span><br><span class="line">                        "num_cout":&#123;</span><br><span class="line">                            "sum":&#123;</span><br><span class="line">                                "field":"lines.num"</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;,</span><br><span class="line">                        "sum_price":&#123;</span><br><span class="line">                            "sum":&#123;</span><br><span class="line">                                "field":"lines.price"</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h3 id="管道聚合"><a href="#管道聚合" class="headerlink" title="管道聚合"></a>管道聚合</h3><p>通过buckete_path 参数指定请求指标的路径，管道聚合可以引用需要的聚合来执行计算</p>
-<h4 id="最大分组聚合"><a href="#最大分组聚合" class="headerlink" title="最大分组聚合"></a>最大分组聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/order/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "order_by_month":&#123;</span><br><span class="line">            "date_histogram":&#123;</span><br><span class="line">                "min_doc_count":0,</span><br><span class="line">                "field":"ctime",</span><br><span class="line">                "interval":"month",</span><br><span class="line">                "extended_bounds":&#123;</span><br><span class="line">                    "min":"2017-01-01 00:00:00",</span><br><span class="line">                    "max":"2017-12-31 00:00:00"</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            "aggs":&#123;</span><br><span class="line">                "sum_money":&#123;"sum":&#123;"field":"money"&#125; &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        "max_month_sales":&#123;</span><br><span class="line">            "max_bucket":&#123;  //最大分组聚合，找出 所有月份销售总额最大值  （最小分组聚合 min_bucket）</span><br><span class="line">                "buckets_path":"order_by_month&gt;sum_money"</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h4 id="总和累计聚合"><a href="#总和累计聚合" class="headerlink" title="总和累计聚合"></a>总和累计聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":10,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "per_month":&#123;</span><br><span class="line">            "date_histogram":&#123;</span><br><span class="line">                "min_doc_count":0,</span><br><span class="line">                "field":"ctime",</span><br><span class="line">                "interval":"month",</span><br><span class="line">                "extended_bounds":&#123; //会强制返回一整年的数据</span><br><span class="line">                    "min":"2017-01-01 00:00:00",</span><br><span class="line">                    "max":"2017-12-31 00:00:00"</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            "aggs":&#123;</span><br><span class="line">                "device_id":&#123;</span><br><span class="line">                    "cardinality":&#123; //语法</span><br><span class="line">                        "field":"device_id" //每月独立设备数</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                "cumulative_device":&#123;</span><br><span class="line">                    "cumulative_sum":&#123;  //语法</span><br><span class="line">                        "buckets_path":"device_id"  //按月累计设备数</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<h4 id="差值聚合"><a href="#差值聚合" class="headerlink" title="差值聚合"></a>差值聚合</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":10,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "by_month":&#123;</span><br><span class="line">            "date_histogram":&#123;  //这个为固定语法</span><br><span class="line">                "min_doc_count":0,  //参数会强制返回空桶</span><br><span class="line">                "field":"ctime",</span><br><span class="line">                "interval":"month",</span><br><span class="line">                "extended_bounds":&#123; //会强制返回一整年的数据</span><br><span class="line">                    "min":"2017-01-01 00:00:00",</span><br><span class="line">                    "max":"2017-12-31 00:00:00"</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            "aggs":&#123;</span><br><span class="line">                "home":&#123;</span><br><span class="line">                    "cardinality":&#123; //去重近似值</span><br><span class="line">                        "field":"home_id"</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                "home_deriv":&#123;</span><br><span class="line">                    "derivative":&#123;  //去重近似值</span><br><span class="line">                        "buckets_path":"home"</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
-<h2 id="不同场景下的聚合应用"><a href="#不同场景下的聚合应用" class="headerlink" title="不同场景下的聚合应用"></a>不同场景下的聚合应用</h2><p>下面主要以不同场景下的应用来介绍ES聚合的情况。假设现在有一张设备事件表如下结构：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`device_events `</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'# 事件ID'</span>,</span><br><span class="line">  <span class="string">`identifier`</span> <span class="built_in">tinyint</span>(<span class="number">4</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'# 事件标识'</span>,</span><br><span class="line">  <span class="string">`type`</span> <span class="built_in">tinyint</span>(<span class="number">4</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'# 事件类型'</span>,</span><br><span class="line">  <span class="string">`device_id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'# 设备ID'</span>,</span><br><span class="line">  <span class="string">`home_id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'# 家庭ID'</span>,</span><br><span class="line">  <span class="string">`product_id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'# 设备对应的产品ID'</span>,</span><br><span class="line">  <span class="string">`user_id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'# 用户ID'</span>,</span><br><span class="line">  <span class="string">`params`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'# 设备上报的参数,如：&#123;"success":1&#125;'</span>,</span><br><span class="line">  <span class="string">`ctime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'# 事件上报的时间'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> AUTO_INCREMENT=<span class="number">186</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COMMENT</span>=<span class="string">'设备事件表'</span>;</span><br></pre></td></tr></table></figure>
-<p>对应ES结构如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">curl -u elastic:changeme -XPOST 'http://127.0.0.1:9200/aggreation_test/device_events'  -d'</span><br><span class="line">&#123;</span><br><span class="line">    "mappings": &#123;</span><br><span class="line">        "demo": &#123;</span><br><span class="line">            "properties": &#123;</span><br><span class="line">                "identifier": &#123;</span><br><span class="line">                    "type": "integer"</span><br><span class="line">                &#125;,</span><br><span class="line">                "event_id": &#123;</span><br><span class="line">                    "type": "integer"</span><br><span class="line">                &#125;,</span><br><span class="line">                "type": &#123;</span><br><span class="line">                    "type": "integer"</span><br><span class="line">                &#125;,</span><br><span class="line">                "device_id": &#123;</span><br><span class="line">                    "type": "integer"</span><br><span class="line">                &#125;,</span><br><span class="line">                "ctime": &#123;</span><br><span class="line">                    "type": "date",</span><br><span class="line">                    "format":"yyyy-MM-dd HH:mm:ss"</span><br><span class="line">                &#125;,</span><br><span class="line">                 "home_id": &#123;</span><br><span class="line">                    "type": "integer"</span><br><span class="line">                &#125;,</span><br><span class="line">                 "product_id": &#123;</span><br><span class="line">                    "type": "integer"</span><br><span class="line">                &#125;,</span><br><span class="line">                 "user_id": &#123;</span><br><span class="line">                    "type": "integer"</span><br><span class="line">                &#125;,</span><br><span class="line">                 "params": &#123;</span><br><span class="line">                    "type": "object",</span><br><span class="line">                    "properties":&#123;</span><br><span class="line">                        "success":&#123;</span><br><span class="line">                            "type":"integer"</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
-<p>这里注意params的类型，ES里两个比较特殊的类型 <code>object</code> 和 <code>nested</code></p>
-<p><code>object</code> 为对象数据类型，单独的JSON对象</p>
-<p><code>nested</code>  为嵌套数据类型，关于JSON对象的数组</p>
-<p>通过调用SDK批量插入一批数据，即可开始进行聚合测试。</p>
-<p><strong>统计每个事件类型的数量</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "query":&#123;</span><br><span class="line">        "bool":&#123;</span><br><span class="line">            "must":[</span><br><span class="line">                &#123;</span><br><span class="line">                    "range":&#123;</span><br><span class="line">                        "ctime":&#123;</span><br><span class="line">                            "gt":"2016-01-01 00:00:00",</span><br><span class="line">                            "lt":"2018-08-01 00:00:00"</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "type_percent":&#123;</span><br><span class="line">            "histogram":&#123;</span><br><span class="line">                "min_doc_count":0,      //最少要有0个文档</span><br><span class="line">                "field":"type",</span><br><span class="line">                "interval":"1"</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<p><strong>以月为单位统计每月的事件消息数，独立设备数，独立家庭数。</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "query":&#123;</span><br><span class="line">        "bool":&#123;</span><br><span class="line">            "must":[</span><br><span class="line">                &#123;</span><br><span class="line">                    "range":&#123;</span><br><span class="line">                        "ctime":&#123;</span><br><span class="line">                            "gt":"2017-01-01 00:00:00",</span><br><span class="line">                            "lt":"2018-08-01 00:00:00"</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "by_month":&#123;</span><br><span class="line">            "date_histogram":&#123;  //这个为固定语法</span><br><span class="line">                "min_doc_count":0,  //参数会强制返回空桶</span><br><span class="line">                "field":"ctime",</span><br><span class="line">                "interval":"month",</span><br><span class="line">                "extended_bounds":&#123; //会强制返回一整年的数据</span><br><span class="line">                    "min":"2017-01-01 00:00:00",</span><br><span class="line">                    "max":"2017-12-31 00:00:00"</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            "aggs":&#123;</span><br><span class="line">                "device_id":&#123;</span><br><span class="line">                    "cardinality":&#123; //去重近似值</span><br><span class="line">                        "field":"device_id"</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                "home_id":&#123;</span><br><span class="line">                    "cardinality":&#123;</span><br><span class="line">                        "field":"home_id"</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
-<p><strong>以月为单位统计每月独立家庭数的差值</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "query":&#123;</span><br><span class="line">        "bool":&#123;</span><br><span class="line">            "must":[</span><br><span class="line">                &#123;</span><br><span class="line">                    "range":&#123;</span><br><span class="line">                        "ctime":&#123;</span><br><span class="line">                            "gt":"2017-01-01 00:00:00",</span><br><span class="line">                            "lt":"2018-08-01 00:00:00"</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "by_month":&#123;</span><br><span class="line">            "date_histogram":&#123;  //这个为固定语法</span><br><span class="line">                "min_doc_count":0,  //参数会强制返回空桶</span><br><span class="line">                "field":"ctime",</span><br><span class="line">                "interval":"month",</span><br><span class="line">                "extended_bounds":&#123; //会强制返回一整年的数据</span><br><span class="line">                    "min":"2017-01-01 00:00:00",</span><br><span class="line">                    "max":"2017-12-31 00:00:00"</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            "aggs":&#123;</span><br><span class="line">                "home":&#123;</span><br><span class="line">                    "cardinality":&#123; //去重近似值</span><br><span class="line">                        "field":"home_id"</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                "home_deriv":&#123;</span><br><span class="line">                    "derivative":&#123;  //去重近似值</span><br><span class="line">                        "buckets_path":"home"</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
-<p><strong>param参数success为1的统计</strong><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":10,</span><br><span class="line">    "query":&#123;</span><br><span class="line">        "bool":&#123;</span><br><span class="line">            "must":[</span><br><span class="line">                &#123;</span><br><span class="line">                    "range":&#123;</span><br><span class="line">                        "ctime":&#123;</span><br><span class="line">                            "gt":"2016-01-01 00:00:00",</span><br><span class="line">                            "lt":"2018-08-01 00:00:00"</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    "term":&#123;</span><br><span class="line">                        "params.success":2</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "device_id":&#123;</span><br><span class="line">            "cardinality":&#123;</span><br><span class="line">                "field":"device_id"</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        "home_id":&#123;</span><br><span class="line">            "cardinality":&#123;</span><br><span class="line">                "field":"home_id"</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure></p>
-<p><strong>以月为单位计算每月累计独立设备数</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "query":&#123;</span><br><span class="line">        "bool":&#123;</span><br><span class="line">            "must":[</span><br><span class="line">                &#123;</span><br><span class="line">                    "range":&#123;</span><br><span class="line">                        "ctime":&#123;</span><br><span class="line">                            "gt":"2016-01-01 00:00:00",</span><br><span class="line">                            "lt":"2018-08-01 00:00:00"</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "per_month":&#123;</span><br><span class="line">            "date_histogram":&#123;</span><br><span class="line">                "min_doc_count":0,</span><br><span class="line">                "field":"ctime",</span><br><span class="line">                "interval":"month",</span><br><span class="line">                "extended_bounds":&#123; //会强制返回一整年的数据</span><br><span class="line">                    "min":"2017-01-01 00:00:00",</span><br><span class="line">                    "max":"2017-12-31 00:00:00"</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            "aggs":&#123;</span><br><span class="line">                "device_id":&#123;</span><br><span class="line">                    "cardinality":&#123; //语法</span><br><span class="line">                        "field":"device_id"</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                "cumulative_device":&#123;</span><br><span class="line">                    "cumulative_sum":&#123;  //语法</span><br><span class="line">                        "buckets_path":"device_id"</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-<p><strong>统计参数success不同值的数量</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET 'http://127.0.0.1:9200/aggreation_test/device_events/_search?pretty' -d '</span><br><span class="line">&#123;</span><br><span class="line">    "size":0,</span><br><span class="line">    "query":&#123;</span><br><span class="line">        "bool":&#123;</span><br><span class="line">            "must":[</span><br><span class="line">                &#123;</span><br><span class="line">                    "range":&#123;</span><br><span class="line">                        "ctime":&#123;</span><br><span class="line">                            "gt":"2016-01-01 00:00:00",</span><br><span class="line">                            "lt":"2018-08-01 00:00:00"</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    "aggs":&#123;</span><br><span class="line">        "type_percent":&#123;</span><br><span class="line">            "histogram":&#123;</span><br><span class="line">                "min_doc_count":0,</span><br><span class="line">                "field":"params.success",</span><br><span class="line">                "interval":"1"</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">'</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2490,7 +2466,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">58</span>
+                    <span class="site-state-item-count">59</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

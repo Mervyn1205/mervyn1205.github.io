@@ -333,6 +333,184 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/300.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/300.html" class="post-title-link" itemprop="url">使用 pipenv 管理依赖包</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-13 20:46:25" itemprop="dateCreated datePublished" datetime="2019-01-13T20:46:25+08:00">2019-01-13</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>之前文章提到了 <a href="https://www.mervyntang.com/297.html" target="_blank" rel="noopener">使用 pyenv 和 pyenv-virtualenv 管理python环境</a> ，那环境搭建ok了，接下来在做项目的过程难免需要用到各种依赖包。</p>
+<p>以前经常用的就是 <a href="http://peak.telecommunity.com/DevCenter/EasyInstall" target="_blank" rel="noopener"><strong>EasyInstall</strong></a> 来相对容易地安装其他 Python 包的软件包。后边用 <code>pip</code> 进行安装和卸载依赖包。 <code>pip</code> 还可以跟一个名叫 <code>requirements.txt</code> 的文件进行配合使用。这里就不讲述如何使用这种方式进行依赖包管理了。今天要讲的是 <code>pipenv</code> ，它也是官方推荐的方式 。</p>
+<p><code>pipenv</code> 放弃使用 <code>requirements.txt</code> 来进行管控相互依赖关系，而是采用了一个名为 <code>Pipfile</code> 的文件来进行依赖管理。接下来主要讲解 <code>pipenv</code> 如何使用。</p>
+<h2 id="安装-pipenv"><a href="#安装-pipenv" class="headerlink" title="安装 pipenv"></a>安装 pipenv</h2><p>使用 <code>pip</code> 进行安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install --user pipenv</span><br></pre></td></tr></table></figure>
+<h2 id="安装项目依赖"><a href="#安装项目依赖" class="headerlink" title="安装项目依赖"></a>安装项目依赖</h2><p>我们以安装 <code>requests</code> 依赖为例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd project_dir</span><br><span class="line">pipenv install django</span><br></pre></td></tr></table></figure>
+<p>执行完后会发现，在 <code>project_dir</code> 目录下会生成 <code>Pipfile</code> 和 <code>Pipfile.lock</code> 文件。</p>
+<h2 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h2><p>有两种方式运行项目</p>
+<ul>
+<li>使用 <code>pipenv run</code> 命令：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd project_dir</span><br><span class="line">pipenv run python demo.py</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动一个shell，然后 <code>python</code> 运行</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd project_dir</span><br><span class="line">pipenv shell</span><br><span class="line">python demo.py</span><br></pre></td></tr></table></figure>
+<h2 id="requirements-txt-转换"><a href="#requirements-txt-转换" class="headerlink" title="requirements.txt 转换"></a>requirements.txt 转换</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pipenv install requirements.txt</span><br></pre></td></tr></table></figure>
+<h2 id="vscode-配置"><a href="#vscode-配置" class="headerlink" title="vscode 配置"></a>vscode 配置</h2><p>在项目目录执行 <code>pipenv --py</code> 可以获取到pipenv 安装时创建的虚拟python环境。如下边配置的：<code>/Users/Mervyn/.local/share/virtualenvs/demo-Rmf_rZsk/bin/python</code> ，每个人获取的都会有所不同。</p>
+<p>使用 <code>vscode</code> 打开一个该项目，这时项目根目录会有个 <code>.vscode</code> 的目录里边包含一个 <code>settings.json</code> 的文件。</p>
+<p>将如下内容放入其中：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"files.exclude"</span>: &#123;</span><br><span class="line">        <span class="attr">"**/.git"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">"**/.svn"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">"**/.hg"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">"**/CVS"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">"**/.DS_Store"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">"**/*.pyc"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">"**/__pycache__"</span>: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"python.pythonPath"</span>: <span class="string">"/Users/Mervyn/.local/share/virtualenvs/demo-Rmf_rZsk/bin/python"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/297.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2394,168 +2572,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/40.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/40.html" class="post-title-link" itemprop="url">Elasticsearch-PHP 遇到的坑</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-09-11 20:11:00" itemprop="dateCreated datePublished" datetime="2018-09-11T20:11:00+08:00">2018-09-11</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NoSQL/" itemprop="url" rel="index"><span itemprop="name">NoSQL</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Elasticsearch-PHP-遇到的坑"><a href="#Elasticsearch-PHP-遇到的坑" class="headerlink" title="Elasticsearch-PHP 遇到的坑"></a>Elasticsearch-PHP 遇到的坑</h1><h2 id="大数据量分页查询报错"><a href="#大数据量分页查询报错" class="headerlink" title="大数据量分页查询报错"></a>大数据量分页查询报错</h2><h3 id="问题详情"><a href="#问题详情" class="headerlink" title="问题详情"></a>问题详情</h3><p>在用elasticsearch-php分页查询时，分页几次后报错，错误内容如下：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"error"</span>:&#123;</span><br><span class="line">        <span class="attr">"root_cause"</span>:[</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">"type"</span>:<span class="string">"query_phase_execution_exception"</span>,</span><br><span class="line">                <span class="attr">"reason"</span>:<span class="string">"Result window is too large, from + size must be less than or equal to: [10000] but was [15000]. See the scroll api for a more efficient way to request large data sets. This limit can be set by changing the [index.max_result_window] index level setting."</span></span><br><span class="line">            &#125;</span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">"type"</span>:<span class="string">"search_phase_execution_exception"</span>,</span><br><span class="line">        <span class="attr">"reason"</span>:<span class="string">"all shards failed"</span>,</span><br><span class="line">        <span class="attr">"phase"</span>:<span class="string">"query"</span>,</span><br><span class="line">        <span class="attr">"grouped"</span>:<span class="literal">true</span>,</span><br><span class="line">        <span class="attr">"failed_shards"</span>:[</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">"shard"</span>:<span class="number">0</span>,</span><br><span class="line">                <span class="attr">"index"</span>:<span class="string">"es_type"</span>,</span><br><span class="line">                <span class="attr">"node"</span>:<span class="string">"OVgyFsCDsfqwnvXz0nqA"</span>,</span><br><span class="line">                <span class="attr">"reason"</span>:&#123;</span><br><span class="line">                    <span class="attr">"type"</span>:<span class="string">"query_phase_execution_exception"</span>,</span><br><span class="line">                    <span class="attr">"reason"</span>:<span class="string">"Result window is too large, from + size must be less than or equal to: [10000] but was [15000]. See the scroll api for a more efficient way to request large data sets. This limit can be set by changing the [index.max_result_window] index level setting."</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"status"</span>:<span class="number">500</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><p>Elasticsearch 默认是有查询上限的， from + size 的值必须要小于等于 10000, 需要修改对应参数 <code>max_result_window</code> 的值。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PUT http://127.0.0.1:9200/es_type/_settings -d <span class="string">'&#123; "index" : &#123; "max_result_window" : 100000000&#125;&#125;'</span></span><br></pre></td></tr></table></figure>
-<h2 id="curl-进行-PUT-或-POST-时报错"><a href="#curl-进行-PUT-或-POST-时报错" class="headerlink" title="curl 进行 PUT 或 POST 时报错"></a>curl 进行 PUT 或 POST 时报错</h2><h3 id="问题详情-1"><a href="#问题详情-1" class="headerlink" title="问题详情"></a>问题详情</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"error"</span>:<span class="string">"Content-Type header [application/x-www-form-urlencoded] is not supported"</span>,<span class="attr">"status"</span>:<span class="number">406</span>&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="解决方法-1"><a href="#解决方法-1" class="headerlink" title="解决方法"></a>解决方法</h3><p>elasticsearch6.x 后需要在执行 curl 命令时加入 header 头<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -H <span class="string">"Content-Type: application/json"</span>  -XPUT http://127.0.0.1:9200/es_type/_settings -d <span class="string">'</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">    "index" : &#123; "max_result_window" : 100000000&#125;</span></span><br><span class="line"><span class="string">&#125;'</span></span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2604,7 +2620,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">58</span>
+                    <span class="site-state-item-count">59</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
