@@ -333,6 +333,335 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/87.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/87.html" class="post-title-link" itemprop="url">使用 postman 接口测试并自动生成签名</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-07-16 15:47:00" itemprop="dateCreated datePublished" datetime="2017-07-16T15:47:00+08:00">2017-07-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Postman是chrome 的一款插件, 现在单独可以作为一个软件进行下载，主要用于做接口请求测试,无论是前端,后台还是测试人员,都可以用 <code>postman</code> 来测试接口,用起来非常方便。</p>
+<p>在实际开发过程中，很多接口都会采用各种加密手段来保证接口的安全性。比如根据接口参数生成一个签名，在请求此接口的时候需要将此签名传递到后端。</p>
+<p>在测试过程中，理想的情况是我们只需要变更提交的参数即可，而不是要我们每次调用接口时手动计算签名。而postman这款神器恰恰能满足我们的需求。</p>
+<blockquote>
+<p>在postman实际调用接口前，可以执行自定义js，从而实现数据签名</p>
+</blockquote>
+<blockquote>
+<p>自定义JS可以获取到请求参数、链接参数，并且可以自定义变量</p>
+</blockquote>
+<p><strong>假设现在后端需要进行如下加密校验：</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$appKey = <span class="string">"abcde"</span>;</span><br><span class="line">$requestBody = file_get_contents(<span class="string">'php://input'</span>);</span><br><span class="line">$sign = md5($_GET[<span class="string">'app_id'</span>].$appKey.$_GET[<span class="string">'ver'</span>].$appKey . $requestBody);</span><br><span class="line"><span class="keyword">if</span> ($sign == $_GET[<span class="string">'sign'</span>]) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"校验通过"</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"校验不通过"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们需要通过postman自动生成对应签名并在请求时传递到后端</p>
+<h3 id="修改Pre-request-Script"><a href="#修改Pre-request-Script" class="headerlink" title="修改Pre-request Script"></a>修改Pre-request Script</h3><p>选择pre-request Script 输入如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var app_id = postman.getGlobalVariable(&quot;app_id&quot;);</span><br><span class="line">var ver = postman.getGlobalVariable(&quot;ver&quot;);</span><br><span class="line">var salt = postman.getGlobalVariable(&quot;app_key&quot;);</span><br><span class="line">var postBody = request.data</span><br><span class="line">var param = app_id + salt  + ver + postBody;</span><br><span class="line">var sign = CryptoJS.MD5(param, &#123;</span><br><span class="line">    asString: true</span><br><span class="line">  &#125;);</span><br><span class="line">postman.setGlobalVariable(&apos;sign&apos;,sign);</span><br></pre></td></tr></table></figure>
+<p>在 url 上的参数有些不同，，， 默认去读取当前环境变量中相同的变量的值，如果当前环境变量中没有则去读取全局变量中对应的值。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/91.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/91.html" class="post-title-link" itemprop="url">判断 Composer 中加载的依赖包对应的版本号</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-07-02 15:51:00" itemprop="dateCreated datePublished" datetime="2017-07-02T15:51:00+08:00">2017-07-02</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>composer在引用各种依赖包时，通常需要定义依赖包的版本号，下面描述当使用不同引用方式时，对应各依赖包的版本号的含义。</p>
+<p>composer.json中引用的各个包时实际对应的版本号的区别如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    "package":"1.2.1",    //依赖包的版本 =1.2.1</span><br><span class="line">    "package":"&gt;=1.2.1",  //依赖包的版本 &gt;=1.2.1</span><br><span class="line">    "package":"&lt;1.2.1",   //依赖包的版本 &lt;1.2.1</span><br><span class="line">    "package":"1.2.*",    //依赖包的版本 &gt;=1.2.0 &amp;&amp; &lt;1.3.0</span><br><span class="line">    "package":"~1.2.1",   //依赖包的版本 &gt;=1.2.1 &amp;&amp; &lt;1.3.0</span><br><span class="line">    "package":"~1.2",     //依赖包的版本 &gt;=1.2.0 &amp;&amp; &lt;2.0.0</span><br><span class="line">    "package":"^1.2.1",   //依赖包的版本 &gt;=1.2.1 &amp;&amp; &lt;2.0.0</span><br><span class="line">    "package":"^0.3.2",   //依赖包的版本 &gt;=0.3.2 &amp;&amp; &lt;0.4.0</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/93.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1504,7 +1833,7 @@ package.json
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据结构与算法/" itemprop="url" rel="index"><span itemprop="name">数据结构与算法</span></a></span>
 
                 
                 
@@ -1661,7 +1990,7 @@ package.json
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
 
                 
                 
@@ -1820,7 +2149,7 @@ package.json
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据结构与算法/" itemprop="url" rel="index"><span itemprop="name">数据结构与算法</span></a></span>
 
                 
                 
@@ -1900,173 +2229,11 @@ package.json
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/188.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/188.html" class="post-title-link" itemprop="url">PHP 获取文件名后缀的不同方式</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2016-10-02 21:56:21" itemprop="dateCreated datePublished" datetime="2016-10-02T21:56:21+08:00">2016-10-02</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="使用数组分割"><a href="#使用数组分割" class="headerlink" title="使用数组分割"></a>使用数组分割</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$arr = explode(<span class="string">'.'</span>, $str);</span><br><span class="line"><span class="keyword">echo</span> $arr[count($arr)<span class="number">-1</span>];</span><br></pre></td></tr></table></figure>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$str = <span class="string">"xxx.yyy.zzz.png"</span>;</span><br><span class="line">$arr = explode(<span class="string">'.'</span>, $str);</span><br><span class="line"><span class="keyword">echo</span> end($arr);     <span class="comment">//或者 array_pop($arr);</span></span><br></pre></td></tr></table></figure>
-<h2 id="进行字符串截取"><a href="#进行字符串截取" class="headerlink" title="进行字符串截取"></a>进行字符串截取</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$str = <span class="string">"xxxx.y.z.png"</span>;</span><br><span class="line"><span class="keyword">echo</span> strrchr($str, <span class="string">'.'</span>);</span><br></pre></td></tr></table></figure>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$str = <span class="string">"xxxx.y.z.png"</span>;</span><br><span class="line"><span class="keyword">echo</span> substr($str, strrpos($str, <span class="string">'.'</span>));</span><br></pre></td></tr></table></figure>
-<h2 id="pathinfo"><a href="#pathinfo" class="headerlink" title="pathinfo();"></a>pathinfo();</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$str = <span class="string">"xx.yy.zz.png"</span>;</span><br><span class="line"><span class="keyword">echo</span> pathinfo($file, PATHINFO_EXTENSION);   <span class="comment">//返回 png</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$str = <span class="string">"xx.yy.zz.png"</span>;</span><br><span class="line"><span class="keyword">echo</span> pathinfo($str)[<span class="string">'extension'</span>];   <span class="comment">// 输出  png</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -2110,7 +2277,7 @@ package.json
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">59</span>
+                    <span class="site-state-item-count">61</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2248,9 +2415,7 @@ package.json
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>

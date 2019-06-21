@@ -333,6 +333,370 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/110.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/110.html" class="post-title-link" itemprop="url">CGI , FastCGI , PHP-CGI 与 PHP-FPM 对比</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-04-06 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-06T00:00:00+08:00">2018-04-06</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="CGI"><a href="#CGI" class="headerlink" title="CGI"></a>CGI</h2><p>CGI全称是“公共网关接口” ( Common Gateway Interface )，HTTP服务器与你的或其它机器上的程序进行“交谈”的一种工具，其程序须运行在网络服务器上。</p>
+<p>CGI可以用任何一种语言编写，只要这种语言具有标准输入、输出和环境变量。如 php , perl 等。</p>
+<h2 id="FastCGI"><a href="#FastCGI" class="headerlink" title="FastCGI"></a>FastCGI</h2><p>FastCGI 像是一个常驻 ( long-live ) 型的CGI，它可以一直执行着，只要激活后，不会每次都要花费时间去fork一次（这是 CGI 最为人诟病的 fork-and-execute 模式）。它还支持分布式的运算，即 FastCGI 程序可以在网站服务器以外的主机3上执行并且接受来自其它网站服务器来的请求。</p>
+<p>FastCGI是语言无关的、可伸缩架构的CGI开放扩展，其主要行为是将 CGI 解释器进程保持在内存中并因此获得较高的性能。众所周知，CGI 解释器的反复加载是 CGI 性能低下的主要原因，如果 CGI 解释器保持在内存中并接受FastCGI进程管理器调度，则可以提供良好的性能、伸缩性、Fail-Over 特性等等。</p>
+<h3 id="FastCGI特点"><a href="#FastCGI特点" class="headerlink" title="FastCGI特点"></a>FastCGI特点</h3><ol>
+<li>FastCGI具有语言无关性.</li>
+<li>FastCGI在进程中的应用程序，独立于核心web服务器运行，提供了一个比API更安全的环境。APIs把应用程序的代码与核心的web服务器链接在一起，这意味着在一个错误的API的应用程序可能会损坏其他应用程序或核心服务器。 恶意的API的应用程序代码甚至可以窃取另一个应用程序或核心服务器的密钥。</li>
+<li>FastCGI技术目前支持语言有：C/C++、Java 、Perl 、Python 、SmallTalk、Ruby 等。相关模块在 Apache, ISS, Lighttpd等流行的服务器上也是可用的。</li>
+<li>FastCGI 的不依赖于任何Web服务器的内部架构，因此即使服务器技术的变化, FastCGI 依然稳定不变。</li>
+</ol>
+<h3 id="FastCGI的工作原理"><a href="#FastCGI的工作原理" class="headerlink" title="FastCGI的工作原理"></a>FastCGI的工作原理</h3><ol>
+<li>Web Server启动时载入FastCGI 进程管理器（IIS ISAPI或Apache Module)</li>
+<li>FastCGI 进程管理器自身初始化，启动多个 CGI 解释器进程(可见多个 php-cgi )并等待来自Web Server的连接。</li>
+<li>当客户端请求到达 Web Server 时，FastCGI 进程管理器选择并连接到一个 CGI 解释器。Web server将CGI环境变量和标准输入发送到FastCGI子进程 php-cgi。</li>
+<li>FastCGI 子进程完成处理后将标准输出和错误信息从同一连接返回 Web Server。当 FastCGI 子进程关闭连接时，请求便告处理完成。FastCGI 子进程接着等待并处理来自 FastCGI 进程管理器(运行在 Web Server 中)的下一个连接。 在 CGI 模式中，php-cgi在此便退出了。</li>
+</ol>
+<p>在上述情况中，你可以想象 CGI 通常有多慢。每一个Web请求 PHP 都必须重新解析 php.ini、重新载入全部扩展并重初始化全部数据结构。使用 FastCGI，所有这些都只在进程启动时发生一次。一个额外的好处是，持续数据库连接(Persistent database connection)可以工作。</p>
+<p>FastCGI的不足</p>
+<p>因为是多进程，所以比CGI多线程消耗更多的服务器内存，PHP-CGI解释器每进程消耗7至25兆内存，将这个数字乘以50或100就是很大的内存数。</p>
+<p>Nginx 0.8.46+PHP 5.2.14(FastCGI)服务器在3万并发连接下，开启的10个Nginx进程消耗150M内存（15M<em>10=150M），开启的64个php-cgi进程消耗1280M内存（20M</em>64=1280M），加上系统自身消耗的内存，总共消耗不到2GB内存。如果服务器内存较小，完全可以只开启25个php-cgi进程，这样php-cgi消耗的总内存数才500M。</p>
+<p>上面的数据摘自Nginx 0.8.x + PHP 5.2.13(FastCGI)搭建胜过Apache十倍的Web服务器</p>
+<h2 id="PHP-CGI"><a href="#PHP-CGI" class="headerlink" title="PHP-CGI"></a>PHP-CGI</h2><p>PHP-CGI是PHP自带的FastCGI管理器。</p>
+<h3 id="PHP-CGI的不足"><a href="#PHP-CGI的不足" class="headerlink" title="PHP-CGI的不足"></a>PHP-CGI的不足</h3><ol>
+<li>php-cgi变更php.ini配置后需重启php-cgi才能让新的php-ini生效，不可以平滑重启。</li>
+<li>直接杀死php-cgi进程，php就不能运行了。(PHP-FPM和Spawn-FCGI就没有这个问题，守护进程会平滑从新生成新的子进程。）</li>
+</ol>
+<h2 id="PHP-FPM"><a href="#PHP-FPM" class="headerlink" title="PHP-FPM"></a>PHP-FPM</h2><p>PHP-FPM是一个PHP FastCGI管理器，是只用于PHP的，可以在 <a href="http://php-fpm.org/download下载得到。" target="_blank" rel="noopener">http://php-fpm.org/download下载得到。</a></p>
+<p>PHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。</p>
+<p>现在我们可以在PHP 5.3.2的源码树里下载得到直接整合了PHP-FPM的分支，据说下个版本会融合进PHP的主分支去。相对Spawn-FCGI，PHP-FPM在CPU和内存方面的控制都更胜一筹，而且前者很容易崩溃，必须用crontab进行监控，而PHP-FPM则没有这种烦恼。</p>
+<p>PHP5.3.3已经集成php-fpm了，不再是第三方的包了。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多有点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM。</p>
+<h2 id="Spawn-FCGI"><a href="#Spawn-FCGI" class="headerlink" title="Spawn-FCGI"></a>Spawn-FCGI</h2><p>Spawn-FCGI是一个通用的FastCGI管理服务器，它是lighttpd中的一部份，很多人都用Lighttpd的Spawn-FCGI进行FastCGI模式下的管理工作，不过有不少缺点。而PHP-FPM的出现多少缓解了一些问题，但PHP-FPM有个缺点就是要重新编译，这对于一些已经运行的环境可能有不小的风险(refer)，在php 5.3.3中可以直接使用PHP-FPM了。</p>
+<p>Spawn-FCGI 目前已经独成为一个项目，更加稳定一些，也给很多Web 站点的配置带来便利。已经有不少站点将它与nginx搭配来解决动态网页。</p>
+<p>最新的lighttpd也没有包含这一块了(<a href="http://www.lighttpd.net/search?q=Spawn-FCGI)，但可以在以前版本中找到它。在lighttpd-1.4.15版本中就包含了(http://www.lighttpd.net/download/lighttpd-1.4.15.tar.gz)，目前Spawn-FCGI的下载地址是http://redmine.lighttpd.net/projects/spawn-fcgi" target="_blank" rel="noopener">http://www.lighttpd.net/search?q=Spawn-FCGI)，但可以在以前版本中找到它。在lighttpd-1.4.15版本中就包含了(http://www.lighttpd.net/download/lighttpd-1.4.15.tar.gz)，目前Spawn-FCGI的下载地址是http://redmine.lighttpd.net/projects/spawn-fcgi</a></p>
+<p>注：最新的Spawn-FCGI可以到lighttpd.net网站搜索“Spawn-FCGI”找到它的最新版本发布地址。</p>
+<h2 id="PHP-FPM与spawn-CGI对比"><a href="#PHP-FPM与spawn-CGI对比" class="headerlink" title="PHP-FPM与spawn-CGI对比"></a>PHP-FPM与spawn-CGI对比</h2><p>PHP-FPM 的使用非常方便，配置都是在PHP-FPM.ini的文件内，而启动、重启都可以从php/sbin/PHP-FPM中进行。更方便的是修改php.ini后可以直接使用PHP-FPM reload进行加载，无需杀掉进程就可以完成php.ini的修改加载</p>
+<p>结果显示使用PHP-FPM可以使php有不小的性能提升。PHP-FPM控制的进程cpu回收的速度比较慢,内存分配的很均匀。</p>
+<p>Spawn-FCGI控制的进程CPU下降的很快，而内存分配的比较不均匀。有很多进程似乎未分配到，而另外一些却占用很高。可能是由于进程任务分配的不均匀导致的。而这也导致了总体响应速度的下降。而PHP-FPM合理的分配，导致总体响应的提到以及任务的平均。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/89.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/89.html" class="post-title-link" itemprop="url">Elasticsearch 5.x 启动报错解决办法</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-02-27 15:50:00" itemprop="dateCreated datePublished" datetime="2018-02-27T15:50:00+08:00">2018-02-27</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NoSQL/" itemprop="url" rel="index"><span itemprop="name">NoSQL</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Elasticsearch-5-x-启动报错解决办法"><a href="#Elasticsearch-5-x-启动报错解决办法" class="headerlink" title="Elasticsearch 5.x 启动报错解决办法"></a>Elasticsearch 5.x 启动报错解决办法</h1><h2 id="can-not-run-elasticsearch-as-root"><a href="#can-not-run-elasticsearch-as-root" class="headerlink" title="can not run elasticsearch as root"></a>can not run elasticsearch as root</h2><p>解决方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">groupadd elasticsearch</span><br><span class="line">useradd elasticsearch -g elasticsearch -p elasticsearch</span><br><span class="line">chown -R elasticsearch:elasticsearch elasticsearch</span><br><span class="line">su elasticsearch  #切换到新建的用户执行启动</span><br></pre></td></tr></table></figure>
+<h2 id="Elasticsearch-requires-at-least-Java-8"><a href="#Elasticsearch-requires-at-least-Java-8" class="headerlink" title="Elasticsearch requires at least Java 8"></a>Elasticsearch requires at least Java 8</h2><p>依赖:  java &gt;= 8, Only Oracle’s Java and the OpenJDK are supported. 推荐安装 1.8.0_73 or later，安装步骤如下：</p>
+<ol>
+<li><a href="https://www.java.com/zh_CN/download/manual.jsp" target="_blank" rel="noopener">https://www.java.com/zh_CN/download/manual.jsp</a>  下载对应系统的java</li>
+<li>tar zxvf jre-8u131-linux-x64.tar.gz</li>
+<li>将该目录放置到想要安装的目录，然后加入linux环境变量$PATH 中</li>
+</ol>
+<p>如果服务器有多个java环境，为了不影响其他代码，可以手动设置JAVA_HOME变量,如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/local/java1.8.0</span><br></pre></td></tr></table></figure></p>
+<h2 id="system-call-filters-failed-to-install-check-the-logs-and-fix-your-configuration-or-disable-system-call-filters-at-your-own-risk"><a href="#system-call-filters-failed-to-install-check-the-logs-and-fix-your-configuration-or-disable-system-call-filters-at-your-own-risk" class="headerlink" title="system call filters failed to install; check the logs and fix your configuration or disable system call filters at your own risk"></a>system call filters failed to install; check the logs and fix your configuration or disable system call filters at your own risk</h2><p>这是在因为Centos6不支持SecComp，而ES默认bootstrap.system_call_filter为true进行检测，所以导致检测失败，失败后直接导致ES不能启动。</p>
+<p>解决方法：<br>在<code>elasticsearch.yml</code>中配置<code>bootstrap.system_call_filter</code>为false，注意要在Memory下面:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bootstrap.memory_lock: false</span><br><span class="line">bootstrap.system_call_filter: false</span><br></pre></td></tr></table></figure>
+<h2 id="max-virtual-memory-areas-vm-max-map-count-65530-is-too-low-increase-to-at-least-262144"><a href="#max-virtual-memory-areas-vm-max-map-count-65530-is-too-low-increase-to-at-least-262144" class="headerlink" title="max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]"></a>max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w vm.max_map_count=262144 #临时修改，重启机器后会失效</span><br></pre></td></tr></table></figure>
+<p>或者采用如下方式：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/sysctl.conf</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 加入如下内容</span></span><br><span class="line">vm.max_map_count=262144</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 保存退出后执行</span></span><br><span class="line">sysctl -p</span><br></pre></td></tr></table></figure></p>
+<h2 id="max-number-of-threads-1024-for-user-elasticsearch-is-too-low-increase-to-at-least-2048"><a href="#max-number-of-threads-1024-for-user-elasticsearch-is-too-low-increase-to-at-least-2048" class="headerlink" title="max number of threads [1024] for user [elasticsearch] is too low, increase to at least [2048]"></a>max number of threads [1024] for user [elasticsearch] is too low, increase to at least [2048]</h2><p>解决方法：<br>vi /etc/security/limits.d/90-nproc.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*          soft    nproc     1024  # 1024改为2048</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/53.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1874,340 +2238,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/87.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/87.html" class="post-title-link" itemprop="url">使用 postman 接口测试并自动生成签名</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2017-07-16 15:47:00" itemprop="dateCreated datePublished" datetime="2017-07-16T15:47:00+08:00">2017-07-16</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Postman是chrome 的一款插件, 现在单独可以作为一个软件进行下载，主要用于做接口请求测试,无论是前端,后台还是测试人员,都可以用 <code>postman</code> 来测试接口,用起来非常方便。</p>
-<p>在实际开发过程中，很多接口都会采用各种加密手段来保证接口的安全性。比如根据接口参数生成一个签名，在请求此接口的时候需要将此签名传递到后端。</p>
-<p>在测试过程中，理想的情况是我们只需要变更提交的参数即可，而不是要我们每次调用接口时手动计算签名。而postman这款神器恰恰能满足我们的需求。</p>
-<blockquote>
-<p>在postman实际调用接口前，可以执行自定义js，从而实现数据签名</p>
-</blockquote>
-<blockquote>
-<p>自定义JS可以获取到请求参数、链接参数，并且可以自定义变量</p>
-</blockquote>
-<p><strong>假设现在后端需要进行如下加密校验：</strong></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$appKey = <span class="string">"abcde"</span>;</span><br><span class="line">$requestBody = file_get_contents(<span class="string">'php://input'</span>);</span><br><span class="line">$sign = md5($_GET[<span class="string">'app_id'</span>].$appKey.$_GET[<span class="string">'ver'</span>].$appKey . $requestBody);</span><br><span class="line"><span class="keyword">if</span> ($sign == $_GET[<span class="string">'sign'</span>]) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"校验通过"</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"校验不通过"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们需要通过postman自动生成对应签名并在请求时传递到后端</p>
-<h3 id="修改Pre-request-Script"><a href="#修改Pre-request-Script" class="headerlink" title="修改Pre-request Script"></a>修改Pre-request Script</h3><p>选择pre-request Script 输入如下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var app_id = postman.getGlobalVariable(&quot;app_id&quot;);</span><br><span class="line">var ver = postman.getGlobalVariable(&quot;ver&quot;);</span><br><span class="line">var salt = postman.getGlobalVariable(&quot;app_key&quot;);</span><br><span class="line">var postBody = request.data</span><br><span class="line">var param = app_id + salt  + ver + postBody;</span><br><span class="line">var sign = CryptoJS.MD5(param, &#123;</span><br><span class="line">    asString: true</span><br><span class="line">  &#125;);</span><br><span class="line">postman.setGlobalVariable(&apos;sign&apos;,sign);</span><br></pre></td></tr></table></figure>
-<p>在 url 上的参数有些不同，，， 默认去读取当前环境变量中相同的变量的值，如果当前环境变量中没有则去读取全局变量中对应的值。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/91.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/91.html" class="post-title-link" itemprop="url">判断 Composer 中加载的依赖包对应的版本号</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2017-07-02 15:51:00" itemprop="dateCreated datePublished" datetime="2017-07-02T15:51:00+08:00">2017-07-02</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>composer在引用各种依赖包时，通常需要定义依赖包的版本号，下面描述当使用不同引用方式时，对应各依赖包的版本号的含义。</p>
-<p>composer.json中引用的各个包时实际对应的版本号的区别如下：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    "package":"1.2.1",    //依赖包的版本 =1.2.1</span><br><span class="line">    "package":"&gt;=1.2.1",  //依赖包的版本 &gt;=1.2.1</span><br><span class="line">    "package":"&lt;1.2.1",   //依赖包的版本 &lt;1.2.1</span><br><span class="line">    "package":"1.2.*",    //依赖包的版本 &gt;=1.2.0 &amp;&amp; &lt;1.3.0</span><br><span class="line">    "package":"~1.2.1",   //依赖包的版本 &gt;=1.2.1 &amp;&amp; &lt;1.3.0</span><br><span class="line">    "package":"~1.2",     //依赖包的版本 &gt;=1.2.0 &amp;&amp; &lt;2.0.0</span><br><span class="line">    "package":"^1.2.1",   //依赖包的版本 &gt;=1.2.1 &amp;&amp; &lt;2.0.0</span><br><span class="line">    "package":"^0.3.2",   //依赖包的版本 &gt;=0.3.2 &amp;&amp; &lt;0.4.0</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -2251,7 +2286,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">59</span>
+                    <span class="site-state-item-count">61</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2389,9 +2424,7 @@
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>

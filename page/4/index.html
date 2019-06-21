@@ -333,6 +333,409 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/73.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/73.html" class="post-title-link" itemprop="url">Go语言学习（七）| 包</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-03 20:11:00" itemprop="dateCreated datePublished" datetime="2018-07-03T20:11:00+08:00">2018-07-03</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Go语言学习（七）-包"><a href="#Go语言学习（七）-包" class="headerlink" title="Go语言学习（七）| 包"></a>Go语言学习（七）| 包</h1><h2 id="包的定义"><a href="#包的定义" class="headerlink" title="包的定义"></a>包的定义</h2><p>包是函数和数据的集合。<br>用 <code>package</code> 保留字定义一个包。例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br></pre></td></tr></table></figure></p>
+<p>文件名不需要与包名一致。包名的约定是使用小写字符。<br>Go 包可以由多个文件组成，但是使用相同的 <code>package &lt;name&gt;</code> 这一行。</p>
+<p>包的函数命名方式：</p>
+<ul>
+<li>公有函数的名字以大写字母开头；</li>
+<li>私有函数的名字以小写字幕开头。</li>
+</ul>
+<p>标识符如果已小写字母开头，则对包外是不可见的，但是他们在整个包的内部是可见并且可用的</p>
+<h2 id="main包"><a href="#main包" class="headerlink" title="main包"></a>main包</h2><p><code>package main</code> 表示一个可独立执行的程序。<br>每个 Go 应用程序都包含一个名为 <code>main</code> 的包。</p>
+<h2 id="包中的-init-函数"><a href="#包中的-init-函数" class="headerlink" title="包中的 init 函数"></a>包中的 init 函数</h2><p><code>init</code> 函数是包的一个特殊的函数，每个含有该函数的包都会首先执行这个包。</p>
+<p>init 调用顺序</p>
+<ol>
+<li>对同一个 go 文件的 <code>init()</code> 调用顺序是从上到下的</li>
+<li>对同一个 <code>package</code> 中不同文件是按文件名字符串比较 “从小到大” 顺序调用各文件中的 <code>init()</code> 函数</li>
+<li>对于对不同的 <code>package</code> ，如果不相互依赖的话，按照 <code>main</code> 包中 <code>**先import的后调用**</code> 的顺序调用其包中的 <code>init()</code></li>
+<li>如果 <code>package</code> 存在依赖，则先调用最早被依赖的 <code>package</code> 中的 <code>init()</code> ,然后调用 <code>main</code> 函数</li>
+</ol>
+<h2 id="导入包"><a href="#导入包" class="headerlink" title="导入包"></a>导入包</h2><p>包的导入通过使用 <code>import</code> 来实现。import 导入包有如下几种操作方式</p>
+<h3 id="相对路径导入"><a href="#相对路径导入" class="headerlink" title="相对路径导入"></a>相对路径导入</h3><pre><code>例：
+</code></pre><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"./model"</span> <span class="comment">//当前文件同一目录的model目录，但是不建议这种方式来 import</span></span><br></pre></td></tr></table></figure>
+<h3 id="绝对路径导入"><a href="#绝对路径导入" class="headerlink" title="绝对路径导入"></a>绝对路径导入</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"shorturl/model"</span> <span class="comment">//加载gopath/src/shorturl/model模块</span></span><br></pre></td></tr></table></figure>
+<h3 id="点操作"><a href="#点操作" class="headerlink" title="点操作"></a>点操作</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> . <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    dd := <span class="number">101</span></span><br><span class="line">    Printf(<span class="string">"%d"</span>, dd) <span class="comment">//因为上面用的点操作导入的包，所以现在就不需要前面加包名，即 fmt.Printf()</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="别名操作"><a href="#别名操作" class="headerlink" title="别名操作"></a>别名操作</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> f <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    dd := <span class="number">101</span></span><br><span class="line">    f.Printf(<span class="string">"%d"</span>, dd) <span class="comment">//因为上面将fmt包起了个别名f，用fmt.Printf()就会报错</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="操作"><a href="#操作" class="headerlink" title="_ 操作"></a><code>_</code> 操作</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"database/sql"</span></span><br><span class="line">    _ <span class="string">"github.com/ziutek/mymysql/godrv"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><code>_</code> 操作其实是引入该包，而不直接使用包里面的函数，而是调用了该包里面的 <code>init</code> 函数</p>
+<h2 id="自定义包"><a href="#自定义包" class="headerlink" title="自定义包"></a>自定义包</h2><p>以定义一个even包为例：</p>
+<h3 id="自定义包-（以-even-包为例）"><a href="#自定义包-（以-even-包为例）" class="headerlink" title="自定义包 （以 even 包为例）"></a>自定义包 （以 even 包为例）</h3><p>文件： even.go<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> even <span class="comment">//开始自定义的包</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Even</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123; <span class="comment">// 可导出函数（函数名首字母大写）</span></span><br><span class="line">    <span class="keyword">return</span> i%<span class="number">2</span> == <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">odd</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123; <span class="comment">// 私有函数（函数名首字母小写）</span></span><br><span class="line">    <span class="keyword">return</span> i%<span class="number">2</span> == <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">vi .bashrc //在最后加入 export GOPATH=$HOME/go 保存退出 GOPATH 的路径可自己定义</span><br><span class="line">source .bashrc     //使刚配置的GOPATH生效</span><br><span class="line">mkdir -p $GOPATH/src/even</span><br></pre></td></tr></table></figure>
+<p>将上述的 even.go 文件放入 <code>$GOPATH/src/even</code></p>
+<p><strong>注意</strong>：<br>文件夹 even 的名字要和 even.go 文件中 <code>package &lt;name&gt;</code> 中 name 的名字相同。 even.go 文件名可以随意</p>
+<h3 id="使用定义的-even-包"><a href="#使用定义的-even-包" class="headerlink" title="使用定义的 even 包"></a>使用定义的 even 包</h3><p>文件： myeven.go<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"even"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    i := <span class="number">5</span></span><br><span class="line">    fmt.Printf(<span class="string">"Is %d even? %v\n"</span>, i, even.Even(i))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：<br>Is 5 even? false</p>
+<h3 id="包测试"><a href="#包测试" class="headerlink" title="包测试"></a>包测试</h3><p>在包放置的目录下（如 <code>$GOPATH/src/even</code> ）建立一个 <code>*_test.go</code> 文件<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *T)</span> <span class="title">Fail</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure></p>
+<p>Fail 标记测试函数失败，但仍然继续执行。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *T)</span> <span class="title">FailNow</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+<p>FailNow 标记测试函数失败，并且中断其执行。这将会执行下一个测试。因此，当前文件的其他所有测试都被跳过。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *T)</span> <span class="title">Log</span><span class="params">(args ...<span class="keyword">interface</span>&#123;&#125;)</span></span></span><br></pre></td></tr></table></figure>
+<p>Log 用默认格式对其参数进行格式化，与Print() 类似，并且记录文本到错误日志。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *T)</span> <span class="title">Fatal</span><span class="params">(args ...<span class="keyword">interface</span>&#123;&#125;)</span></span></span><br></pre></td></tr></table></figure>
+<p>Fatal 等价于Log() 后跟随FailNow()。</p>
+<p>将这些凑到一起，就可以编写测试了。首先，选择名字even_test.go。然后添加下面的内容：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> even</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"testing"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestEven</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> !Even(<span class="number">2</span>) &#123;</span><br><span class="line">        t.Log(<span class="string">"2 should be even!"</span>)</span><br><span class="line">        t.Fail()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意在第一行使用了 package even，测试使用与被测试的包使用相同的名字空间<br>在包目录中执行 go test 即可</p>
+<p>ok even 0.001s</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/71.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content="Coding Change Our Life">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/71.html" class="post-title-link" itemprop="url">Go语言学习（六）| 函数</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-01 22:12:00" itemprop="dateCreated datePublished" datetime="2018-07-01T22:12:00+08:00">2018-07-01</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Go语言学习（六）-函数"><a href="#Go语言学习（六）-函数" class="headerlink" title="Go语言学习（六）| 函数"></a>Go语言学习（六）| 函数</h1><h2 id="函数的定义"><a href="#函数的定义" class="headerlink" title="函数的定义"></a>函数的定义</h2><p>关键字 <code>func</code> 用来声明一个函数<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">functionName</span><span class="params">(parameter <span class="keyword">type</span>)</span> <span class="title">returnType</span></span> &#123;</span><br><span class="line">    <span class="comment">// 函数体</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>函数中的参数列表和返回值并非是必须的</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">functionName</span><span class="params">(parameter <span class="keyword">type</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 函数体</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果有连续若干个参数，它们的类型一致，那么我们无须一一罗列，只需在最后一个参数后添加该类型。例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">calc</span><span class="params">(num, price <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> price * num</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>多返回值</strong></p>
+<p>Go 语言支持一个函数可以有多个返回值括号，同时可以命名返回值。一旦命名了返回值，可以认为这些值在函数第一行就被声明为变量了。<br>如果有连续若干个返回值，它们的类型一致，那么我们无须一一罗列，只需在最后一个返回值后添加该类型。</p>
+<p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">    s := Factorial(4)</span><br><span class="line">    println(s)</span><br><span class="line">&#125;</span><br><span class="line">func Factorial(x int) int &#123;</span><br><span class="line">    var result int</span><br><span class="line">    if x == 0 &#123;</span><br><span class="line">        result = 1</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        result = x * Factorial(x-1)</span><br><span class="line">    &#125;</span><br><span class="line">    return result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也可以上述例子改为：<br>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s := Factorial(<span class="number">4</span>)</span><br><span class="line">    <span class="built_in">println</span>(s)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Factorial</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="params">(result <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">0</span> &#123;</span><br><span class="line">        result = <span class="number">1</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        result = x * Factorial(x<span class="number">-1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">官方建议：最好命名返回值，因为不命名返回值，虽然代码更加简洁了，但是会造成生成的文档可读性差。</span><br></pre></td></tr></table></figure>
+<h2 id="保留函数"><a href="#保留函数" class="headerlink" title="保留函数"></a>保留函数</h2><ul>
+<li><code>init</code> 函数（能够应用于所有的package）</li>
+<li><code>main</code> 函数（只能应用于package main）。</li>
+</ul>
+<p>这两个函数在定义时不能有任何的参数和返回值。Go程序会自动调用 <code>init()</code> 和 <code>main()</code> ，所以你不需要在任何地方调用这两个函数。<br>每个 package 中的 <code>init</code> 函数都是可选的，但 <code>package main</code> 就必须包含一个main函数。</p>
+<h2 id="变参"><a href="#变参" class="headerlink" title="变参"></a>变参</h2><p>接受变参的函数是有着不定数量的参数的。为了做到这点，首先需要定义函数使其接受变参：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">funcName</span><span class="params">(arg ...<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>arg ... int</code> 告诉 Go 这个函数接受不定数量的参数。</p>
+<p><strong>注意</strong> 这些参数的类型全部是 int。在函数体中，变量 arg 是一个 int 类型的 slice</p>
+<p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    test(<span class="string">"a"</span>, <span class="string">"b"</span>)</span><br><span class="line">    test(<span class="string">"Hello"</span>, <span class="string">"world"</span>, <span class="string">"你好"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">(arg ...<span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, val := <span class="keyword">range</span> arg &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"%s\n"</span>, val)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="函数作为值"><a href="#函数作为值" class="headerlink" title="函数作为值"></a>函数作为值</h2><p>上例也可以这样：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    demo := <span class="function"><span class="keyword">func</span><span class="params">(arg ...<span class="keyword">string</span>)</span></span> &#123; <span class="comment">//定义一个匿名函数，并且赋值给demo</span></span><br><span class="line">        <span class="keyword">for</span> _, val := <span class="keyword">range</span> arg &#123;</span><br><span class="line">            fmt.Printf(<span class="string">"%s\n"</span>, val)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    demo(<span class="string">"a"</span>, <span class="string">"b"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>函数作为值也可以用在其他地方，如 <code>map</code> 。<br>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    map1 := <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="function"><span class="keyword">func</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">int</span></span>&#123;</span><br><span class="line">        <span class="number">1</span>: <span class="function"><span class="keyword">func</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> x + <span class="number">1</span> &#125;,</span><br><span class="line">        <span class="number">2</span>: <span class="function"><span class="keyword">func</span><span class="params">(y <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> y + <span class="number">2</span> &#125;,</span><br><span class="line">        <span class="number">3</span>: <span class="function"><span class="keyword">func</span><span class="params">(z <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> z + <span class="number">3</span> &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Printf(<span class="string">"%d\n"</span>, map1[<span class="number">1</span>](<span class="number">1</span>))</span><br><span class="line">    fmt.Printf(<span class="string">"%d\n"</span>, map1[<span class="number">2</span>](<span class="number">1</span>))</span><br><span class="line">    fmt.Printf(<span class="string">"%d\n"</span>, map1[<span class="number">3</span>](<span class="number">1</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h2><p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    callback(<span class="number">2</span>, printit)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">printit</span><span class="params">(x <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"%d\n"</span>, x)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">callback</span><span class="params">(y <span class="keyword">int</span>, f <span class="keyword">func</span>(<span class="keyword">int</span>)</span>)</span> &#123;</span><br><span class="line">    f(y)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：2</p>
+<p>例2：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    callback(<span class="number">2</span>, printit)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">printit</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="params">(demo <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    demo = x + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">callback</span><span class="params">(y <span class="keyword">int</span>, f <span class="keyword">func</span>(<span class="keyword">int</span>)</span> <span class="title">int</span>)</span> &#123;</span><br><span class="line">    result := f(y)</span><br><span class="line">    res := fmt.Sprintf(<span class="string">"%d"</span>, result) + <span class="string">"demo"</span> <span class="comment">// Sprintf()将int转换成string</span></span><br><span class="line">    fmt.Printf(<span class="string">"%s\n"</span>, res)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：<br>3demo</p>
+<h2 id="传值和传指针"><a href="#传值和传指针" class="headerlink" title="传值和传指针"></a>传值和传指针</h2><p>例3：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//简单的一个函数，实现了参数+1的操作</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add1</span><span class="params">(a *<span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123; <span class="comment">// 请注意，</span></span><br><span class="line">    *a = *a + <span class="number">1</span> <span class="comment">// 修改了a的值</span></span><br><span class="line">    <span class="keyword">return</span> *a   <span class="comment">// 返回新值</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    x := <span class="number">3</span></span><br><span class="line">    fmt.Println(<span class="string">"x = "</span>, x)    <span class="comment">// 应该输出 "x = 3"</span></span><br><span class="line">    x1 := add1(&amp;x)            <span class="comment">// 调用 add1(&amp;x) 传x的地址</span></span><br><span class="line">    fmt.Println(<span class="string">"x+1 = "</span>, x1) <span class="comment">// 应该输出 "x+1 = 4"</span></span><br><span class="line">    fmt.Println(<span class="string">"x = "</span>, x)    <span class="comment">// 应该输出 "x = 4"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>变量在内存中是存放于一定地址上的，修改变量实际是修改变量地址处的内存。只有 add1 函数知道 x 变量所在的地址，才能修改 x 变量的值。所以我们需要将x所在地址 <code>&amp;x</code> 传入函数，并将函数的参数的类型由int改为 <code>*int</code> ，即改为指针类型，才能在函数中修改 x 变量的值。此时参数仍然是按 copy 传递的，只是 copy 的是一个指针。</p>
+<p>函数传递指针的好处：</p>
+<ul>
+<li>传指针使得多个函数能操作同一个对象。</li>
+<li>传指针比较轻量级 (8bytes),只是传内存地址，我们可以用指针传递体积大的结构体。如果用参数值传递的话, 在每次 copy 上面就会花费相对较多的系统开销（内存和时间）。所以当你要传递大的结构体的时候，用指针是一个明智的选择。</li>
+</ul>
+<p>Go语言中 <code>string</code> ， <code>slice</code> ， <code>map</code> 这三种类型的实现机制类似指针，所以可以直接传递，而不用取地址后传递指针。（注：若函数需改变 <code>slice</code> 的长度，则仍需要取地址传递指针）</p>
+<h2 id="延迟代码-defer"><a href="#延迟代码-defer" class="headerlink" title="延迟代码 defer"></a>延迟代码 defer</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ReadWrite</span><span class="params">()</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">    file.Open(<span class="string">"file"</span>)</span><br><span class="line">    <span class="comment">// 做一些工作</span></span><br><span class="line">    <span class="keyword">if</span> failureX &#123;</span><br><span class="line">        file.Close()</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> failureY &#123;</span><br><span class="line">        file.Close()</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    file.Close()</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这里有许多重复的代码。为了解决这些，Go 有了 defer 语句。在 <code>defer</code> 后指定的函数会在函数退出前调用。可改为如下代码：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ReadWrite</span><span class="params">()</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">    file.Open(<span class="string">"file"</span>)</span><br><span class="line">    <span class="keyword">defer</span> file.Close() <span class="comment">//file.Close() 被添加到了 defer 列表</span></span><br><span class="line">    <span class="comment">// 做一些工作</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> failureX &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span> <span class="comment">// Close() 现在自动调用</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> failureY &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span> <span class="comment">// 这里Close() 也将自动调用</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>defer</code> 有点类似于 PHP 类中的 <code>__destruct()</code> 析构方法。  <code>defer</code> 也可以这样写：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">(x <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">&#125;(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<p>如果有很多调用 defer ，那么 defer 是采用后进先出模式<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="number">5</span>; j++ &#123;</span><br><span class="line">        <span class="keyword">defer</span> <span class="built_in">println</span>(j)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出:<br>4<br>3<br>2<br>1<br>0</p>
+<p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s := test(<span class="number">2</span>)</span><br><span class="line">    <span class="built_in">println</span>(s)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="params">(t <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        t++</span><br><span class="line">    &#125;()</span><br><span class="line">    t = i + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：4</p>
+<p>例2：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s := test(<span class="number">2</span>)</span><br><span class="line">    <span class="built_in">println</span>(s)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="params">(t <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">(x <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">        t += x</span><br><span class="line">    &#125;(<span class="number">5</span>)</span><br><span class="line">    t = i + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：8</p>
+<p>在 Go 中函数也是一种变量，可以通过 <code>type</code> 来定义它，它的类型就是所有拥有相同的参数，相同的返回值的一种类型</p>
+<p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> testInt <span class="function"><span class="keyword">func</span><span class="params">(<span class="keyword">int</span>)</span> <span class="title">bool</span> //声明了一个函数类型</span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    slice := []<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">7</span>&#125;</span><br><span class="line">    fmt.Println(<span class="string">"slice = "</span>, slice)</span><br><span class="line">    odd := filter(slice, isOdd) <span class="comment">//函数当做值来传递了</span></span><br><span class="line">    fmt.Println(<span class="string">"Odd elements of slice are: "</span>, odd)</span><br><span class="line">    even := filter(slice, isEven) <span class="comment">//函数当做值来传递了</span></span><br><span class="line">    fmt.Println(<span class="string">"Even elements of slice are: "</span>, even)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">isOdd</span><span class="params">(integer <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> integer%<span class="number">2</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">isEven</span><span class="params">(integer <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> integer%<span class="number">2</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//声明的函数在这个地方当做了一个参数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">filter</span><span class="params">(slice []<span class="keyword">int</span>, f testInt)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> result []<span class="keyword">int</span></span><br><span class="line">    <span class="keyword">for</span> _, value := <span class="keyword">range</span> slice &#123;</span><br><span class="line">        <span class="keyword">if</span> f(value) &#123;</span><br><span class="line">            result = <span class="built_in">append</span>(result, value)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>返回结果：<br>slice = [1 2 3 4 5 7]<br>Odd elements of slice are: [1 3 5 7]<br>Even elements of slice are: [2 4]</p>
+<h2 id="Panic和Recover"><a href="#Panic和Recover" class="headerlink" title="Panic和Recover"></a>Panic和Recover</h2><h3 id="panic"><a href="#panic" class="headerlink" title="panic"></a>panic</h3><p><code>panic</code> 是用来表示非常严重的不可恢复的错误的。<br>在 Go 语言中这是一个内置函数，接收一个 <code>interface{}</code> 类型的值（也就是任何值了）作为参数。<br><code>panic</code> 的作用就像我们平常接触的异常。不过Go可没有 try…catch ，所以， <code>panic</code> 一般会导致程序挂掉（除非 <code>recover</code> ）。所以，Go语言中的异常，那真的是异常了。<br>但是，关键的一点是，即使函数执行的时候panic了，函数不往下走了，运行时并不是立刻向上传递 <code>panic</code> ，而是到defer那，等defer的东西都跑完了， <code>panic</code> 再向上传递。所以这时候 defer 有点类似 try-catch-finally 中的 finally。</p>
+<h3 id="recover"><a href="#recover" class="headerlink" title="recover"></a>recover</h3><p>Go语言提供了 <code>recover</code> 内置函数，前面提到，一旦 <code>panic</code> ，逻辑就会走到 <code>defer</code> 那，那我们就在 <code>defer</code> 那等着，调用 <code>recover</code> 函数将会捕获到当前的 <code>panic</code> （如果有的话），被捕获到的 <code>panic</code> 就不会向上传递了，于是，世界恢复了和平。你可以干你想干的事情了。</p>
+<p>不过要注意的是， <code>recover</code> 之后，逻辑并不会恢复到 <code>panic</code> 那个点去，函数还是会在 <code>defer</code> 之后返回。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/69.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2054,375 +2457,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/110.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/110.html" class="post-title-link" itemprop="url">CGI , FastCGI , PHP-CGI 与 PHP-FPM 对比</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-04-06 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-06T00:00:00+08:00">2018-04-06</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="CGI"><a href="#CGI" class="headerlink" title="CGI"></a>CGI</h2><p>CGI全称是“公共网关接口” ( Common Gateway Interface )，HTTP服务器与你的或其它机器上的程序进行“交谈”的一种工具，其程序须运行在网络服务器上。</p>
-<p>CGI可以用任何一种语言编写，只要这种语言具有标准输入、输出和环境变量。如 php , perl 等。</p>
-<h2 id="FastCGI"><a href="#FastCGI" class="headerlink" title="FastCGI"></a>FastCGI</h2><p>FastCGI 像是一个常驻 ( long-live ) 型的CGI，它可以一直执行着，只要激活后，不会每次都要花费时间去fork一次（这是 CGI 最为人诟病的 fork-and-execute 模式）。它还支持分布式的运算，即 FastCGI 程序可以在网站服务器以外的主机3上执行并且接受来自其它网站服务器来的请求。</p>
-<p>FastCGI是语言无关的、可伸缩架构的CGI开放扩展，其主要行为是将 CGI 解释器进程保持在内存中并因此获得较高的性能。众所周知，CGI 解释器的反复加载是 CGI 性能低下的主要原因，如果 CGI 解释器保持在内存中并接受FastCGI进程管理器调度，则可以提供良好的性能、伸缩性、Fail-Over 特性等等。</p>
-<h3 id="FastCGI特点"><a href="#FastCGI特点" class="headerlink" title="FastCGI特点"></a>FastCGI特点</h3><ol>
-<li>FastCGI具有语言无关性.</li>
-<li>FastCGI在进程中的应用程序，独立于核心web服务器运行，提供了一个比API更安全的环境。APIs把应用程序的代码与核心的web服务器链接在一起，这意味着在一个错误的API的应用程序可能会损坏其他应用程序或核心服务器。 恶意的API的应用程序代码甚至可以窃取另一个应用程序或核心服务器的密钥。</li>
-<li>FastCGI技术目前支持语言有：C/C++、Java 、Perl 、Python 、SmallTalk、Ruby 等。相关模块在 Apache, ISS, Lighttpd等流行的服务器上也是可用的。</li>
-<li>FastCGI 的不依赖于任何Web服务器的内部架构，因此即使服务器技术的变化, FastCGI 依然稳定不变。</li>
-</ol>
-<h3 id="FastCGI的工作原理"><a href="#FastCGI的工作原理" class="headerlink" title="FastCGI的工作原理"></a>FastCGI的工作原理</h3><ol>
-<li>Web Server启动时载入FastCGI 进程管理器（IIS ISAPI或Apache Module)</li>
-<li>FastCGI 进程管理器自身初始化，启动多个 CGI 解释器进程(可见多个 php-cgi )并等待来自Web Server的连接。</li>
-<li>当客户端请求到达 Web Server 时，FastCGI 进程管理器选择并连接到一个 CGI 解释器。Web server将CGI环境变量和标准输入发送到FastCGI子进程 php-cgi。</li>
-<li>FastCGI 子进程完成处理后将标准输出和错误信息从同一连接返回 Web Server。当 FastCGI 子进程关闭连接时，请求便告处理完成。FastCGI 子进程接着等待并处理来自 FastCGI 进程管理器(运行在 Web Server 中)的下一个连接。 在 CGI 模式中，php-cgi在此便退出了。</li>
-</ol>
-<p>在上述情况中，你可以想象 CGI 通常有多慢。每一个Web请求 PHP 都必须重新解析 php.ini、重新载入全部扩展并重初始化全部数据结构。使用 FastCGI，所有这些都只在进程启动时发生一次。一个额外的好处是，持续数据库连接(Persistent database connection)可以工作。</p>
-<p>FastCGI的不足</p>
-<p>因为是多进程，所以比CGI多线程消耗更多的服务器内存，PHP-CGI解释器每进程消耗7至25兆内存，将这个数字乘以50或100就是很大的内存数。</p>
-<p>Nginx 0.8.46+PHP 5.2.14(FastCGI)服务器在3万并发连接下，开启的10个Nginx进程消耗150M内存（15M<em>10=150M），开启的64个php-cgi进程消耗1280M内存（20M</em>64=1280M），加上系统自身消耗的内存，总共消耗不到2GB内存。如果服务器内存较小，完全可以只开启25个php-cgi进程，这样php-cgi消耗的总内存数才500M。</p>
-<p>上面的数据摘自Nginx 0.8.x + PHP 5.2.13(FastCGI)搭建胜过Apache十倍的Web服务器</p>
-<h2 id="PHP-CGI"><a href="#PHP-CGI" class="headerlink" title="PHP-CGI"></a>PHP-CGI</h2><p>PHP-CGI是PHP自带的FastCGI管理器。</p>
-<h3 id="PHP-CGI的不足"><a href="#PHP-CGI的不足" class="headerlink" title="PHP-CGI的不足"></a>PHP-CGI的不足</h3><ol>
-<li>php-cgi变更php.ini配置后需重启php-cgi才能让新的php-ini生效，不可以平滑重启。</li>
-<li>直接杀死php-cgi进程，php就不能运行了。(PHP-FPM和Spawn-FCGI就没有这个问题，守护进程会平滑从新生成新的子进程。）</li>
-</ol>
-<h2 id="PHP-FPM"><a href="#PHP-FPM" class="headerlink" title="PHP-FPM"></a>PHP-FPM</h2><p>PHP-FPM是一个PHP FastCGI管理器，是只用于PHP的，可以在 <a href="http://php-fpm.org/download下载得到。" target="_blank" rel="noopener">http://php-fpm.org/download下载得到。</a></p>
-<p>PHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。</p>
-<p>现在我们可以在PHP 5.3.2的源码树里下载得到直接整合了PHP-FPM的分支，据说下个版本会融合进PHP的主分支去。相对Spawn-FCGI，PHP-FPM在CPU和内存方面的控制都更胜一筹，而且前者很容易崩溃，必须用crontab进行监控，而PHP-FPM则没有这种烦恼。</p>
-<p>PHP5.3.3已经集成php-fpm了，不再是第三方的包了。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多有点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM。</p>
-<h2 id="Spawn-FCGI"><a href="#Spawn-FCGI" class="headerlink" title="Spawn-FCGI"></a>Spawn-FCGI</h2><p>Spawn-FCGI是一个通用的FastCGI管理服务器，它是lighttpd中的一部份，很多人都用Lighttpd的Spawn-FCGI进行FastCGI模式下的管理工作，不过有不少缺点。而PHP-FPM的出现多少缓解了一些问题，但PHP-FPM有个缺点就是要重新编译，这对于一些已经运行的环境可能有不小的风险(refer)，在php 5.3.3中可以直接使用PHP-FPM了。</p>
-<p>Spawn-FCGI 目前已经独成为一个项目，更加稳定一些，也给很多Web 站点的配置带来便利。已经有不少站点将它与nginx搭配来解决动态网页。</p>
-<p>最新的lighttpd也没有包含这一块了(<a href="http://www.lighttpd.net/search?q=Spawn-FCGI)，但可以在以前版本中找到它。在lighttpd-1.4.15版本中就包含了(http://www.lighttpd.net/download/lighttpd-1.4.15.tar.gz)，目前Spawn-FCGI的下载地址是http://redmine.lighttpd.net/projects/spawn-fcgi" target="_blank" rel="noopener">http://www.lighttpd.net/search?q=Spawn-FCGI)，但可以在以前版本中找到它。在lighttpd-1.4.15版本中就包含了(http://www.lighttpd.net/download/lighttpd-1.4.15.tar.gz)，目前Spawn-FCGI的下载地址是http://redmine.lighttpd.net/projects/spawn-fcgi</a></p>
-<p>注：最新的Spawn-FCGI可以到lighttpd.net网站搜索“Spawn-FCGI”找到它的最新版本发布地址。</p>
-<h2 id="PHP-FPM与spawn-CGI对比"><a href="#PHP-FPM与spawn-CGI对比" class="headerlink" title="PHP-FPM与spawn-CGI对比"></a>PHP-FPM与spawn-CGI对比</h2><p>PHP-FPM 的使用非常方便，配置都是在PHP-FPM.ini的文件内，而启动、重启都可以从php/sbin/PHP-FPM中进行。更方便的是修改php.ini后可以直接使用PHP-FPM reload进行加载，无需杀掉进程就可以完成php.ini的修改加载</p>
-<p>结果显示使用PHP-FPM可以使php有不小的性能提升。PHP-FPM控制的进程cpu回收的速度比较慢,内存分配的很均匀。</p>
-<p>Spawn-FCGI控制的进程CPU下降的很快，而内存分配的比较不均匀。有很多进程似乎未分配到，而另外一些却占用很高。可能是由于进程任务分配的不均匀导致的。而这也导致了总体响应速度的下降。而PHP-FPM合理的分配，导致总体响应的提到以及任务的平均。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/89.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content="Coding Change Our Life">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/89.html" class="post-title-link" itemprop="url">Elasticsearch 5.x 启动报错解决办法</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-02-27 15:50:00" itemprop="dateCreated datePublished" datetime="2018-02-27T15:50:00+08:00">2018-02-27</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NoSQL/" itemprop="url" rel="index"><span itemprop="name">NoSQL</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Elasticsearch-5-x-启动报错解决办法"><a href="#Elasticsearch-5-x-启动报错解决办法" class="headerlink" title="Elasticsearch 5.x 启动报错解决办法"></a>Elasticsearch 5.x 启动报错解决办法</h1><h2 id="can-not-run-elasticsearch-as-root"><a href="#can-not-run-elasticsearch-as-root" class="headerlink" title="can not run elasticsearch as root"></a>can not run elasticsearch as root</h2><p>解决方法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">groupadd elasticsearch</span><br><span class="line">useradd elasticsearch -g elasticsearch -p elasticsearch</span><br><span class="line">chown -R elasticsearch:elasticsearch elasticsearch</span><br><span class="line">su elasticsearch  #切换到新建的用户执行启动</span><br></pre></td></tr></table></figure>
-<h2 id="Elasticsearch-requires-at-least-Java-8"><a href="#Elasticsearch-requires-at-least-Java-8" class="headerlink" title="Elasticsearch requires at least Java 8"></a>Elasticsearch requires at least Java 8</h2><p>依赖:  java &gt;= 8, Only Oracle’s Java and the OpenJDK are supported. 推荐安装 1.8.0_73 or later，安装步骤如下：</p>
-<ol>
-<li><a href="https://www.java.com/zh_CN/download/manual.jsp" target="_blank" rel="noopener">https://www.java.com/zh_CN/download/manual.jsp</a>  下载对应系统的java</li>
-<li>tar zxvf jre-8u131-linux-x64.tar.gz</li>
-<li>将该目录放置到想要安装的目录，然后加入linux环境变量$PATH 中</li>
-</ol>
-<p>如果服务器有多个java环境，为了不影响其他代码，可以手动设置JAVA_HOME变量,如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/local/java1.8.0</span><br></pre></td></tr></table></figure></p>
-<h2 id="system-call-filters-failed-to-install-check-the-logs-and-fix-your-configuration-or-disable-system-call-filters-at-your-own-risk"><a href="#system-call-filters-failed-to-install-check-the-logs-and-fix-your-configuration-or-disable-system-call-filters-at-your-own-risk" class="headerlink" title="system call filters failed to install; check the logs and fix your configuration or disable system call filters at your own risk"></a>system call filters failed to install; check the logs and fix your configuration or disable system call filters at your own risk</h2><p>这是在因为Centos6不支持SecComp，而ES默认bootstrap.system_call_filter为true进行检测，所以导致检测失败，失败后直接导致ES不能启动。</p>
-<p>解决方法：<br>在<code>elasticsearch.yml</code>中配置<code>bootstrap.system_call_filter</code>为false，注意要在Memory下面:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bootstrap.memory_lock: false</span><br><span class="line">bootstrap.system_call_filter: false</span><br></pre></td></tr></table></figure>
-<h2 id="max-virtual-memory-areas-vm-max-map-count-65530-is-too-low-increase-to-at-least-262144"><a href="#max-virtual-memory-areas-vm-max-map-count-65530-is-too-low-increase-to-at-least-262144" class="headerlink" title="max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]"></a>max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w vm.max_map_count=262144 #临时修改，重启机器后会失效</span><br></pre></td></tr></table></figure>
-<p>或者采用如下方式：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/sysctl.conf</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 加入如下内容</span></span><br><span class="line">vm.max_map_count=262144</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 保存退出后执行</span></span><br><span class="line">sysctl -p</span><br></pre></td></tr></table></figure></p>
-<h2 id="max-number-of-threads-1024-for-user-elasticsearch-is-too-low-increase-to-at-least-2048"><a href="#max-number-of-threads-1024-for-user-elasticsearch-is-too-low-increase-to-at-least-2048" class="headerlink" title="max number of threads [1024] for user [elasticsearch] is too low, increase to at least [2048]"></a>max number of threads [1024] for user [elasticsearch] is too low, increase to at least [2048]</h2><p>解决方法：<br>vi /etc/security/limits.d/90-nproc.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*          soft    nproc     1024  # 1024改为2048</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -2466,7 +2505,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">59</span>
+                    <span class="site-state-item-count">61</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2604,9 +2643,7 @@
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
