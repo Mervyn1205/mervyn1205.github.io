@@ -1,40 +1,1097 @@
-<!DOCTYPE html><html class="theme-next gemini use-motion" lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2"><meta name="theme-color" content="#222"><link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0"><link rel="stylesheet" href="/css/main.css?v=7.2.0"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0"><link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222"><script id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Gemini",version:"7.2.0",sidebar:{position:"left",display:"post",offset:12,onmobile:!1,dimmer:!1},back2top:!0,back2top_sidebar:!1,fancybox:!1,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="description" content="倒排索引 正排索引：文档id到单词的关联关系 倒排索引：单词到文档id的关联关系  示例：对以下三个文档去除停用词后构造倒排索引  倒排索引-查询过程查询包含“搜索引擎”的文档  通过倒排索引获得“搜索引擎”对应的文档id列表，有1，3 通过正排索引查询1和3的完整内容 返回最终结果  倒排索引-组成 单词词典（Term Dictionary） 倒排列表（Posting List）  单词词典（T"><meta name="keywords" content="Elasticsearch"><meta property="og:type" content="article"><meta property="og:title" content="【转】Elasticsearch | 倒排索引与分词"><meta property="og:url" content="https://www.mervyntang.com/232.html"><meta property="og:site_name" content="Mervyn&#39;s Blog"><meta property="og:description" content="倒排索引 正排索引：文档id到单词的关联关系 倒排索引：单词到文档id的关联关系  示例：对以下三个文档去除停用词后构造倒排索引  倒排索引-查询过程查询包含“搜索引擎”的文档  通过倒排索引获得“搜索引擎”对应的文档id列表，有1，3 通过正排索引查询1和3的完整内容 返回最终结果  倒排索引-组成 单词词典（Term Dictionary） 倒排列表（Posting List）  单词词典（T"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140101.png"><meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140102.png"><meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140103.png"><meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140104.png"><meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140105.png"><meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140106.png"><meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140107.png"><meta property="og:updated_time" content="2018-12-14T12:46:25.000Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="【转】Elasticsearch | 倒排索引与分词"><meta name="twitter:description" content="倒排索引 正排索引：文档id到单词的关联关系 倒排索引：单词到文档id的关联关系  示例：对以下三个文档去除停用词后构造倒排索引  倒排索引-查询过程查询包含“搜索引擎”的文档  通过倒排索引获得“搜索引擎”对应的文档id列表，有1，3 通过正排索引查询1和3的完整内容 返回最终结果  倒排索引-组成 单词词典（Term Dictionary） 倒排列表（Posting List）  单词词典（T"><meta name="twitter:image" content="https://www.mervyntang.com/images/posts/2018/201812140101.png"><link rel="canonical" href="https://www.mervyntang.com/232"><script id="page.configurations">CONFIG.page={sidebar:""}</script><title>【转】Elasticsearch | 倒排索引与分词 | Mervyn's Blog</title><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?05d754b9fcfd6144ad1210688d2c72d8";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script><noscript><style>.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.use-motion .logo-line-before i{left:initial}.use-motion .logo-line-after i{right:initial}</style></noscript></head><body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">Mervyn's Blog</span><span class="logo-line-after"><i></i></span></a></div></div><div class="site-nav-toggle"> <button aria-label="切换导航栏"><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li></ul></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/232.html"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="name" content="Mervyn"><meta itemprop="description" content="Coding Change Our Life"><meta itemprop="image" content="/images/avatar.jpeg"></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="Mervyn's Blog"></span><header class="post-header"><h2 class="post-title" itemprop="name headline">【转】Elasticsearch | 倒排索引与分词</h2><div class="post-meta"><span class="post-meta-item"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建时间：2018-12-14 20:46:25" itemprop="dateCreated datePublished" datetime="2018-12-14T20:46:25+08:00">2018-12-14</time></span><span class="post-meta-item"><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NoSQL/" itemprop="url" rel="index"><span itemprop="name">NoSQL</span></a></span></span><br></div></header><div class="post-body" itemprop="articleBody"><h3 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h3><ul><li>正排索引：文档id到单词的关联关系</li><li>倒排索引：单词到文档id的关联关系</li></ul><p>示例：<br>对以下三个文档去除停用词后构造倒排索引</p><p><img src="/images/posts/2018/201812140101.png" alt></p><h4 id="倒排索引-查询过程"><a href="#倒排索引-查询过程" class="headerlink" title="倒排索引-查询过程"></a>倒排索引-查询过程</h4><p>查询包含“搜索引擎”的文档</p><ol><li>通过倒排索引获得“搜索引擎”对应的文档id列表，有1，3</li><li>通过正排索引查询1和3的完整内容</li><li>返回最终结果</li></ol><h4 id="倒排索引-组成"><a href="#倒排索引-组成" class="headerlink" title="倒排索引-组成"></a>倒排索引-组成</h4><ul><li>单词词典（Term Dictionary）</li><li>倒排列表（Posting List）</li></ul><h4 id="单词词典（Term-Dictionary）"><a href="#单词词典（Term-Dictionary）" class="headerlink" title="单词词典（Term Dictionary）"></a>单词词典（Term Dictionary）</h4><p>单词词典的实现一般用B+树，B+树构造的可视化过程网址: <a href="https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html" rel="external nofollow noopener noreferrer" target="_blank">B+ Tree Visualization</a></p><blockquote><p>关于B树和B+树</p><ol><li><a href="https://zh.wikipedia.org/wiki/B%E6%A0%91" rel="external nofollow noopener noreferrer" target="_blank">维基百科-B树</a></li><li><a href="https://zh.wikipedia.org/wiki/B%2B%E6%A0%91" rel="external nofollow noopener noreferrer" target="_blank">维基百科-B+树</a></li><li><a href="https://www.cnblogs.com/nullzx/p/8729425.html" rel="external nofollow noopener noreferrer" target="_blank">B树和B+树的插入、删除图文详解</a></li></ol></blockquote><p><img src="/images/posts/2018/201812140102.png" alt></p><h4 id="倒排列表（Posting-List）"><a href="#倒排列表（Posting-List）" class="headerlink" title="倒排列表（Posting List）"></a>倒排列表（Posting List）</h4><ul><li>倒排列表记录了单词对应的文档集合，有倒排索引项（Posting）组成</li><li>倒排索引项主要包含如下信息：<ol><li>文档id用于获取原始信息</li><li>单词频率（TF，Term Frequency），记录该单词在该文档中出现的次数，用于后续相关性算分</li><li>位置（Posting），记录单词在文档中的分词位置（多个），用于做词语搜索（Phrase Query）</li><li>偏移（Offset），记录单词在文档的开始和结束位置，用于高亮显示</li></ol></li></ul><p><img src="/images/posts/2018/201812140103.png" alt></p><p>B+树<strong>内部结点存索引，叶子结点存数据</strong>，这里的 单词词典就是B+树索引，倒排列表就是数据，整合在一起后如下所示</p><p><img src="/images/posts/2018/201812140104.png" alt></p><p>ES存储的是一个JSON格式的文档，其中包含多个字段，每个字段会有自己的倒排索引</p><h3 id="分词"><a href="#分词" class="headerlink" title="分词"></a>分词</h3><p>分词是将文本转换成一系列单词（Term or Token）的过程，也可以叫文本分析，在ES里面称为Analysis</p><p><img src="/images/posts/2018/201812140105.png" alt></p><h4 id="分词器"><a href="#分词器" class="headerlink" title="分词器"></a>分词器</h4><p>分词器是ES中专门处理分词的组件，英文为Analyzer，它的组成如下：</p><ul><li>Character Filters：针对原始文本进行处理，比如去除html标签</li><li>Tokenizer：将原始文本按照一定规则切分为单词</li><li>Token Filters：针对Tokenizer处理的单词进行再加工，比如转小写、删除或增新等处理</li></ul><p>分词器调用顺序</p><p><img src="/images/posts/2018/201812140106.png" alt></p><h3 id="Analyze-API"><a href="#Analyze-API" class="headerlink" title="Analyze API"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html" rel="external nofollow noopener noreferrer" target="_blank">Analyze API</a></h3><p>ES提供了一个可以测试分词的API接口，方便验证分词效果，endpoint是_analyze</p><ul><li>可以直接指定analyzer进行测试</li></ul><p><img src="/images/posts/2018/201812140107.png" alt></p><ul><li>可以直接指定索引中的字段进行测试</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">POST test_index/doc</span><br><span class="line">&#123;</span><br><span class="line">  &quot;username&quot;: &quot;whirly&quot;,</span><br><span class="line">  &quot;age&quot;:22</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST test_index/_analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;field&quot;: &quot;username&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;hello world&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>可以自定义分词器进行测试</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&quot;lowercase&quot;],</span><br><span class="line">  &quot;text&quot;: [&quot;Hello World&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h3 id="预定义的分词器"><a href="#预定义的分词器" class="headerlink" title="预定义的分词器"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html" rel="external nofollow noopener noreferrer" target="_blank">预定义的分词器</a></h3><p>ES自带的分词器有如下：</p><ul><li>Standard Analyzer<ul><li>默认分词器</li><li>按词切分，支持多语言</li><li>小写处理</li></ul></li><li>Simple Analyzer<ul><li>按照非字母切分</li><li>小写处理</li></ul></li><li>Whitespace Analyzer<ul><li>空白字符作为分隔符</li></ul></li><li>Stop Analyzer<ul><li>相比Simple Analyzer多了去除请用词处理</li><li>停用词指语气助词等修饰性词语，如the, an, 的， 这等</li></ul></li><li>Keyword Analyzer<ul><li>不分词，直接将输入作为一个单词输出</li></ul></li><li>Pattern Analyzer<ul><li>通过正则表达式自定义分隔符</li><li>默认是\W+，即非字词的符号作为分隔符</li></ul></li><li>Language Analyzer<ul><li>提供了30+种常见语言的分词器</li></ul></li></ul><p>示例：停用词分词器</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;stop&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;The 2 QUICK Brown Foxes jumped over the lazy dog&apos;s bone.&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>结果</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;quick&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 6,</span><br><span class="line">      &quot;end_offset&quot;: 11,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;brown&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 12,</span><br><span class="line">      &quot;end_offset&quot;: 17,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;foxes&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 18,</span><br><span class="line">      &quot;end_offset&quot;: 23,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 3</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;jumped&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 24,</span><br><span class="line">      &quot;end_offset&quot;: 30,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 4</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;over&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 31,</span><br><span class="line">      &quot;end_offset&quot;: 35,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 5</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;lazy&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 40,</span><br><span class="line">      &quot;end_offset&quot;: 44,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 7</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;dog&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 45,</span><br><span class="line">      &quot;end_offset&quot;: 48,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 8</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;s&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 49,</span><br><span class="line">      &quot;end_offset&quot;: 50,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 9</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;bone&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 51,</span><br><span class="line">      &quot;end_offset&quot;: 55,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 10</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h3 id="中文分词"><a href="#中文分词" class="headerlink" title="中文分词"></a>中文分词</h3><ul><li>难点<ul><li>中文分词指的是将一个汉字序列切分为一个一个的单独的词。在英文中，单词之间以空格作为自然分界词，汉语中词没有一个形式上的分界符</li><li>上下文不同，分词结果迥异，比如交叉歧义问题</li></ul></li><li>常见分词系统<ul><li><a href="https://github.com/medcl/elasticsearch-analysis-ik" rel="external nofollow noopener noreferrer" target="_blank">IK</a>：实现中英文单词的切分，可自定义词库，支持热更新分词词典</li><li><a href="https://github.com/sing1ee/elasticsearch-jieba-plugin" rel="external nofollow noopener noreferrer" target="_blank">jieba</a>：支持分词和词性标注，支持繁体分词，自定义词典，并行分词等</li><li><a href="https://github.com/hankcs/HanLP" rel="external nofollow noopener noreferrer" target="_blank">Hanlp</a>：由一系列模型与算法组成的Java工具包，目标是普及自然语言处理在生产环境中的应用</li><li><a href="https://github.com/microbun/elasticsearch-thulac-plugin" rel="external nofollow noopener noreferrer" target="_blank">THUAC</a>：中文分词和词性标注</li></ul></li></ul><h4 id="安装ik中文分词插件"><a href="#安装ik中文分词插件" class="headerlink" title="安装ik中文分词插件"></a>安装ik中文分词插件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 在Elasticsearch安装目录下执行命令，然后重启es</span><br><span class="line">bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.3.0/elasticsearch-analysis-ik-6.3.0.zip</span><br><span class="line"></span><br><span class="line"># 如果由于网络慢，安装失败，可以先下载好zip压缩包，将下面命令改为实际的路径，执行，然后重启es</span><br><span class="line">bin/elasticsearch-plugin install file:///path/to/elasticsearch-analysis-ik-6.3.0.zip</span><br></pre></td></tr></table></figure><ul><li>ik测试 - ik_smart</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;ik_smart&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;公安部：各地校车将享最高路权&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;公安部&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 3,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;各地&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 4,</span><br><span class="line">      &quot;end_offset&quot;: 6,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;校车&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 6,</span><br><span class="line">      &quot;end_offset&quot;: 8,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;将&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 8,</span><br><span class="line">      &quot;end_offset&quot;: 9,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 3</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;享&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 9,</span><br><span class="line">      &quot;end_offset&quot;: 10,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 4</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;最高&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 10,</span><br><span class="line">      &quot;end_offset&quot;: 12,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 5</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;路&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 12,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 6</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;权&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 13,</span><br><span class="line">      &quot;end_offset&quot;: 14,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 7</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>ik测试 - ik_max_word</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;ik_max_word&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;公安部：各地校车将享最高路权&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;公安部&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 3,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;公安&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 2,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;部&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 2,</span><br><span class="line">      &quot;end_offset&quot;: 3,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;各地&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 4,</span><br><span class="line">      &quot;end_offset&quot;: 6,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 3</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;校车&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 6,</span><br><span class="line">      &quot;end_offset&quot;: 8,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 4</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;将&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 8,</span><br><span class="line">      &quot;end_offset&quot;: 9,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 5</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;享&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 9,</span><br><span class="line">      &quot;end_offset&quot;: 10,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 6</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;最高&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 10,</span><br><span class="line">      &quot;end_offset&quot;: 12,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 7</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;路&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 12,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 8</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;权&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 13,</span><br><span class="line">      &quot;end_offset&quot;: 14,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 9</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>ik两种分词模式ik_max_word 和 ik_smart 什么区别?<ul><li>ik_max_word: 会将文本做最细粒度的拆分，比如会将“中华人民共和国国歌”拆分为“中华人民共和国,中华人民,中华,华人,人民共和国,人民,人,民,共和国,共和,和,国国,国歌”，会穷尽各种可能的组合；</li><li>ik_smart: 会做最粗粒度的拆分，比如会将“中华人民共和国国歌”拆分为“中华人民共和国,国歌”。</li></ul></li></ul><h3 id="自定义分词"><a href="#自定义分词" class="headerlink" title="自定义分词"></a>自定义分词</h3><p>当自带的分词无法满足需求时，可以自定义分词，通过定义Character Filters、Tokenizer和Token Filters实现</p><h4 id="Character-Filters"><a href="#Character-Filters" class="headerlink" title="Character Filters"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-charfilters.html" rel="external nofollow noopener noreferrer" target="_blank">Character Filters</a></h4><ul><li>在Tokenizer之前对原始文本进行处理，比如增加、删除或替换字符等</li><li>自带的如下:<ul><li>HTML Strip Character Filter：去除HTML标签和转换HTML实体</li><li>Mapping Character Filter：进行字符替换操作</li><li>Pattern Replace Character Filter：进行正则匹配替换</li></ul></li><li>会影响后续tokenizer解析的position和offset信息</li></ul><h4 id="Character-Filters测试"><a href="#Character-Filters测试" class="headerlink" title="Character Filters测试"></a>Character Filters测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;keyword&quot;,</span><br><span class="line">  &quot;char_filter&quot;: [&quot;html_strip&quot;],</span><br><span class="line">  &quot;text&quot;: [&quot;&lt;p&gt;I&apos;m so &lt;b&gt;happy&lt;/b&gt;!&lt;/p&gt;&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">I&apos;m so happy!</span><br><span class="line"></span><br><span class="line">&quot;&quot;&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 32,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="Tokenizers"><a href="#Tokenizers" class="headerlink" title="Tokenizers"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenizers.html" rel="external nofollow noopener noreferrer" target="_blank">Tokenizers</a></h4><ul><li>将原始文本按照一定规则切分为单词（term or token）</li><li>自带的如下：<ul><li>standard 按照单词进行分割</li><li>letter 按照非字符类进行分割</li><li>whitespace 按照空格进行分割</li><li>UAX URL Email 按照standard进行分割，但不会分割邮箱和URL</li><li>Ngram 和 Edge NGram 连词分割</li><li>Path Hierarchy 按照文件路径进行分割</li></ul></li></ul><h4 id="Tokenizers-测试"><a href="#Tokenizers-测试" class="headerlink" title="Tokenizers 测试"></a>Tokenizers 测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;path_hierarchy&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;/path/to/file&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;/path&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 5,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;/path/to&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 8,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;/path/to/file&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="Token-Filters"><a href="#Token-Filters" class="headerlink" title="Token Filters"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenfilters.html" rel="external nofollow noopener noreferrer" target="_blank">Token Filters</a></h4><ul><li>对于tokenizer输出的单词（term）进行增加、删除、修改等操作</li><li>自带的如下：<ul><li>lowercase 将所有term转为小写</li><li>stop 删除停用词</li><li>Ngram 和 Edge NGram 连词分割</li><li>Synonym 添加近义词的term</li></ul></li></ul><h4 id="Token-Filters测试"><a href="#Token-Filters测试" class="headerlink" title="Token Filters测试"></a>Token Filters测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;text&quot;: [</span><br><span class="line">    &quot;a Hello World!&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &quot;stop&quot;,</span><br><span class="line">    &quot;lowercase&quot;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;ngram&quot;,</span><br><span class="line">      &quot;min_gram&quot;: 4,</span><br><span class="line">      &quot;max_gram&quot;: 4</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;hell&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 2,</span><br><span class="line">      &quot;end_offset&quot;: 7,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;ello&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 2,</span><br><span class="line">      &quot;end_offset&quot;: 7,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;worl&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 8,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;orld&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 8,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="自定义分词-1"><a href="#自定义分词-1" class="headerlink" title="自定义分词"></a>自定义分词</h4><p>自定义分词需要在索引配置中设定 char_filter、tokenizer、filter、analyzer等</p><p>自定义分词示例:</p><ul><li>分词器名称：my_custom\</li><li>过滤器将token转为大写</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">PUT test_index_1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">    &quot;analysis&quot;: &#123;</span><br><span class="line">      &quot;analyzer&quot;: &#123;</span><br><span class="line">        &quot;my_custom_analyzer&quot;: &#123;</span><br><span class="line">          &quot;type&quot;:      &quot;custom&quot;,</span><br><span class="line">          &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">          &quot;char_filter&quot;: [</span><br><span class="line">            &quot;html_strip&quot;</span><br><span class="line">          ],</span><br><span class="line">          &quot;filter&quot;: [</span><br><span class="line">            &quot;uppercase&quot;,</span><br><span class="line">            &quot;asciifolding&quot;</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="自定义分词器测试"><a href="#自定义分词器测试" class="headerlink" title="自定义分词器测试"></a>自定义分词器测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">POST test_index_1/_analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;my_custom_analyzer&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;&lt;p&gt;I&apos;m so &lt;b&gt;happy&lt;/b&gt;!&lt;/p&gt;&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;I&apos;M&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 3,</span><br><span class="line">      &quot;end_offset&quot;: 11,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;SO&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 12,</span><br><span class="line">      &quot;end_offset&quot;: 14,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;HAPPY&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 18,</span><br><span class="line">      &quot;end_offset&quot;: 27,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="分词使用说明"><a href="#分词使用说明" class="headerlink" title="分词使用说明"></a>分词使用说明</h4><p>分词会在如下两个时机使用：</p><ul><li>创建或更新文档时(Index Time)，会对相应的文档进行分词处理</li><li>查询时（Search Time），会对查询语句进行分词<ul><li>查询时通过analyzer指定分词器</li><li>通过index mapping设置search_analyzer实现</li><li>一般不需要特别指定查询时分词器，直接使用索引分词器即可，否则会出现无法匹配的情况</li></ul></li></ul><h4 id="分词使用建议"><a href="#分词使用建议" class="headerlink" title="分词使用建议"></a>分词使用建议</h4><ul><li>明确字段是否需要分词，不需要分词的字段就将type设置为keyword，可以节省空间和提高写性能</li><li>善用_analyze API，查看文档的分词结果</li></ul><blockquote><p>本文转自： <a href="http://laijianfeng.org/2018/08/%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95%E4%B8%8E%E5%88%86%E8%AF%8D/" rel="external nofollow noopener noreferrer" target="_blank">倒排索引和分词</a></p></blockquote></div><div id="wechat_subscriber" style="display:block;padding:10px 0;margin:20px auto;width:100%;text-align:center"> <img id="wechat_subscriber_qcode" src="/images/wechat_subscribe_qrcode.jpg" alt="Mervyn wechat" style="width:200px;max-width:100%"><div>欢迎关注我的个人公众号</div></div><div><div id="reward-container"><div></div> <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';"> 打赏</button><div id="qr" style="display:none"><div style="display:inline-block"> <img src="/images/wepay.jpeg" alt="Mervyn 微信支付"><p>微信支付</p></div><div style="display:inline-block"> <img src="/images/alipay.jpeg" alt="Mervyn 支付宝"><p>支付宝</p></div></div></div></div><div><ul class="post-copyright"><li class="post-copyright-author"> <strong>本文作者：</strong> Mervyn</li><li class="post-copyright-link"> <strong>本文链接：</strong> <a href="https://www.mervyntang.com/232.html" title="【转】Elasticsearch | 倒排索引与分词">https://www.mervyntang.com/232.html</a></li><li class="post-copyright-license"> <strong>版权声明：</strong> 本博客所有文章除特别声明外，均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-CN" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-creative-commons"></i> BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div><footer class="post-footer"><div class="post-tags"> <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/163.html" rel="next" title="大流量web开发常用套路"><i class="fa fa-chevron-left"></i> 大流量web开发常用套路</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/311.html" rel="prev" title="设计模式| 观察者模式">设计模式| 观察者模式<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article></div></div><div class="comments" id="gitalk-container"></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><div class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/images/avatar.jpeg" alt="Mervyn"><p class="site-author-name" itemprop="name">Mervyn</p><div class="site-description motion-element" itemprop="description">Coding Change Our Life</div></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">61</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/"><span class="site-state-item-count">16</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/"><span class="site-state-item-count">37</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/Mervyn1205" title="GitHub &rarr; https://github.com/Mervyn1205" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="mailto:ttz5127@163.com" title="E-Mail &rarr; mailto:ttz5127@163.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i> E-Mail</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-block"><div class="links-of-blogroll-title"><i class="fa fa-fw fa-link"></i> Links</div><ul class="links-of-blogroll-list"><li class="links-of-blogroll-item"> <a href="https://www.mervyntang.com" title="https://www.mervyntang.com">Mervyn</a></li><li class="links-of-blogroll-item"> <a href="https://mervyn1205.github.io/linux-command" title="https://mervyn1205.github.io/linux-command" rel="external nofollow noopener noreferrer" target="_blank">Linux 命令查找</a></li></ul></div></div></div><div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#倒排索引"><span class="nav-number">1.</span> <span class="nav-text">倒排索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#倒排索引-查询过程"><span class="nav-number">1.1.</span> <span class="nav-text">倒排索引-查询过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#倒排索引-组成"><span class="nav-number">1.2.</span> <span class="nav-text">倒排索引-组成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单词词典（Term-Dictionary）"><span class="nav-number">1.3.</span> <span class="nav-text">单词词典（Term Dictionary）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#倒排列表（Posting-List）"><span class="nav-number">1.4.</span> <span class="nav-text">倒排列表（Posting List）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分词"><span class="nav-number">2.</span> <span class="nav-text">分词</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分词器"><span class="nav-number">2.1.</span> <span class="nav-text">分词器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Analyze-API"><span class="nav-number">3.</span> <span class="nav-text">Analyze API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预定义的分词器"><span class="nav-number">4.</span> <span class="nav-text">预定义的分词器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中文分词"><span class="nav-number">5.</span> <span class="nav-text">中文分词</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装ik中文分词插件"><span class="nav-number">5.1.</span> <span class="nav-text">安装ik中文分词插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义分词"><span class="nav-number">6.</span> <span class="nav-text">自定义分词</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Character-Filters"><span class="nav-number">6.1.</span> <span class="nav-text">Character Filters</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Character-Filters测试"><span class="nav-number">6.2.</span> <span class="nav-text">Character Filters测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tokenizers"><span class="nav-number">6.3.</span> <span class="nav-text">Tokenizers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tokenizers-测试"><span class="nav-number">6.4.</span> <span class="nav-text">Tokenizers 测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Token-Filters"><span class="nav-number">6.5.</span> <span class="nav-text">Token Filters</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Token-Filters测试"><span class="nav-number">6.6.</span> <span class="nav-text">Token Filters测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义分词-1"><span class="nav-number">6.7.</span> <span class="nav-text">自定义分词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义分词器测试"><span class="nav-number">6.8.</span> <span class="nav-text">自定义分词器测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分词使用说明"><span class="nav-number">6.9.</span> <span class="nav-text">分词使用说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分词使用建议"><span class="nav-number">6.10.</span> <span class="nav-text">分词使用建议</span></a></li></ol></li></ol></div></div></div></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright"> <a href="http://www.beian.miit.gov.cn" rel="external nofollow noopener noreferrer" target="_blank">粤ICP备17078907号</a> &copy; <span itemprop="copyrightYear">2019</span><span class="with-love" id="animate"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">Mervyn</span></div><div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> 强力驱动 v3.8.0</div> <span class="post-meta-divider">|</span><div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Gemini</a> v7.2.0</div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div></div><script>"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script src="/lib/jquery/index.js?v=3.4.1"></script><script src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="/js/utils.js?v=7.2.0"></script><script src="/js/motion.js?v=7.2.0"></script><script src="/js/affix.js?v=7.2.0"></script><script src="/js/schemes/pisces.js?v=7.2.0"></script><script src="/js/scrollspy.js?v=7.2.0"></script><script src="/js/post-details.js?v=7.2.0"></script><script src="/js/next-boot.js?v=7.2.0"></script><script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css"><script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script><script>var gitalk=new Gitalk({clientID:"3e61105cf8077806c053",clientSecret:"2f26a9a24d9ea0c1f5a94dceb7d59be07de6fc45",repo:"mervyn1205.github.io",owner:"Mervyn1205",admin:["Mervyn1205"],id:md5(location.pathname),language:window.navigator.language||window.navigator.userLanguage,distractionFreeMode:"true"});gitalk.render("gitalk-container")</script><script>
-  $('.highlight').not('.gist .highlight').each(function(i, e) {
-    var $wrap = $('<div>').addClass('highlight-wrap');
-    $(e).after($wrap);
-    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
-      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
-        return $(e).text();
-      }).toArray().join('\n');
-      var ta = document.createElement('textarea');
-      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
-      ta.style.top = yPosition + 'px'; // Prevent page scroll
-      ta.style.position = 'absolute';
-      ta.style.opacity = '0';
-      ta.readOnly = true;
-      ta.value = code;
-      document.body.appendChild(ta);
-      const selection = document.getSelection();
-      const selected = selection.rangeCount > 0 ? selection.getRangeAt(0) : false;
-      ta.select();
-      ta.setSelectionRange(0, code.length);
-      ta.readOnly = false;
-      var result = document.execCommand('copy');
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Elasticsearch,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="倒排索引 正排索引：文档id到单词的关联关系 倒排索引：单词到文档id的关联关系  示例：对以下三个文档去除停用词后构造倒排索引  倒排索引-查询过程查询包含“搜索引擎”的文档  通过倒排索引获得“搜索引擎”对应的文档id列表，有1，3 通过正排索引查询1和3的完整内容 返回最终结果  倒排索引-组成 单词词典（Term Dictionary） 倒排列表（Posting List）  单词词典（T">
+<meta name="keywords" content="Elasticsearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【转】Elasticsearch | 倒排索引与分词">
+<meta property="og:url" content="https://www.mervyntang.com/232.html">
+<meta property="og:site_name" content="Mervyn&#39;s Blog">
+<meta property="og:description" content="倒排索引 正排索引：文档id到单词的关联关系 倒排索引：单词到文档id的关联关系  示例：对以下三个文档去除停用词后构造倒排索引  倒排索引-查询过程查询包含“搜索引擎”的文档  通过倒排索引获得“搜索引擎”对应的文档id列表，有1，3 通过正排索引查询1和3的完整内容 返回最终结果  倒排索引-组成 单词词典（Term Dictionary） 倒排列表（Posting List）  单词词典（T">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140101.png">
+<meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140102.png">
+<meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140103.png">
+<meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140104.png">
+<meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140105.png">
+<meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140106.png">
+<meta property="og:image" content="https://www.mervyntang.com/images/posts/2018/201812140107.png">
+<meta property="og:updated_time" content="2018-12-14T12:46:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【转】Elasticsearch | 倒排索引与分词">
+<meta name="twitter:description" content="倒排索引 正排索引：文档id到单词的关联关系 倒排索引：单词到文档id的关联关系  示例：对以下三个文档去除停用词后构造倒排索引  倒排索引-查询过程查询包含“搜索引擎”的文档  通过倒排索引获得“搜索引擎”对应的文档id列表，有1，3 通过正排索引查询1和3的完整内容 返回最终结果  倒排索引-组成 单词词典（Term Dictionary） 倒排列表（Posting List）  单词词典（T">
+<meta name="twitter:image" content="https://www.mervyntang.com/images/posts/2018/201812140101.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.mervyntang.com/232.html">
+
+
+
+
+
+  <title>【转】Elasticsearch | 倒排索引与分词 | Mervyn's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?05d754b9fcfd6144ad1210688d2c72d8";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mervyn's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
       
-        if (result) $(this).text('复制成功');
-        else $(this).text('复制失败');
+        <h1 class="site-subtitle" itemprop="description"></h1>
       
-      ta.blur(); // For iOS
-      $(this).blur();
-      if (selected) {
-        selection.removeAllRanges();
-        selection.addRange(selected);
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/232.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">【转】Elasticsearch | 倒排索引与分词</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-14T20:46:25+08:00">
+                2018-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NoSQL/" itemprop="url" rel="index">
+                    <span itemprop="name">NoSQL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/232.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/232.html" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h3><ul>
+<li>正排索引：文档id到单词的关联关系</li>
+<li>倒排索引：单词到文档id的关联关系</li>
+</ul>
+<p>示例：<br>对以下三个文档去除停用词后构造倒排索引</p>
+<p><img src="/images/posts/2018/201812140101.png" alt></p>
+<h4 id="倒排索引-查询过程"><a href="#倒排索引-查询过程" class="headerlink" title="倒排索引-查询过程"></a>倒排索引-查询过程</h4><p>查询包含“搜索引擎”的文档</p>
+<ol>
+<li>通过倒排索引获得“搜索引擎”对应的文档id列表，有1，3</li>
+<li>通过正排索引查询1和3的完整内容</li>
+<li>返回最终结果</li>
+</ol>
+<h4 id="倒排索引-组成"><a href="#倒排索引-组成" class="headerlink" title="倒排索引-组成"></a>倒排索引-组成</h4><ul>
+<li>单词词典（Term Dictionary）</li>
+<li>倒排列表（Posting List）</li>
+</ul>
+<h4 id="单词词典（Term-Dictionary）"><a href="#单词词典（Term-Dictionary）" class="headerlink" title="单词词典（Term Dictionary）"></a>单词词典（Term Dictionary）</h4><p>单词词典的实现一般用B+树，B+树构造的可视化过程网址: <a href="https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html" rel="external nofollow noopener noreferrer" target="_blank">B+ Tree Visualization</a></p>
+<blockquote>
+<p>关于B树和B+树</p>
+<ol>
+<li><a href="https://zh.wikipedia.org/wiki/B%E6%A0%91" rel="external nofollow noopener noreferrer" target="_blank">维基百科-B树</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/B%2B%E6%A0%91" rel="external nofollow noopener noreferrer" target="_blank">维基百科-B+树</a></li>
+<li><a href="https://www.cnblogs.com/nullzx/p/8729425.html" rel="external nofollow noopener noreferrer" target="_blank">B树和B+树的插入、删除图文详解</a></li>
+</ol>
+</blockquote>
+<p><img src="/images/posts/2018/201812140102.png" alt></p>
+<h4 id="倒排列表（Posting-List）"><a href="#倒排列表（Posting-List）" class="headerlink" title="倒排列表（Posting List）"></a>倒排列表（Posting List）</h4><ul>
+<li>倒排列表记录了单词对应的文档集合，有倒排索引项（Posting）组成</li>
+<li>倒排索引项主要包含如下信息：<ol>
+<li>文档id用于获取原始信息</li>
+<li>单词频率（TF，Term Frequency），记录该单词在该文档中出现的次数，用于后续相关性算分</li>
+<li>位置（Posting），记录单词在文档中的分词位置（多个），用于做词语搜索（Phrase Query）</li>
+<li>偏移（Offset），记录单词在文档的开始和结束位置，用于高亮显示</li>
+</ol>
+</li>
+</ul>
+<p><img src="/images/posts/2018/201812140103.png" alt></p>
+<p>B+树<strong>内部结点存索引，叶子结点存数据</strong>，这里的 单词词典就是B+树索引，倒排列表就是数据，整合在一起后如下所示</p>
+<p><img src="/images/posts/2018/201812140104.png" alt></p>
+<p>ES存储的是一个JSON格式的文档，其中包含多个字段，每个字段会有自己的倒排索引</p>
+<h3 id="分词"><a href="#分词" class="headerlink" title="分词"></a>分词</h3><p>分词是将文本转换成一系列单词（Term or Token）的过程，也可以叫文本分析，在ES里面称为Analysis</p>
+<p><img src="/images/posts/2018/201812140105.png" alt></p>
+<h4 id="分词器"><a href="#分词器" class="headerlink" title="分词器"></a>分词器</h4><p>分词器是ES中专门处理分词的组件，英文为Analyzer，它的组成如下：</p>
+<ul>
+<li>Character Filters：针对原始文本进行处理，比如去除html标签</li>
+<li>Tokenizer：将原始文本按照一定规则切分为单词</li>
+<li>Token Filters：针对Tokenizer处理的单词进行再加工，比如转小写、删除或增新等处理</li>
+</ul>
+<p>分词器调用顺序</p>
+<p><img src="/images/posts/2018/201812140106.png" alt></p>
+<h3 id="Analyze-API"><a href="#Analyze-API" class="headerlink" title="Analyze API"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html" rel="external nofollow noopener noreferrer" target="_blank">Analyze API</a></h3><p>ES提供了一个可以测试分词的API接口，方便验证分词效果，endpoint是_analyze</p>
+<ul>
+<li>可以直接指定analyzer进行测试</li>
+</ul>
+<p><img src="/images/posts/2018/201812140107.png" alt></p>
+<ul>
+<li>可以直接指定索引中的字段进行测试</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">POST test_index/doc</span><br><span class="line">&#123;</span><br><span class="line">  &quot;username&quot;: &quot;whirly&quot;,</span><br><span class="line">  &quot;age&quot;:22</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST test_index/_analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;field&quot;: &quot;username&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;hello world&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>可以自定义分词器进行测试</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [&quot;lowercase&quot;],</span><br><span class="line">  &quot;text&quot;: [&quot;Hello World&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="预定义的分词器"><a href="#预定义的分词器" class="headerlink" title="预定义的分词器"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html" rel="external nofollow noopener noreferrer" target="_blank">预定义的分词器</a></h3><p>ES自带的分词器有如下：</p>
+<ul>
+<li>Standard Analyzer<ul>
+<li>默认分词器</li>
+<li>按词切分，支持多语言</li>
+<li>小写处理</li>
+</ul>
+</li>
+<li>Simple Analyzer<ul>
+<li>按照非字母切分</li>
+<li>小写处理</li>
+</ul>
+</li>
+<li>Whitespace Analyzer<ul>
+<li>空白字符作为分隔符</li>
+</ul>
+</li>
+<li>Stop Analyzer<ul>
+<li>相比Simple Analyzer多了去除请用词处理</li>
+<li>停用词指语气助词等修饰性词语，如the, an, 的， 这等</li>
+</ul>
+</li>
+<li>Keyword Analyzer<ul>
+<li>不分词，直接将输入作为一个单词输出</li>
+</ul>
+</li>
+<li>Pattern Analyzer<ul>
+<li>通过正则表达式自定义分隔符</li>
+<li>默认是\W+，即非字词的符号作为分隔符</li>
+</ul>
+</li>
+<li>Language Analyzer<ul>
+<li>提供了30+种常见语言的分词器</li>
+</ul>
+</li>
+</ul>
+<p>示例：停用词分词器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;stop&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;The 2 QUICK Brown Foxes jumped over the lazy dog&apos;s bone.&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;quick&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 6,</span><br><span class="line">      &quot;end_offset&quot;: 11,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;brown&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 12,</span><br><span class="line">      &quot;end_offset&quot;: 17,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;foxes&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 18,</span><br><span class="line">      &quot;end_offset&quot;: 23,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 3</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;jumped&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 24,</span><br><span class="line">      &quot;end_offset&quot;: 30,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 4</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;over&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 31,</span><br><span class="line">      &quot;end_offset&quot;: 35,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 5</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;lazy&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 40,</span><br><span class="line">      &quot;end_offset&quot;: 44,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 7</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;dog&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 45,</span><br><span class="line">      &quot;end_offset&quot;: 48,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 8</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;s&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 49,</span><br><span class="line">      &quot;end_offset&quot;: 50,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 9</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;bone&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 51,</span><br><span class="line">      &quot;end_offset&quot;: 55,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 10</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="中文分词"><a href="#中文分词" class="headerlink" title="中文分词"></a>中文分词</h3><ul>
+<li>难点<ul>
+<li>中文分词指的是将一个汉字序列切分为一个一个的单独的词。在英文中，单词之间以空格作为自然分界词，汉语中词没有一个形式上的分界符</li>
+<li>上下文不同，分词结果迥异，比如交叉歧义问题</li>
+</ul>
+</li>
+<li>常见分词系统<ul>
+<li><a href="https://github.com/medcl/elasticsearch-analysis-ik" rel="external nofollow noopener noreferrer" target="_blank">IK</a>：实现中英文单词的切分，可自定义词库，支持热更新分词词典</li>
+<li><a href="https://github.com/sing1ee/elasticsearch-jieba-plugin" rel="external nofollow noopener noreferrer" target="_blank">jieba</a>：支持分词和词性标注，支持繁体分词，自定义词典，并行分词等</li>
+<li><a href="https://github.com/hankcs/HanLP" rel="external nofollow noopener noreferrer" target="_blank">Hanlp</a>：由一系列模型与算法组成的Java工具包，目标是普及自然语言处理在生产环境中的应用</li>
+<li><a href="https://github.com/microbun/elasticsearch-thulac-plugin" rel="external nofollow noopener noreferrer" target="_blank">THUAC</a>：中文分词和词性标注</li>
+</ul>
+</li>
+</ul>
+<h4 id="安装ik中文分词插件"><a href="#安装ik中文分词插件" class="headerlink" title="安装ik中文分词插件"></a>安装ik中文分词插件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 在Elasticsearch安装目录下执行命令，然后重启es</span><br><span class="line">bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.3.0/elasticsearch-analysis-ik-6.3.0.zip</span><br><span class="line"></span><br><span class="line"># 如果由于网络慢，安装失败，可以先下载好zip压缩包，将下面命令改为实际的路径，执行，然后重启es</span><br><span class="line">bin/elasticsearch-plugin install file:///path/to/elasticsearch-analysis-ik-6.3.0.zip</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ik测试 - ik_smart</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;ik_smart&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;公安部：各地校车将享最高路权&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;公安部&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 3,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;各地&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 4,</span><br><span class="line">      &quot;end_offset&quot;: 6,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;校车&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 6,</span><br><span class="line">      &quot;end_offset&quot;: 8,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;将&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 8,</span><br><span class="line">      &quot;end_offset&quot;: 9,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 3</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;享&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 9,</span><br><span class="line">      &quot;end_offset&quot;: 10,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 4</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;最高&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 10,</span><br><span class="line">      &quot;end_offset&quot;: 12,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 5</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;路&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 12,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 6</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;权&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 13,</span><br><span class="line">      &quot;end_offset&quot;: 14,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 7</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ik测试 - ik_max_word</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;ik_max_word&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;公安部：各地校车将享最高路权&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;公安部&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 3,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;公安&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 2,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;部&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 2,</span><br><span class="line">      &quot;end_offset&quot;: 3,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;各地&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 4,</span><br><span class="line">      &quot;end_offset&quot;: 6,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 3</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;校车&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 6,</span><br><span class="line">      &quot;end_offset&quot;: 8,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 4</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;将&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 8,</span><br><span class="line">      &quot;end_offset&quot;: 9,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 5</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;享&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 9,</span><br><span class="line">      &quot;end_offset&quot;: 10,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 6</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;最高&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 10,</span><br><span class="line">      &quot;end_offset&quot;: 12,</span><br><span class="line">      &quot;type&quot;: &quot;CN_WORD&quot;,</span><br><span class="line">      &quot;position&quot;: 7</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;路&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 12,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 8</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;权&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 13,</span><br><span class="line">      &quot;end_offset&quot;: 14,</span><br><span class="line">      &quot;type&quot;: &quot;CN_CHAR&quot;,</span><br><span class="line">      &quot;position&quot;: 9</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ik两种分词模式ik_max_word 和 ik_smart 什么区别?<ul>
+<li>ik_max_word: 会将文本做最细粒度的拆分，比如会将“中华人民共和国国歌”拆分为“中华人民共和国,中华人民,中华,华人,人民共和国,人民,人,民,共和国,共和,和,国国,国歌”，会穷尽各种可能的组合；</li>
+<li>ik_smart: 会做最粗粒度的拆分，比如会将“中华人民共和国国歌”拆分为“中华人民共和国,国歌”。</li>
+</ul>
+</li>
+</ul>
+<h3 id="自定义分词"><a href="#自定义分词" class="headerlink" title="自定义分词"></a>自定义分词</h3><p>当自带的分词无法满足需求时，可以自定义分词，通过定义Character Filters、Tokenizer和Token Filters实现</p>
+<h4 id="Character-Filters"><a href="#Character-Filters" class="headerlink" title="Character Filters"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-charfilters.html" rel="external nofollow noopener noreferrer" target="_blank">Character Filters</a></h4><ul>
+<li>在Tokenizer之前对原始文本进行处理，比如增加、删除或替换字符等</li>
+<li>自带的如下:<ul>
+<li>HTML Strip Character Filter：去除HTML标签和转换HTML实体</li>
+<li>Mapping Character Filter：进行字符替换操作</li>
+<li>Pattern Replace Character Filter：进行正则匹配替换</li>
+</ul>
+</li>
+<li>会影响后续tokenizer解析的position和offset信息</li>
+</ul>
+<h4 id="Character-Filters测试"><a href="#Character-Filters测试" class="headerlink" title="Character Filters测试"></a>Character Filters测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;keyword&quot;,</span><br><span class="line">  &quot;char_filter&quot;: [&quot;html_strip&quot;],</span><br><span class="line">  &quot;text&quot;: [&quot;&lt;p&gt;I&apos;m so &lt;b&gt;happy&lt;/b&gt;!&lt;/p&gt;&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">I&apos;m so happy!</span><br><span class="line"></span><br><span class="line">&quot;&quot;&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 32,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Tokenizers"><a href="#Tokenizers" class="headerlink" title="Tokenizers"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenizers.html" rel="external nofollow noopener noreferrer" target="_blank">Tokenizers</a></h4><ul>
+<li>将原始文本按照一定规则切分为单词（term or token）</li>
+<li>自带的如下：<ul>
+<li>standard 按照单词进行分割</li>
+<li>letter 按照非字符类进行分割</li>
+<li>whitespace 按照空格进行分割</li>
+<li>UAX URL Email 按照standard进行分割，但不会分割邮箱和URL</li>
+<li>Ngram 和 Edge NGram 连词分割</li>
+<li>Path Hierarchy 按照文件路径进行分割</li>
+</ul>
+</li>
+</ul>
+<h4 id="Tokenizers-测试"><a href="#Tokenizers-测试" class="headerlink" title="Tokenizers 测试"></a>Tokenizers 测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokenizer&quot;: &quot;path_hierarchy&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;/path/to/file&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;/path&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 5,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;/path/to&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 8,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;/path/to/file&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 0,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;word&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Token-Filters"><a href="#Token-Filters" class="headerlink" title="Token Filters"></a><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenfilters.html" rel="external nofollow noopener noreferrer" target="_blank">Token Filters</a></h4><ul>
+<li>对于tokenizer输出的单词（term）进行增加、删除、修改等操作</li>
+<li>自带的如下：<ul>
+<li>lowercase 将所有term转为小写</li>
+<li>stop 删除停用词</li>
+<li>Ngram 和 Edge NGram 连词分割</li>
+<li>Synonym 添加近义词的term</li>
+</ul>
+</li>
+</ul>
+<h4 id="Token-Filters测试"><a href="#Token-Filters测试" class="headerlink" title="Token Filters测试"></a>Token Filters测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">POST _analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;text&quot;: [</span><br><span class="line">    &quot;a Hello World!&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">  &quot;filter&quot;: [</span><br><span class="line">    &quot;stop&quot;,</span><br><span class="line">    &quot;lowercase&quot;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;ngram&quot;,</span><br><span class="line">      &quot;min_gram&quot;: 4,</span><br><span class="line">      &quot;max_gram&quot;: 4</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;hell&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 2,</span><br><span class="line">      &quot;end_offset&quot;: 7,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;ello&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 2,</span><br><span class="line">      &quot;end_offset&quot;: 7,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;worl&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 8,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;orld&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 8,</span><br><span class="line">      &quot;end_offset&quot;: 13,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="自定义分词-1"><a href="#自定义分词-1" class="headerlink" title="自定义分词"></a>自定义分词</h4><p>自定义分词需要在索引配置中设定 char_filter、tokenizer、filter、analyzer等</p>
+<p>自定义分词示例:</p>
+<ul>
+<li>分词器名称：my_custom\</li>
+<li>过滤器将token转为大写</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">PUT test_index_1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">    &quot;analysis&quot;: &#123;</span><br><span class="line">      &quot;analyzer&quot;: &#123;</span><br><span class="line">        &quot;my_custom_analyzer&quot;: &#123;</span><br><span class="line">          &quot;type&quot;:      &quot;custom&quot;,</span><br><span class="line">          &quot;tokenizer&quot;: &quot;standard&quot;,</span><br><span class="line">          &quot;char_filter&quot;: [</span><br><span class="line">            &quot;html_strip&quot;</span><br><span class="line">          ],</span><br><span class="line">          &quot;filter&quot;: [</span><br><span class="line">            &quot;uppercase&quot;,</span><br><span class="line">            &quot;asciifolding&quot;</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="自定义分词器测试"><a href="#自定义分词器测试" class="headerlink" title="自定义分词器测试"></a>自定义分词器测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">POST test_index_1/_analyze</span><br><span class="line">&#123;</span><br><span class="line">  &quot;analyzer&quot;: &quot;my_custom_analyzer&quot;,</span><br><span class="line">  &quot;text&quot;: [&quot;&lt;p&gt;I&apos;m so &lt;b&gt;happy&lt;/b&gt;!&lt;/p&gt;&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 结果</span><br><span class="line">&#123;</span><br><span class="line">  &quot;tokens&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;I&apos;M&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 3,</span><br><span class="line">      &quot;end_offset&quot;: 11,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;SO&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 12,</span><br><span class="line">      &quot;end_offset&quot;: 14,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;token&quot;: &quot;HAPPY&quot;,</span><br><span class="line">      &quot;start_offset&quot;: 18,</span><br><span class="line">      &quot;end_offset&quot;: 27,</span><br><span class="line">      &quot;type&quot;: &quot;&lt;ALPHANUM&gt;&quot;,</span><br><span class="line">      &quot;position&quot;: 2</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="分词使用说明"><a href="#分词使用说明" class="headerlink" title="分词使用说明"></a>分词使用说明</h4><p>分词会在如下两个时机使用：</p>
+<ul>
+<li>创建或更新文档时(Index Time)，会对相应的文档进行分词处理</li>
+<li>查询时（Search Time），会对查询语句进行分词<ul>
+<li>查询时通过analyzer指定分词器</li>
+<li>通过index mapping设置search_analyzer实现</li>
+<li>一般不需要特别指定查询时分词器，直接使用索引分词器即可，否则会出现无法匹配的情况</li>
+</ul>
+</li>
+</ul>
+<h4 id="分词使用建议"><a href="#分词使用建议" class="headerlink" title="分词使用建议"></a>分词使用建议</h4><ul>
+<li>明确字段是否需要分词，不需要分词的字段就将type设置为keyword，可以节省空间和提高写性能</li>
+<li>善用_analyze API，查看文档的分词结果</li>
+</ul>
+<blockquote>
+<p>本文转自： <a href="http://laijianfeng.org/2018/08/%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95%E4%B8%8E%E5%88%86%E8%AF%8D/" rel="external nofollow noopener noreferrer" target="_blank">倒排索引和分词</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat_subscribe_qrcode.jpg" alt="Mervyn wechat" style="width: 200px; max-width: 100%;">
+    <div>欢迎关注我的个人公众号</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wepay.jpeg" alt="Mervyn WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="Mervyn Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/163.html" rel="next" title="大流量web开发常用套路">
+                <i class="fa fa-chevron-left"></i> 大流量web开发常用套路
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/311.html" rel="prev" title="设计模式| 观察者模式">
+                设计模式| 观察者模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpeg" alt="Mervyn">
+            
+              <p class="site-author-name" itemprop="name">Mervyn</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Mervyn1205" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ttz5127@163.com" target="_blank" title="E-Mail" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank" rel="external nofollow noopener noreferrer">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons">
+              </a>
+            </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.mervyntang.com" title="Mervyn" target="_blank">Mervyn</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://mervyn1205.github.io/linux-command" title="Linux 命令查找" target="_blank" rel="external nofollow noopener noreferrer">Linux 命令查找</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#倒排索引"><span class="nav-number">1.</span> <span class="nav-text">倒排索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#倒排索引-查询过程"><span class="nav-number">1.1.</span> <span class="nav-text">倒排索引-查询过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#倒排索引-组成"><span class="nav-number">1.2.</span> <span class="nav-text">倒排索引-组成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单词词典（Term-Dictionary）"><span class="nav-number">1.3.</span> <span class="nav-text">单词词典（Term Dictionary）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#倒排列表（Posting-List）"><span class="nav-number">1.4.</span> <span class="nav-text">倒排列表（Posting List）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分词"><span class="nav-number">2.</span> <span class="nav-text">分词</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分词器"><span class="nav-number">2.1.</span> <span class="nav-text">分词器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Analyze-API"><span class="nav-number">3.</span> <span class="nav-text">Analyze API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预定义的分词器"><span class="nav-number">4.</span> <span class="nav-text">预定义的分词器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中文分词"><span class="nav-number">5.</span> <span class="nav-text">中文分词</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装ik中文分词插件"><span class="nav-number">5.1.</span> <span class="nav-text">安装ik中文分词插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义分词"><span class="nav-number">6.</span> <span class="nav-text">自定义分词</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Character-Filters"><span class="nav-number">6.1.</span> <span class="nav-text">Character Filters</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Character-Filters测试"><span class="nav-number">6.2.</span> <span class="nav-text">Character Filters测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tokenizers"><span class="nav-number">6.3.</span> <span class="nav-text">Tokenizers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tokenizers-测试"><span class="nav-number">6.4.</span> <span class="nav-text">Tokenizers 测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Token-Filters"><span class="nav-number">6.5.</span> <span class="nav-text">Token Filters</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Token-Filters测试"><span class="nav-number">6.6.</span> <span class="nav-text">Token Filters测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义分词-1"><span class="nav-number">6.7.</span> <span class="nav-text">自定义分词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义分词器测试"><span class="nav-number">6.8.</span> <span class="nav-text">自定义分词器测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分词使用说明"><span class="nav-number">6.9.</span> <span class="nav-text">分词使用说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分词使用建议"><span class="nav-number">6.10.</span> <span class="nav-text">分词使用建议</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mervyn</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io" rel="external nofollow noopener noreferrer">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next" rel="external nofollow noopener noreferrer">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: 'Mervyn1205',
+            repo: 'mervyn1205.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: '2f26a9a24d9ea0c1f5a94dceb7d59be07de6fc45',
+            
+                client_id: '3e61105cf8077806c053'
+            }});
+        gitment.render('gitment-container');
       }
-    })).on('mouseleave', function(e) {
-      var $b = $(this).find('.copy-btn');
-      setTimeout(function() {
-        $b.text('复制');
-      }, 300);
-    }).append(e);
-  })
-</script></body></html>
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
