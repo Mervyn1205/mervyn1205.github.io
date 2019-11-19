@@ -262,6 +262,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/25.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/25.html" itemprop="url">Docker常用命令</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-13T17:19:00+08:00">
+                2017-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevOps/" itemprop="url" rel="index">
+                    <span itemprop="name">DevOps</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="images相关命令"><a href="#images相关命令" class="headerlink" title="images相关命令"></a>images相关命令</h2><h3 id="编译一个镜像"><a href="#编译一个镜像" class="headerlink" title="编译一个镜像"></a>编译一个镜像</h3><p>根据当前目录下的Dockerfile创建<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls</span><br><span class="line">docker build -t friendlyhello .</span><br></pre></td></tr></table></figure></p>
+<h3 id="列出所有的镜像"><a href="#列出所有的镜像" class="headerlink" title="列出所有的镜像"></a>列出所有的镜像</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜ docker images</span><br><span class="line">REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">friendlyhello            latest              2e202abc6a75        23 hours ago        148MB</span><br></pre></td></tr></table></figure>
+<p>列出本机所有镜像<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image ls -a</span><br></pre></td></tr></table></figure></p>
+<h3 id="启动镜像"><a href="#启动镜像" class="headerlink" title="启动镜像"></a>启动镜像</h3><p>启动镜像的同时映射本地4000到容器的80端口</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 4000:80 friendlyhello</span><br><span class="line"><span class="comment">#等价于</span></span><br><span class="line">docker run -p 4000:80 friendlyhello:latest</span><br><span class="line"><span class="comment">#以守护进程的方式启动该镜像</span></span><br><span class="line">docker run -d -p 4000:80 friendlyhello</span><br></pre></td></tr></table></figure>
+<h3 id="拉取远端镜像仓库并执行"><a href="#拉取远端镜像仓库并执行" class="headerlink" title="拉取远端镜像仓库并执行"></a>拉取远端镜像仓库并执行</h3><p>如果镜像不在本地机器上，则从远端仓库中拉取到本地<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 4000:80 username/repository:tag</span><br></pre></td></tr></table></figure></p>
+<p><strong>PS:如果没有指定tag，则默认tag为latest</strong></p>
+<h3 id="给某个镜像打tag"><a href="#给某个镜像打tag" class="headerlink" title="给某个镜像打tag"></a>给某个镜像打tag</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker tag image  username/repository:tag</span><br></pre></td></tr></table></figure>
+<p>例如：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ docker tag friendlyhello  mervyn1205/get-started:part3</span><br></pre></td></tr></table></figure></p>
+<h3 id="发布镜像"><a href="#发布镜像" class="headerlink" title="发布镜像"></a>发布镜像</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push username/repository:tags</span><br></pre></td></tr></table></figure>
+<h3 id="删除镜像"><a href="#删除镜像" class="headerlink" title="删除镜像"></a>删除镜像</h3><p>删除指定镜像<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image rm &lt;image id&gt;</span><br></pre></td></tr></table></figure></p>
+<p>删除本机所有镜像<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image rm $(docker image ls -a -q)</span><br></pre></td></tr></table></figure></p>
+<h2 id="container相关命令"><a href="#container相关命令" class="headerlink" title="container相关命令"></a>container相关命令</h2><h3 id="列出正在运行的容器"><a href="#列出正在运行的容器" class="headerlink" title="列出正在运行的容器"></a>列出正在运行的容器</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker container ls</span><br><span class="line"><span class="comment"># 列出所有的容器，包括未执行的</span></span><br><span class="line">docker container ls -a</span><br></pre></td></tr></table></figure>
+<h3 id="列出某个正在运行的容器的IP"><a href="#列出某个正在运行的容器的IP" class="headerlink" title="列出某个正在运行的容器的IP"></a>列出某个正在运行的容器的IP</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker inspect --format=<span class="string">"&#123;&#123; .NetworkSettings.IPAddress &#125;&#125;"</span> CONTAINER_ID</span><br><span class="line"></span><br><span class="line">docker inspect -f <span class="string">'&#123;&#123;range .NetworkSettings.Networks&#125;&#125;&#123;&#123;.IPAddress&#125;&#125;&#123;&#123;end&#125;&#125;'</span> CONTAINER_ID</span><br></pre></td></tr></table></figure>
+<h3 id="停止某个正在运行的容器"><a href="#停止某个正在运行的容器" class="headerlink" title="停止某个正在运行的容器"></a>停止某个正在运行的容器</h3><p>优雅的停止指定容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container stop CONTAINER_ID</span><br></pre></td></tr></table></figure></p>
+<p>强制关闭指定容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container <span class="built_in">kill</span> &lt;<span class="built_in">hash</span>&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h3><p>从本地机器上删除指定容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container rm &lt;<span class="built_in">hash</span>&gt;</span><br></pre></td></tr></table></figure></p>
+<p>删除所有容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container rm $(docker container ls -a -q)</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/85.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -355,8 +514,8 @@
       
         
           
-            <h2 id="supervisor安装"><a href="#supervisor安装" class="headerlink" title="supervisor安装"></a>supervisor安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install supervisor</span><br><span class="line"><span class="meta">#</span> easy_install supervisor</span><br></pre></td></tr></table></figure>
-<p>supervisor安装完毕后，运行echo_supervisord_conf命令将内容重定向到<code>/etc/supervisord.conf</code><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">echo_supervisord_conf&gt;</span>/etc/supervisord.conf</span><br></pre></td></tr></table></figure></p>
+            <h2 id="supervisor安装"><a href="#supervisor安装" class="headerlink" title="supervisor安装"></a>supervisor安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install supervisor</span><br><span class="line"><span class="meta">#</span><span class="bash"> easy_install supervisor</span></span><br></pre></td></tr></table></figure>
+<p>supervisor安装完毕后，运行echo_supervisord_conf命令将内容重定向到<code>/etc/supervisord.conf</code><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">echo_supervisord_conf&gt;</span><span class="bash">/etc/supervisord.conf</span></span><br></pre></td></tr></table></figure></p>
 <p><code>mkdir /etc/supervisor</code><br>修改 <code>/etc/supervisord.conf</code> 部分区块<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[include]</span></span><br><span class="line"><span class="attr">files</span> = /etc/supervisor/*.ini</span><br></pre></td></tr></table></figure></p>
 <p>如果需要使用web访问控制supervisor，则修改 <code>/etc/supervisord.conf</code> 配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[inet_http_server]         ; inet (TCP) server disabled by default</span><br><span class="line">port=120.0.0.1:8001        ; ip_address:port specifier, *:port for all iface</span><br><span class="line">username=user              ; default is no username (open server)</span><br><span class="line">password=pass               ; default is no password (open server)</span><br></pre></td></tr></table></figure></p>
 <p>启动 supervisor<br><code>supervisord -c /etc/supervisord.conf</code></p>
@@ -1858,150 +2017,6 @@ package.json
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/293.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/293.html" itemprop="url">linux查看磁盘使用情况命令</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-29T16:29:00+08:00">
-                2017-04-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="linux查看磁盘使用情况命令"><a href="#linux查看磁盘使用情况命令" class="headerlink" title="linux查看磁盘使用情况命令"></a>linux查看磁盘使用情况命令</h1><h2 id="查看系统整体磁盘情况"><a href="#查看系统整体磁盘情况" class="headerlink" title="查看系统整体磁盘情况"></a>查看系统整体磁盘情况</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vagrant@lnmp2:~$ df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">udev            2.0G     0  2.0G   0% /dev</span><br><span class="line">tmpfs           396M  5.6M  390M   2% /run</span><br><span class="line">/dev/sda1        30G  7.5G   22G  26% /</span><br><span class="line">tmpfs           2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs           5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">vagrant         235G   33G  202G  14% /vagrant</span><br><span class="line">workspace       235G   33G  202G  14% /workspace</span><br><span class="line">tmpfs           396M     0  396M   0% /run/user/1000</span><br></pre></td></tr></table></figure>
-<h2 id="查看单个目录磁盘整体情况"><a href="#查看单个目录磁盘整体情况" class="headerlink" title="查看单个目录磁盘整体情况"></a>查看单个目录磁盘整体情况</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vagrant@lnmp2:/$ df -h /workspace/</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">workspace       235G   33G  202G  14% /workspace</span><br></pre></td></tr></table></figure>
-<h2 id="查看指定目录下的子目录的磁盘占用"><a href="#查看指定目录下的子目录的磁盘占用" class="headerlink" title="查看指定目录下的子目录的磁盘占用"></a>查看指定目录下的子目录的磁盘占用</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vagrant@lnmp2:/$ du --max-depth=1 -h /workspace/</span><br><span class="line">5.1M    /workspace/dnmp</span><br><span class="line">5.0M    /workspace/dnmp_win</span><br><span class="line">2.1M    /workspace/docker</span><br><span class="line">128M    /workspace/electron</span><br><span class="line">5.8M    /workspace/gitee</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2054,7 +2069,7 @@ package.json
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

@@ -262,6 +262,259 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/146.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/146.html" itemprop="url">【转】Unix 信号</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-17T20:46:25+08:00">
+                2018-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>维基百科中定义：</p>
+<blockquote>
+<p> 在计算机科学中，<strong>信号</strong>（英语：Signals）是<a href="https://zh.wikipedia.org/wiki/Unix" rel="external nofollow noopener noreferrer" target="_blank">Unix</a>、<a href="https://zh.wikipedia.org/wiki/%E7%B1%BBUnix" rel="external nofollow noopener noreferrer" target="_blank">类Unix</a>以及其他<a href="https://zh.wikipedia.org/wiki/POSIX" rel="external nofollow noopener noreferrer" target="_blank">POSIX</a>兼容的操作系统中<a href="https://zh.wikipedia.org/wiki/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E8%AE%AF" rel="external nofollow noopener noreferrer" target="_blank">进程间通讯</a>的一种有限制的方式。它是一种<a href="https://zh.wikipedia.org/wiki/%E7%95%B0%E6%AD%A5" rel="external nofollow noopener noreferrer" target="_blank">异步</a>的通知机制，用来提醒<a href="https://zh.wikipedia.org/wiki/%E8%BF%9B%E7%A8%8B" rel="external nofollow noopener noreferrer" target="_blank">进程</a>一个事件已经发生。当一个信号发送给一个进程，操作系统中断了进程正常的<a href="https://zh.wikipedia.org/wiki/%E6%8E%A7%E5%88%B6%E6%B5%81%E7%A8%8B" rel="external nofollow noopener noreferrer" target="_blank">控制流程</a>，此时，任何非<a href="https://zh.wikipedia.org/wiki/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C" rel="external nofollow noopener noreferrer" target="_blank">原子操作</a>都将被中断。如果进程定义了信号的处理函数，那么它将被执行，否则就执行默认的处理函数。</p>
+</blockquote>
+<p>以下是一些你可能会遇到的并且需要在程序中使用的常见信号：</p>
+<table>
+<thead>
+<tr>
+<th>信号名</th>
+<th>信号值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SIGHUP</td>
+<td>1</td>
+<td>控制终端意外终止或者是控制进程结束时发出</td>
+</tr>
+<tr>
+<td>SIGINT</td>
+<td>2</td>
+<td>用户发送一个中断信号时发出（Ctrl+C）。</td>
+</tr>
+<tr>
+<td>SIGQUIT</td>
+<td>3</td>
+<td>用户发送一个退出信号时发出（Ctrl+D）。</td>
+</tr>
+<tr>
+<td>SIGFPE</td>
+<td>8</td>
+<td>当非法的数学操作执行时发出。</td>
+</tr>
+<tr>
+<td>SIGKILL</td>
+<td>9</td>
+<td>一个进程获取到此信号，它必须立即退出，并且不能进行任何清除操作。</td>
+</tr>
+<tr>
+<td>SIGALRM</td>
+<td>14</td>
+<td>时钟信号（用于定时器）</td>
+</tr>
+<tr>
+<td>SIGTERM</td>
+<td>15</td>
+<td>软件终止信号（kill 命令缺省产生此信号）。</td>
+</tr>
+<tr>
+<td>SIGTSTP</td>
+<td>20</td>
+<td>进程挂起</td>
+</tr>
+</tbody>
+</table>
+<h2 id="信号列表"><a href="#信号列表" class="headerlink" title="信号列表"></a>信号列表</h2><p>有一个简单的方法可以列出你的系统所支持的所有信号。仅仅用命令 <strong>kill -l</strong> 就可以显示系统所有支持的信号：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ kill -l</span><br><span class="line"> 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL</span><br><span class="line"> 5) SIGTRAP      6) SIGABRT      7) SIGBUS       8) SIGFPE</span><br><span class="line"> 9) SIGKILL     10) SIGUSR1     11) SIGSEGV     12) SIGUSR2</span><br><span class="line">13) SIGPIPE     14) SIGALRM     15) SIGTERM     16) SIGSTKFLT</span><br><span class="line">17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP</span><br><span class="line">21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU</span><br><span class="line">25) SIGXFSZ     26) SIGVTALRM   27) SIGPROF     28) SIGWINCH</span><br><span class="line">29) SIGIO       30) SIGPWR      31) SIGSYS      34) SIGRTMIN</span><br><span class="line">35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+3  38) SIGRTMIN+4</span><br><span class="line">39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+8</span><br><span class="line">43) SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12</span><br><span class="line">47) SIGRTMIN+13 48) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14</span><br><span class="line">51) SIGRTMAX-13 52) SIGRTMAX-12 53) SIGRTMAX-11 54) SIGRTMAX-10</span><br><span class="line">55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-7  58) SIGRTMAX-6</span><br><span class="line">59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-2</span><br><span class="line">63) SIGRTMAX-1  64) SIGRTMAX</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong> 其他<code>类Unix系统</code>实际的信号列表会有所不同</p>
+<h2 id="默认动作"><a href="#默认动作" class="headerlink" title="默认动作"></a>默认动作</h2><p>每一个信号都有一个与之相随的默认动作。一个信号的默认动作是当脚本或程序接收到一个信号时，它的执行表现。</p>
+<p>这些可能的默认动作是：</p>
+<ul>
+<li>终止进程。</li>
+<li>忽略信号。</li>
+<li>内核映像转储。当收到信号时，此动作将创建一个称为 core 的文件，其包含进程的内存映像。</li>
+<li>停止进程。</li>
+<li>继续停止的进程。</li>
+</ul>
+<h2 id="发送信号"><a href="#发送信号" class="headerlink" title="发送信号"></a>发送信号</h2><p>有几种向程序或者脚本传递信号的方法。其中用户最常见的是在正在运行的脚本的时候，按下 Ctrl+C 或者 INTERRUPT 键。</p>
+<p>当你按下 Ctrl+C 键，信号 SIGINT 被发送到脚本中，根据之前定义的默认动作，脚本将会被终止。</p>
+<p>另外一种常见的传送信号的方法是使用 kill 命令，其语法如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kill -signal pid</span><br></pre></td></tr></table></figure>
+<p>这里的 <strong>signal</strong> 要么是信号值，要么是信号名称。 <strong>pid</strong> 是信号要发送到的进程的 ID。 例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kill -1 1001</span><br></pre></td></tr></table></figure>
+<p>发送 HUP 信号（即意外终止信号）到运行进程 ID 为 1001 的程序。 用下面的命令来发送一个 kill 信号到同样的进程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kill -9 1001</span><br></pre></td></tr></table></figure>
+<p>这条命令会杀死运行进程 ID 为 1001 的程序。</p>
+<h2 id="捕获信号"><a href="#捕获信号" class="headerlink" title="捕获信号"></a>捕获信号</h2><p>当一个 Shell 程序正在执行的过程中，你在终端按下了 Ctrl+C 或 Break 键，通常情况下，程序会立即终止，并且你的命令提示返回。但这可能并不总是你所期望的。例如，这可能会留下一堆未清理的临时文件。</p>
+<p>捕获这些信号是很容易的，捕获命令（trap）的语法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ trap commands signals</span><br></pre></td></tr></table></figure>
+<p>这里的 commands 可以是任何有效的 UNIX 命令，甚至可以是一个用户定义的函数。</p>
+<p>signals 可以是一个你想捕获的任何数量信号的列表。</p>
+<p>在 Shell 脚本中，trap 有三种常见的用途：</p>
+<ol>
+<li>清除临时文件</li>
+<li>忽略信号</li>
+</ol>
+<h2 id="清除临时文件"><a href="#清除临时文件" class="headerlink" title="清除临时文件"></a>清除临时文件</h2><p>作为 trap 命令的一个例子，下面的命令展示了，如果有人试图从终端中止程序时，你如何先删除一些文件，然后退出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ trap &quot;rm -f $WORKDIR/work1$$ $WORKDIR/dataout$$; exit&quot; 2</span><br></pre></td></tr></table></figure>
+<p>如果程序收到了信号值为 2 的信号，trap 命令将会被执行。从 Shell 程序上执行 trap 的这一点开始，work1</p>
+<p>和dataout</p>
+<p>这两个文件会自动被删除。</p>
+<p>所以如果用户中断程序的运行，这个 trap 将会被执行，你可以确保这两个文件将被清理掉。<strong>rm</strong> 后面的这个 <strong>exit</strong> 命令，它的存在是必要的。如果没有它，程序会在它中断点（也就是信号接收的时刻）继续执行。</p>
+<p>信号值 1 是由挂断产生的：要么是有人故意挂断终端或者是终端被意外断开。</p>
+<p>在这种情况下，把信号值 1 增加到信号列表中，你可以通过这样修改上面的 trap 命令，从而删除那两个指定的文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ trap &quot;rm $WORKDIR/work1$$ $WORKDIR/dataout$$; exit&quot; 1 2</span><br></pre></td></tr></table></figure>
+<p>现在，如果终端被挂起或者是 Ctrl+C 被按下，这些文件将被删除。</p>
+<p>指定的 trap 命令如果包含多个命令，那么它们必须括在引号中。还要注意，当 trap 命令执行时，shell 会扫描一遍命令行，当接收到信号列表的其中一个信号时，也会再执行一次扫描。</p>
+<p>所以在上面的例子中，当 trap 命令执行后，WORKDIR 和 $$ 的值将会被替换。如果你想要这种替换仅仅发生在信号值 1 或者 2 接收到的时候，你可以用单引号把多个命令引起来：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ trap &apos;rm $WORKDIR/work1$$ $WORKDIR/dataout$$; exit&apos; 1 2</span><br></pre></td></tr></table></figure>
+<h2 id="忽略信号"><a href="#忽略信号" class="headerlink" title="忽略信号"></a>忽略信号</h2><p>如果 trap 命令的 command 字段是空的，那么当接收到指定的信号后，信号将被忽略。例如下面的一个命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ trap &apos;&apos; 2</span><br></pre></td></tr></table></figure>
+<p>指定的中断信号将被忽略。当执行某些可能不想被打断的操作时，你可能会想忽略掉些特定的信号。按如下所示，你可以指定要忽略的多个信号：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ trap &apos;&apos; 1 2 3 15</span><br></pre></td></tr></table></figure>
+<p>注意，如果要一个信号被忽略掉，那么第一个参数必须是指定的空，它不等同于如下的命令，下面的命令有自己单独的意义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ trap  2</span><br></pre></td></tr></table></figure>
+<p>如果你忽略了一个信号，那么你所有的子 Shell 也会忽略此信号。然而，如果你指定了接收一个信号所采取的动作，那么所有的子 shell 接收到此信号后会采取相同动作。</p>
+<h2 id="重置-Traps"><a href="#重置-Traps" class="headerlink" title="重置 Traps"></a>重置 Traps</h2><p>当你改变了信号接收后的默认动作，你可以通过一个简单的省略第一个参数的 trap 命令将默认动作重置回来。</p>
+<p>那么命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ trap 1 2</span><br></pre></td></tr></table></figure>
+<p>将信号 1 和 2 接收后采取的动作重置为其原有的默认动作。</p>
+<p>转自：<a href="http://wiki.jikexueyuan.com/project/unix/signals-and-traps.html" rel="external nofollow noopener noreferrer" target="_blank">http://wiki.jikexueyuan.com/project/unix/signals-and-traps.html</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/122.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1798,216 +2051,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/77.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/77.html" itemprop="url">Go语言学习（八）| 类型、指针</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-15T20:11:00+08:00">
-                2018-07-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Go/" itemprop="url" rel="index">
-                    <span itemprop="name">Go</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Go语言学习（八）-类型、指针"><a href="#Go语言学习（八）-类型、指针" class="headerlink" title="Go语言学习（八）| 类型、指针"></a>Go语言学习（八）| 类型、指针</h1><h2 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h2><p>Go 有指针，但是没有指针运算。你不能用指针变量遍历字符串的各个字节。</p>
-<p>通过类型作为前缀来定义一个指针 <code>*</code> 。 例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var p *int</span><br></pre></td></tr></table></figure></p>
-<p>现在 p 是一个指向整数值的指针。 变量名和 <code>*</code> 之间要有个空格。</p>
-<p>所有新定义的变量都被赋值为其类型的零值，而指针也一样。一个新定义的或者没有任何指向的指针，有值 <code>nil</code> 。 在其他语言中，这经常被叫做 <code>空（NULL）指针</code> ，在 Go 中就是 <code>nil</code> 。让指针指向某些内容，可以使用取址操作符 <code>&amp;</code></p>
-<ul>
-<li>如果一个 method 的 receiver 是 <code>*T</code> ,你可以在一个 T 类型的实例变量 V 上面调用这个 method，而不需要 <code>&amp;V</code> 去调用这个 method</li>
-<li>如果一个 method 的 receiver 是 <code>T</code> ，你可以在一个<code>*T</code> 类型的变量P上面调用这个 method，而不需要 <code>*P</code> 去调用这个 method</li>
-</ul>
-<p>例:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> p *<span class="keyword">int</span></span><br><span class="line">    fmt.Printf(<span class="string">"%v\n"</span>, p)</span><br><span class="line">    <span class="keyword">var</span> i <span class="keyword">int</span></span><br><span class="line">    p = &amp;i</span><br><span class="line">    fmt.Printf(<span class="string">"%v\n"</span>, p)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;nil&gt;</span><br><span class="line">0x18600118</span><br></pre></td></tr></table></figure></p>
-<p>例2：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> p *<span class="keyword">int</span></span><br><span class="line">    <span class="keyword">var</span> i <span class="keyword">int</span></span><br><span class="line">    p = &amp;i</span><br><span class="line">    *p = <span class="number">8</span></span><br><span class="line">    fmt.Printf(<span class="string">"%v\n"</span>, *p)</span><br><span class="line">    fmt.Printf(<span class="string">"%v\n"</span>, i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">8</span><br><span class="line">8</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">因为Go没有指针运算，所以如果这样写：*p++，它表示(*p)++：首先获取指针指向的值，然后对这个值加一。</span><br></pre></td></tr></table></figure>
-<h2 id="自定义类型"><a href="#自定义类型" class="headerlink" title="自定义类型"></a>自定义类型</h2><p>Go 允许定义新的类型，通过保留字 <code>type</code> 实现，例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type foo int</span><br></pre></td></tr></table></figure></p>
-<p>创建了一个新的类型 foo 作用跟 int 一样。创建更加复杂的类型需要用到 <code>struct</code> 保留字。</p>
-<p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="keyword">type</span> NameAge <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span>        <span class="comment">//不导出</span></span><br><span class="line">    age <span class="keyword">int</span>            <span class="comment">//不导出</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    a := <span class="built_in">new</span>(NameAge)</span><br><span class="line">    a.name = <span class="string">"Pete"</span></span><br><span class="line">    a.age = <span class="number">42</span></span><br><span class="line">    fmt.Printf(<span class="string">"%v\n"</span>, a)</span><br><span class="line">    fmt.Printf(<span class="string">"%v\n"</span>, a.name)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&amp;&#123;Pete 42&#125;</span><br><span class="line">Pete</span><br></pre></td></tr></table></figure></p>
-<h3 id="struct-声明"><a href="#struct-声明" class="headerlink" title="struct 声明"></a>struct 声明</h3><p><strong>注意</strong> <code>struct{}</code> 中首字母大写的字段可以被导出， 也就是说，在其他包中可以进行读写。 字段名以小写字幕开头是当前包的私有的。</p>
-<p>例2：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> person <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> P person  <span class="comment">// P现在就是person类型的变量了</span></span><br><span class="line"></span><br><span class="line">P.name = <span class="string">"Astaxie"</span>  <span class="comment">// 赋值"Astaxie"给P的name属性.</span></span><br><span class="line">P.age = <span class="number">25</span>          <span class="comment">// 赋值"25"给变量P的age属性</span></span><br><span class="line">fmt.Printf(<span class="string">"The person's name is %s"</span>, P.name)  <span class="comment">// 访问P的name属性.</span></span><br></pre></td></tr></table></figure></p>
-<p>除了上面这种P的声明使用之外，还有几种声明使用方式</p>
-<ul>
-<li><p>按照顺序提供初始化值</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">P := person&#123;<span class="string">"Tom"</span>, <span class="number">25</span>&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过 <code>field:value</code> 的方式初始化，这样可以任意顺序（以这种方式初始化的时候每个字段都要写出来）</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">P := person&#123;age:<span class="number">24</span>, name:<span class="string">"Tom"</span>&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过 <code>new</code> 函数分配一个指针，此处 P 的类型为 <code>*person</code></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p := <span class="built_in">new</span>(person)</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>例3：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明一个新的类型</span></span><br><span class="line"><span class="keyword">type</span> person <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 比较两个人的年龄，返回年龄大的那个人，并且返回年龄差</span></span><br><span class="line"><span class="comment">// 注意：struct也是传值的</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Older</span><span class="params">(p1, p2 person)</span> <span class="params">(person, <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> p1.age&gt;p2.age &#123;  <span class="comment">// 比较p1和p2这两个人的年龄</span></span><br><span class="line">        <span class="keyword">return</span> p1, p1.age-p2.age</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p2, p2.age-p1.age</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> tom person</span><br><span class="line">    <span class="comment">// 赋值初始化</span></span><br><span class="line">    tom.name, tom.age = <span class="string">"Tom"</span>, <span class="number">18</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 两个字段都写清楚的初始化</span></span><br><span class="line">    bob := person&#123;age:<span class="number">25</span>, name:<span class="string">"Bob"</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 按照struct定义顺序初始化值</span></span><br><span class="line">    paul := person&#123;<span class="string">"Paul"</span>, <span class="number">43</span>&#125;</span><br><span class="line"></span><br><span class="line">    tb_Older, tb_diff := Older(tom, bob)</span><br><span class="line">    tp_Older, tp_diff := Older(tom, paul)</span><br><span class="line">    bp_Older, bp_diff := Older(bob, paul)</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"Of %s and %s, %s is older by %d years\n"</span>,</span><br><span class="line">        tom.name, bob.name, tb_Older.name, tb_diff)</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"Of %s and %s, %s is older by %d years\n"</span>,</span><br><span class="line">        tom.name, paul.name, tp_Older.name, tp_diff)</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"Of %s and %s, %s is older by %d years\n"</span>,</span><br><span class="line">        bob.name, paul.name, bp_Older.name, bp_diff)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Of Tom and Bob, Bob is older by 7 years</span><br><span class="line">Of Tom and Paul, Paul is older by 25 years</span><br><span class="line">Of Bob and Paul, Paul is older by 18 years</span><br></pre></td></tr></table></figure></p>
-<h3 id="struct-的匿名字段"><a href="#struct-的匿名字段" class="headerlink" title="struct 的匿名字段"></a>struct 的匿名字段</h3><p>我们上面介绍了如何定义一个 <code>struct</code> ，定义的时候是字段名与其类型一一对应， 实际上 Go 支持只提供类型， 而不写字段名的方式，也就是<code>匿名字段</code>，也称为<code>嵌入字段</code>。当匿名字段是一个 struct 的时候，那么这个 struct 所拥有的全部字段都被隐式地引入了当前定义的这个 struct。<br>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Human <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">    weight <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Student <span class="keyword">struct</span> &#123;</span><br><span class="line">    Human  <span class="comment">// 匿名字段，那么默认Student就包含了Human的所有字段</span></span><br><span class="line">    speciality <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 我们初始化一个学生</span></span><br><span class="line">    mark := Student&#123;Human&#123;<span class="string">"Mark"</span>, <span class="number">25</span>, <span class="number">120</span>&#125;, <span class="string">"Computer Science"</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 我们访问相应的字段</span></span><br><span class="line">    fmt.Println(<span class="string">"His name is "</span>, mark.name)</span><br><span class="line">    fmt.Println(<span class="string">"His age is "</span>, mark.age)</span><br><span class="line">    fmt.Println(<span class="string">"His weight is "</span>, mark.weight)</span><br><span class="line">    fmt.Println(<span class="string">"His speciality is "</span>, mark.speciality)</span><br><span class="line">    <span class="comment">// 修改对应的备注信息</span></span><br><span class="line">    mark.speciality = <span class="string">"AI"</span></span><br><span class="line">    fmt.Println(<span class="string">"Mark changed his speciality"</span>)</span><br><span class="line">    fmt.Println(<span class="string">"His speciality is "</span>, mark.speciality)</span><br><span class="line">    <span class="comment">// 修改他的年龄信息</span></span><br><span class="line">    fmt.Println(<span class="string">"Mark become old"</span>)</span><br><span class="line">    mark.age = <span class="number">46</span></span><br><span class="line">    fmt.Println(<span class="string">"His age is"</span>, mark.age)</span><br><span class="line">    <span class="comment">// 修改他的体重信息</span></span><br><span class="line">    fmt.Println(<span class="string">"Mark is not an athlet anymore"</span>)</span><br><span class="line">    mark.weight += <span class="number">60</span></span><br><span class="line">    fmt.Println(<span class="string">"His weight is"</span>, mark.weight)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">His name is  Mark</span><br><span class="line">His age is  25</span><br><span class="line">His weight is  120</span><br><span class="line">His speciality is  Computer Science</span><br><span class="line">Mark changed his speciality</span><br><span class="line">His speciality is  AI</span><br><span class="line">Mark become old</span><br><span class="line">His age is 46</span><br><span class="line">Mark is not an athlet anymore</span><br><span class="line">His weight is 180</span><br></pre></td></tr></table></figure></p>
-<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>可以对新定义的类型创先函数以便操作，可以通过两种途径：</p>
-<ol>
-<li>创建一个函数接受这个类型的参数。<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">doSomething</span><span class="params">(in1 *NameAge, in2 <span class="keyword">int</span>)</span></span> &#123; <span class="comment">/* ... */</span> &#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>你可能已经猜到了,这其实就是函数调用。</p>
-<ol start="2">
-<li>创建一个工作在这个类型上的函数：<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(in1 *NameAge)</span> <span class="title">doSomething</span><span class="params">(in2 <span class="keyword">int</span>)</span></span> &#123; <span class="comment">/* ... */</span> &#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>这是方法调用，可以类似这样使用：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> n *NameAge</span><br><span class="line">n.doSomething(<span class="number">2</span>)</span><br></pre></td></tr></table></figure></p>
-<p>例1：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="keyword">type</span> NameAge <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    a := <span class="built_in">new</span>(NameAge)</span><br><span class="line">    a.name = <span class="string">"Pete"</span></span><br><span class="line">    a.age = <span class="number">42</span></span><br><span class="line">    doSomething(a, <span class="number">3</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">doSomething</span><span class="params">(in1 *NameAge, in2 <span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">    fmt.Printf(<span class="string">"%v\n"</span>, in1.name)</span><br><span class="line">    fmt.Printf(<span class="string">"%d\n"</span>, in2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Pete</span><br><span class="line">3</span><br></pre></td></tr></table></figure></p>
-<p>例2：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="keyword">type</span> NameAge <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    a := <span class="built_in">new</span>(NameAge)</span><br><span class="line">    a.name = <span class="string">"Pete"</span></span><br><span class="line">    a.age = <span class="number">42</span></span><br><span class="line">    a.doSomething(<span class="number">333</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(in1 *NameAge)</span> <span class="title">doSomething</span><span class="params">(in2 <span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">    fmt.Printf(<span class="string">"%v\n"</span>, in1.name)</span><br><span class="line">    fmt.Printf(<span class="string">"%d\n"</span>, in2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Pete</span><br><span class="line">333</span><br></pre></td></tr></table></figure></p>
-<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><p>有时需要将一个类型转换为另一个类型。在 Go 中可以做到，不过有一些规则。</p>
-<p>注意 Go 的字符串是 <code>UTF-8</code> 编码的，一些字符可能是 1、2、3 或者 4 个字节结尾。</p>
-<p>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    mystring := <span class="string">"hello world"</span></span><br><span class="line">    byteslice := []<span class="keyword">byte</span>(mystring)</span><br><span class="line">    <span class="keyword">for</span> _, val := <span class="keyword">range</span> byteslice &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"%v\n"</span>, val)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">104</span><br><span class="line">101</span><br><span class="line">108</span><br><span class="line">108</span><br><span class="line">111</span><br><span class="line">32</span><br><span class="line">119</span><br><span class="line">111</span><br><span class="line">114</span><br><span class="line">108</span><br><span class="line">100</span><br></pre></td></tr></table></figure></p>
-<p>例2<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    mystring := <span class="string">"hello world"</span></span><br><span class="line">    byteslice := []<span class="keyword">rune</span>(mystring)</span><br><span class="line">    <span class="keyword">for</span> _, val := <span class="keyword">range</span> byteslice &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"%c\n"</span>, val)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">h</span><br><span class="line">e</span><br><span class="line">l</span><br><span class="line">l</span><br><span class="line">o</span><br><span class="line"></span><br><span class="line">w</span><br><span class="line">o</span><br><span class="line">r</span><br><span class="line">l</span><br><span class="line">d</span><br></pre></td></tr></table></figure></p>
-<p>对于数值，定义了下面的转换：</p>
-<ul>
-<li>将整数转换到指定的（bit）长度：uint8(int)；</li>
-<li>从浮点数到整数：int(float32)。这会截断浮点数的小数部分；</li>
-<li>其他的类似：float32(int)。<br>例：<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    myfloat := <span class="number">123.72</span></span><br><span class="line">    myint := <span class="keyword">int</span>(myfloat)</span><br><span class="line">    fmt.Printf(<span class="string">"%.3f\n"</span>, myfloat)</span><br><span class="line">    fmt.Printf(<span class="string">"%d\n"</span>, myint)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">123.720</span><br><span class="line">123</span><br></pre></td></tr></table></figure></p>
-<p><strong>用户定义类型的转换</strong></p>
-<p>如何在自定义类型之间进行转换？这里创建了两个类型 foo 和 bar ，而 bar 是 foo 的一个别名：<br>例：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="keyword">type</span> foo <span class="keyword">struct</span> &#123; <span class="keyword">int</span> &#125;        <span class="comment">//匿名字段</span></span><br><span class="line"><span class="keyword">type</span> bar foo</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    b := bar&#123;<span class="number">1</span>&#125;                <span class="comment">//声明b 为bar 类型，并赋初值</span></span><br><span class="line">    <span class="keyword">var</span> f foo = b</span><br><span class="line">    <span class="comment">//上面赋值b 到f,这会引起一行错误cannot use b (type bar) as type foo in assignment(不能使用b（类型bar）作为类型foo 赋值)</span></span><br><span class="line">    <span class="keyword">var</span> f foo = foo(b)        <span class="comment">//这个是可以的</span></span><br><span class="line">    fmt.Printf(<span class="string">"%d\n"</span>, f)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;1&#125;</span><br></pre></td></tr></table></figure></p>
-<p>注意：转换 b 到 int 同样会出错；整数与有整数字段的结构并不一样。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2060,7 +2103,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

@@ -262,6 +262,150 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/293.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/293.html" itemprop="url">linux查看磁盘使用情况命令</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-29T16:29:00+08:00">
+                2017-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="linux查看磁盘使用情况命令"><a href="#linux查看磁盘使用情况命令" class="headerlink" title="linux查看磁盘使用情况命令"></a>linux查看磁盘使用情况命令</h1><h2 id="查看系统整体磁盘情况"><a href="#查看系统整体磁盘情况" class="headerlink" title="查看系统整体磁盘情况"></a>查看系统整体磁盘情况</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vagrant@lnmp2:~$ df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">udev            2.0G     0  2.0G   0% /dev</span><br><span class="line">tmpfs           396M  5.6M  390M   2% /run</span><br><span class="line">/dev/sda1        30G  7.5G   22G  26% /</span><br><span class="line">tmpfs           2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs           5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">vagrant         235G   33G  202G  14% /vagrant</span><br><span class="line">workspace       235G   33G  202G  14% /workspace</span><br><span class="line">tmpfs           396M     0  396M   0% /run/user/1000</span><br></pre></td></tr></table></figure>
+<h2 id="查看单个目录磁盘整体情况"><a href="#查看单个目录磁盘整体情况" class="headerlink" title="查看单个目录磁盘整体情况"></a>查看单个目录磁盘整体情况</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vagrant@lnmp2:/$ df -h /workspace/</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">workspace       235G   33G  202G  14% /workspace</span><br></pre></td></tr></table></figure>
+<h2 id="查看指定目录下的子目录的磁盘占用"><a href="#查看指定目录下的子目录的磁盘占用" class="headerlink" title="查看指定目录下的子目录的磁盘占用"></a>查看指定目录下的子目录的磁盘占用</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vagrant@lnmp2:/$ du --max-depth=1 -h /workspace/</span><br><span class="line">5.1M    /workspace/dnmp</span><br><span class="line">5.0M    /workspace/dnmp_win</span><br><span class="line">2.1M    /workspace/docker</span><br><span class="line">128M    /workspace/electron</span><br><span class="line">5.8M    /workspace/gitee</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/230.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -591,7 +735,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

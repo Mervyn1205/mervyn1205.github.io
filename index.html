@@ -262,6 +262,151 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/2019/11/hex_str_to_cn.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/hex_str_to_cn.html" itemprop="url">PHP 将16进制字符转换成汉字</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-19T20:42:12+08:00">
+                2019-11-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PHP/" itemprop="url" rel="index">
+                    <span itemprop="name">PHP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="php-将16进制字符转换成汉字"><a href="#php-将16进制字符转换成汉字" class="headerlink" title="php 将16进制字符转换成汉字"></a>php 将16进制字符转换成汉字</h1><p>项目代码提供给外部的api，有些参数是中文的。发现有些客户在请求接口的时候，参数的值被转成了16进制，从而导致接口无法正常解析。</p>
+<p>此时可以采用如下方法进行转移：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$param = <span class="string">"\x48\x65\x6c\x6c\x6f\x2c\x20\xe4\xb8\xad\xe5\x9b\xbd"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> str_replace(<span class="keyword">array</span>(<span class="string">"\t"</span>,<span class="string">"\n"</span>,<span class="string">"\r"</span>),<span class="string">''</span>,stripcslashes($str));</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/2019/11/graceful_upgrade_nginx.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1715,178 +1860,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/337.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/337.html" itemprop="url">Go 方法指针接收者和值接收者</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-31T23:36:40+08:00">
-                2019-03-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Go/" itemprop="url" rel="index">
-                    <span itemprop="name">Go</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Go 语言可以给自定义的类型添加一个方法。这里的方法其实也是函数，跟函数的区别在于在 <code>func</code> 关键字和函数名中间增加了一个参数，可以认为该类型也作为了参数传递入了函数中，例：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Person <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//值接收者</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p Person)</span> <span class="title">sayHello</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(p.name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//引用接收者</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *Person)</span> <span class="title">setName</span><span class="params">(name <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">    p.name = name</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    p := Person&#123;name: <span class="string">"mervyn"</span>&#125;</span><br><span class="line">    p.sayHello()</span><br><span class="line">    p.setName(<span class="string">"tz"</span>)</span><br><span class="line">    p.sayHello()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>值接收者声明的方法，调用时传递的是这个值的一个副本。</li>
-<li>引用接收者声明的方法，在调用者会共享调用方法时接收者所指向的值。</li>
-</ul>
-<p>注意：值类型的接收者也可以使用指针类型的调用。例：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p := &amp;Person&#123;name: <span class="string">"mervyn"</span>&#125;</span><br><span class="line">(*p).sayHello()</span><br></pre></td></tr></table></figure>
-<p>所以有如下的对照关系:</p>
-<table>
-<thead>
-<tr>
-<th>方法接收者</th>
-<th>实际可用类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>(t T)</td>
-<td>T and *T</td>
-</tr>
-<tr>
-<td>(t *T)</td>
-<td>*T</td>
-</tr>
-</tbody>
-</table>
-<p>因此在如下的代码执行时，会报错，因为<code>interface</code>声明了<code>notify</code>方法，而方法接收者使用的是指针类型，因而只有<code>*user</code>实现了<code>notify</code>方法，<code>user</code>并没有实现，所以sendNotification的参数应该是&amp;u，而不是u。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"log"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> notifier <span class="keyword">interface</span> &#123;</span><br><span class="line">    notify()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> user <span class="keyword">struct</span> &#123;</span><br><span class="line">    name  <span class="keyword">string</span></span><br><span class="line">    email <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *user)</span> <span class="title">notify</span><span class="params">()</span></span> &#123;</span><br><span class="line">    log.Printf(<span class="string">"Sending user email to %s"</span>, u.name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    u := user&#123;<span class="string">"Bill"</span>, <span class="string">"bill@email.com"</span>&#125;</span><br><span class="line"></span><br><span class="line">    sendNotification(u)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sendNotification</span><span class="params">(n notifier)</span></span> &#123; <span class="comment">//注意此处传递的参数类型</span></span><br><span class="line">    n.notify()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>执行结果</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># command-line-arguments</span><br><span class="line">./main.go:23: cannot use u (type user) as type notifier in argument to sendNotification:</span><br><span class="line">        user does not implement notifier (notify method has pointer receiver)</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1939,7 +1912,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

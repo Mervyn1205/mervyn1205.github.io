@@ -262,6 +262,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/133.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mervyn">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mervyn's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/133.html" itemprop="url">vim 配置</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-14T09:16:00+08:00">
+                2018-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/" itemprop="url" rel="index">
+                    <span itemprop="name">Tools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="初始化目录"><a href="#初始化目录" class="headerlink" title="初始化目录"></a>初始化目录</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/.vim/bundle</span><br><span class="line">mkdir -p ~/.vim/colors</span><br><span class="line">mkdir -p ~/.vim/plugin</span><br><span class="line">mkdir -p ~/.vim/doc</span><br></pre></td></tr></table></figure>
+<h2 id="安装插件管理器-Vundle"><a href="#安装插件管理器-Vundle" class="headerlink" title="安装插件管理器 Vundle"></a>安装插件管理器 Vundle</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim</span><br></pre></td></tr></table></figure>
+<p>如果需要通过 <code>Vundle</code> 管理插件，只需要在 <code>.vimrc</code> 文件配置相应的插件即可。<br><strong>注意</strong> 插件名需要写在 <code>vundle</code> 块中间：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set rtp+=~/.vim/bundle/Vundle.vim</span><br><span class="line">call vundle#begin()</span><br><span class="line">Plugin &apos;Plugin Name&apos;</span><br><span class="line">call vundle#end()            &quot; required</span><br><span class="line">filetype plugin indent on    &quot; required</span><br></pre></td></tr></table></figure></p>
+<p>目前本人用到的插件如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">set rtp+=~/.vim/bundle/Vundle.vim</span><br><span class="line">call vundle#begin()</span><br><span class="line">Plugin &apos;gmarik/Vundle.vim&apos;</span><br><span class="line">Plugin &apos;scrooloose/nerdtree&apos;</span><br><span class="line">Plugin &apos;shawncplus/phpcomplete.vim&apos;</span><br><span class="line">Plugin &apos;mileszs/ack.vim&apos;</span><br><span class="line">Plugin &apos;tpope/vim-fugitive&apos;</span><br><span class="line">Plugin &apos;kien/ctrlp.vim&apos;</span><br><span class="line">Plugin &apos;stephpy/vim-php-cs-fixer&apos;</span><br><span class="line">call vundle#end()            &quot; required</span><br><span class="line">filetype plugin indent on    &quot; required</span><br></pre></td></tr></table></figure>
+<p>保存退出后执行 <code>vim +PluginInstall</code> 即可。</p>
+<p><strong>注意</strong><br><code>vim-php-cs-fixer</code> 插件依赖 <code>php-cs-fixer</code> , 如果需要自定义格式化的配置， 在 <code>~/.php_cs.dist</code> 文件中写对应配置即可。</p>
+<p><code>Vundle</code> 具体用法可见 <a href="https://github.com/VundleVim/Vundle.vim" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/VundleVim/Vundle.vim</a><br><code>php-cs-fixer</code> 具体用法可见 <a href="https://github.com/FriendsOfPHP/PHP-CS-Fixer" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/FriendsOfPHP/PHP-CS-Fixer</a></p>
+<h2 id="主题配置"><a href="#主题配置" class="headerlink" title="主题配置"></a>主题配置</h2><p>找到一个适合自己的主题，这里我采取的是 <code>monokai</code> 这款主题，样式比较接近 <code>sublime</code>。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><ul>
+<li>下载主题 <a href="https://github.com/sickill/vim-monokai" rel="external nofollow noopener noreferrer" target="_blank">monokai</a></li>
+<li>将 <code>monokai.vim</code> 放入 <code>~/.vim/colors</code></li>
+</ul>
+<h3 id="启用主题"><a href="#启用主题" class="headerlink" title="启用主题"></a>启用主题</h3><p>在 <code>~/.vimrc</code> 文件中加入如下内容即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">colorscheme monokai</span><br></pre></td></tr></table></figure></p>
+<h2 id="函数跳转"><a href="#函数跳转" class="headerlink" title="函数跳转"></a>函数跳转</h2><h3 id="安装-ctags"><a href="#安装-ctags" class="headerlink" title="安装 ctags"></a>安装 ctags</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://prdownloads.sourceforge.net/ctags/ctags-5.8.tar.gz</span><br><span class="line">tar xvzf ctags-5.8.tar.gz</span><br><span class="line">cd ctags-5.8/</span><br><span class="line">./configure</span><br><span class="line">sudo make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
+<h3 id="安装-taglist-插件"><a href="#安装-taglist-插件" class="headerlink" title="安装 taglist 插件"></a>安装 taglist 插件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget https://nchc.dl.sourceforge.net/project/vim-taglist/vim-taglist/4.6/taglist_46.zip</span><br><span class="line">unzip taglist_46.zip</span><br><span class="line">mv doc/taglist.txt ~/.vim/doc/</span><br><span class="line">mv plugin/taglist.vim ~/.vim/plugin</span><br></pre></td></tr></table></figure>
+<p>下边是本人用的 <code>vim</code> 配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">colorscheme monokai</span><br><span class="line">set nocompatible              &quot; required</span><br><span class="line">filetype on                  &quot; required</span><br><span class="line">set number</span><br><span class="line">set tabstop=4       &quot;设置 tab 制表符所占宽度为 4</span><br><span class="line">set softtabstop=4   &quot;设置按 tab 时缩进的宽度为 4</span><br><span class="line">set shiftwidth=4    &quot;设置自动缩进宽度为 4</span><br><span class="line">set expandtab       &quot;缩进时将 tab 制表符转换为空格</span><br><span class="line">set encoding=utf-8</span><br><span class="line">set cursorline</span><br><span class="line"></span><br><span class="line">&quot; set runtimepath^=~/.vim/bundle/ctrlp.vim</span><br><span class="line">set rtp+=~/.vim/bundle/Vundle.vim</span><br><span class="line">call vundle#begin()</span><br><span class="line">Plugin &apos;gmarik/Vundle.vim&apos;</span><br><span class="line">Plugin &apos;scrooloose/nerdtree&apos;</span><br><span class="line">Plugin &apos;shawncplus/phpcomplete.vim&apos;</span><br><span class="line">Plugin &apos;mileszs/ack.vim&apos;</span><br><span class="line">Plugin &apos;tpope/vim-fugitive&apos;</span><br><span class="line">Plugin &apos;kien/ctrlp.vim&apos;</span><br><span class="line">Plugin &apos;stephpy/vim-php-cs-fixer&apos;</span><br><span class="line">call vundle#end()            &quot; required</span><br><span class="line">filetype plugin indent on    &quot; required</span><br><span class="line"></span><br><span class="line">&quot;当NERDTree为剩下的唯一窗口时自动关闭</span><br><span class="line">&quot; autocmd bufenter * if (winnr(&quot;$&quot;) == 1 &amp;&amp; exists(&quot;b:NERDTree&quot;) &amp;&amp; b:NERDTree.isTabTree()) | q | endif</span><br><span class="line">&quot;设置树的显示图标</span><br><span class="line">let g:NERDTreeDirArrowExpandable = &apos;+&apos;</span><br><span class="line">let g:NERDTreeDirArrowCollapsible = &apos;-&apos;</span><br><span class="line">let NERDTreeShowLineNumbers=1</span><br><span class="line">let NERDTreeShowHidden=1</span><br><span class="line">let NERDTreeAutoCenter=1</span><br><span class="line">let NERDTreeIgnore=[&apos;\.pyc&apos;,&apos;\~$&apos;,&apos;\.swp&apos;]</span><br><span class="line">let g:NERDTreeChDirMode       = 2</span><br><span class="line">let g:ctrlp_working_path_mode = &apos;ra&apos;</span><br><span class="line">let g:php_cs_fixer_config_file=&apos;.php_cs.dist&apos;</span><br><span class="line"></span><br><span class="line">let Tlist_Show_One_File=1     &quot;不同时显示多个文件的tag，只显示当前文件的</span><br><span class="line">let Tlist_Exit_OnlyWindow=1   &quot;如果taglist窗口是最后一个窗口，则退出vim</span><br><span class="line">let Tlist_Ctags_Cmd=&quot;/usr/local/bin/ctags&quot;</span><br><span class="line">let Tlist_Inc_Winwidth=0 &quot;配置打开函数列表的时候不改变窗口大小</span><br><span class="line"></span><br><span class="line">augroup PHP</span><br><span class="line">    autocmd!</span><br><span class="line"></span><br><span class="line">    &quot; Check for PHP syntax errors after saving a file</span><br><span class="line">    autocmd BufWritePost &#123;*.php&#125; echom system(&quot;php -l &quot;.expand(&apos;%&apos;))</span><br><span class="line">augroup END</span><br><span class="line"></span><br><span class="line">function! UpdateCtags()</span><br><span class="line">    let curdir=getcwd()</span><br><span class="line">    while !filereadable(&quot;./tags&quot;)</span><br><span class="line">        cd ..</span><br><span class="line">        if getcwd() == &quot;/&quot;</span><br><span class="line">            break</span><br><span class="line">        endif</span><br><span class="line">    endwhile</span><br><span class="line">    if filewritable(&quot;./tags&quot;)</span><br><span class="line">        !ctags -R --fields=+aimlS --languages=php</span><br><span class="line">        TlistUpdate</span><br><span class="line">    endif</span><br><span class="line">    execute &quot;:cd &quot; . curdir</span><br><span class="line">endfunction</span><br><span class="line"></span><br><span class="line">map &lt;C-k&gt;&lt;C-b&gt; :NERDTreeToggle&lt;CR&gt;</span><br><span class="line">map &lt;C-k&gt;&lt;C-j&gt; :NERDTreeCWD&lt;CR&gt;</span><br><span class="line">map &lt;C-o&gt; :TlistToggle&lt;CR&gt;</span><br><span class="line">map &lt;c-h&gt; :Ack&lt;space&gt;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/220.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2112,165 +2270,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.mervyntang.com/25.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mervyn">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mervyn's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/25.html" itemprop="url">Docker常用命令</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-13T17:19:00+08:00">
-                2017-11-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DevOps/" itemprop="url" rel="index">
-                    <span itemprop="name">DevOps</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="images相关命令"><a href="#images相关命令" class="headerlink" title="images相关命令"></a>images相关命令</h2><h3 id="编译一个镜像"><a href="#编译一个镜像" class="headerlink" title="编译一个镜像"></a>编译一个镜像</h3><p>根据当前目录下的Dockerfile创建<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls</span><br><span class="line">docker build -t friendlyhello .</span><br></pre></td></tr></table></figure></p>
-<h3 id="列出所有的镜像"><a href="#列出所有的镜像" class="headerlink" title="列出所有的镜像"></a>列出所有的镜像</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜ docker images</span><br><span class="line">REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">friendlyhello            latest              2e202abc6a75        23 hours ago        148MB</span><br></pre></td></tr></table></figure>
-<p>列出本机所有镜像<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image ls -a</span><br></pre></td></tr></table></figure></p>
-<h3 id="启动镜像"><a href="#启动镜像" class="headerlink" title="启动镜像"></a>启动镜像</h3><p>启动镜像的同时映射本地4000到容器的80端口</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 4000:80 friendlyhello</span><br><span class="line"><span class="comment">#等价于</span></span><br><span class="line">docker run -p 4000:80 friendlyhello:latest</span><br><span class="line"><span class="comment">#以守护进程的方式启动该镜像</span></span><br><span class="line">docker run -d -p 4000:80 friendlyhello</span><br></pre></td></tr></table></figure>
-<h3 id="拉取远端镜像仓库并执行"><a href="#拉取远端镜像仓库并执行" class="headerlink" title="拉取远端镜像仓库并执行"></a>拉取远端镜像仓库并执行</h3><p>如果镜像不在本地机器上，则从远端仓库中拉取到本地<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 4000:80 username/repository:tag</span><br></pre></td></tr></table></figure></p>
-<p><strong>PS:如果没有指定tag，则默认tag为latest</strong></p>
-<h3 id="给某个镜像打tag"><a href="#给某个镜像打tag" class="headerlink" title="给某个镜像打tag"></a>给某个镜像打tag</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker tag image  username/repository:tag</span><br></pre></td></tr></table></figure>
-<p>例如：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ docker tag friendlyhello  mervyn1205/get-started:part3</span><br></pre></td></tr></table></figure></p>
-<h3 id="发布镜像"><a href="#发布镜像" class="headerlink" title="发布镜像"></a>发布镜像</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push username/repository:tags</span><br></pre></td></tr></table></figure>
-<h3 id="删除镜像"><a href="#删除镜像" class="headerlink" title="删除镜像"></a>删除镜像</h3><p>删除指定镜像<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image rm &lt;image id&gt;</span><br></pre></td></tr></table></figure></p>
-<p>删除本机所有镜像<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image rm $(docker image ls -a -q)</span><br></pre></td></tr></table></figure></p>
-<h2 id="container相关命令"><a href="#container相关命令" class="headerlink" title="container相关命令"></a>container相关命令</h2><h3 id="列出正在运行的容器"><a href="#列出正在运行的容器" class="headerlink" title="列出正在运行的容器"></a>列出正在运行的容器</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker container ls</span><br><span class="line"><span class="comment"># 列出所有的容器，包括未执行的</span></span><br><span class="line">docker container ls -a</span><br></pre></td></tr></table></figure>
-<h3 id="列出某个正在运行的容器的IP"><a href="#列出某个正在运行的容器的IP" class="headerlink" title="列出某个正在运行的容器的IP"></a>列出某个正在运行的容器的IP</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker inspect --format=<span class="string">"&#123;&#123; .NetworkSettings.IPAddress &#125;&#125;"</span> CONTAINER_ID</span><br><span class="line"></span><br><span class="line">docker inspect -f <span class="string">'&#123;&#123;range .NetworkSettings.Networks&#125;&#125;&#123;&#123;.IPAddress&#125;&#125;&#123;&#123;end&#125;&#125;'</span> CONTAINER_ID</span><br></pre></td></tr></table></figure>
-<h3 id="停止某个正在运行的容器"><a href="#停止某个正在运行的容器" class="headerlink" title="停止某个正在运行的容器"></a>停止某个正在运行的容器</h3><p>优雅的停止指定容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container stop CONTAINER_ID</span><br></pre></td></tr></table></figure></p>
-<p>强制关闭指定容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container <span class="built_in">kill</span> &lt;<span class="built_in">hash</span>&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h3><p>从本地机器上删除指定容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container rm &lt;<span class="built_in">hash</span>&gt;</span><br></pre></td></tr></table></figure></p>
-<p>删除所有容器<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container rm $(docker container ls -a -q)</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2323,7 +2322,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
